@@ -35,12 +35,37 @@ class Tracker {
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
+        $this->addBugzillaId($form_elements);
+        $this->addSubmittedBy($form_elements);
+        $this->addSubmittedOn($form_elements);
+    }
+
+    private function addBugzillaId(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'int');
         $field->addAttribute('ID', 'F1');
         $field->addAttribute('rank', '0');
         $field->addChild('name', 'bugzilla_id');
         $field->addChild('label', 'Bugzilla Id');
+    }
+
+
+    private function addSubmittedBy(SimpleXMLElement $form_elements) {
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', 'subby');
+        $field->addAttribute('ID', 'F2');
+        $field->addAttribute('rank', '1');
+        $field->addChild('name', 'submitted_by');
+        $field->addChild('label', 'Submitted by');
+    }
+
+    private function addSubmittedOn(SimpleXMLElement $form_elements) {
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', 'subon');
+        $field->addAttribute('ID', 'F3');
+        $field->addAttribute('rank', '2');
+        $field->addChild('name', 'submitted_on');
+        $field->addChild('label', 'Submitted on');
     }
 
     private function addReports(SimpleXMLElement $tracker) {
@@ -57,15 +82,22 @@ class Tracker {
         $renderer->addAttribute('chunksz', '50');
         $renderer->addChild('name', 'Results');
         $columns = $renderer->addChild('columns');
+        $this->addColumnToTableRenderer($columns, 'F1');
+        $this->addColumnToTableRenderer($columns, 'F2');
+        $this->addColumnToTableRenderer($columns, 'F3');
+    }
+
+    private function addColumnToTableRenderer(SimpleXMLElement $columns, $name) {
         $field = $columns->addChild('field');
-        $field->addAttribute('REF', 'F1');
+        $field->addAttribute('REF', $name);
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
         $permissions = $tracker->addChild('permissions');
         $this->addPermissionOnTracker($permissions, 'PLUGIN_TRACKER_ACCESS_FULL', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F1', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        //$this->addPermissionOnField($permissions, 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, 'F2', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, 'F3', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
     }
 
     private function addPermissionOnTracker(SimpleXMLElement $permissions, $type, $ugroup) {
