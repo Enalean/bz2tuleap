@@ -30,6 +30,7 @@ class Tracker {
         $tracker->addChild('cannedResponses');
         $form_elements = $tracker->addChild('formElements');
         $this->addFields($form_elements);
+        $this->addReports($tracker);
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
@@ -39,6 +40,24 @@ class Tracker {
         $field->addAttribute('rank', '0');
         $field->addChild('name', 'bugzilla_id');
         $field->addChild('label', 'Bugzilla Id');
+    }
+
+    private function addReports(SimpleXMLElement $tracker) {
+        $reports = $tracker->addChild('reports');
+        $report  = $reports->addChild('report');
+        $report->addAttribute('is_default', 1);
+        $report->addChild('name', 'Default');
+        $report->addChild('description', 'Default report');
+        $report->addChild('criterias');
+        $renderers = $report->addChild('renderers');
+        $renderer = $renderers->addChild('renderer');
+        $renderer->addAttribute('type', 'table');
+        $renderer->addAttribute('rank', '0');
+        $renderer->addAttribute('chunksz', '50');
+        $renderer->addChild('name', 'Results');
+        $columns = $renderer->addChild('columns');
+        $field = $columns->addChild('field');
+        $field->addAttribute('REF', 'F1');
     }
 
     private function addArtifacts(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tracker) {
