@@ -145,18 +145,41 @@ class Tracker {
 
     private function addChangesets(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
         $this->addInitialChangeset($bugzilla_bug, $tuleap_artifact);
+        $this->addComments($bugzilla_bug, $tuleap_artifact);
     }
 
     private function addInitialChangeset(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
-        $changeset = $tuleap_artifact->addChild('changeset');
-        $this->addUser($bugzilla_bug->reporter);
-        //$submitted_by = $changeset->addChild('submitted_by', $bugzilla_bug->reporter);
-        $submitted_by = $changeset->addChild('submitted_by', 'janine');
-        $submitted_by->addAttribute('format', 'username');
-        $submitted_on = $changeset->addChild('submitted_on', $bugzilla_bug->creation_ts);
-        $submitted_on->addAttribute('format', 'ISO8601');
+        $changeset = $this->createChangeset($tuleap_artifact, $bugzilla_bug->reporter, $bugzilla_bug->creation_ts);
         $changeset->addChild('comments');
         $this->addFieldsData($bugzilla_bug, $changeset);
+    }
+
+    private function createChangeset(SimpleXMLElement $tuleap_artifact, SimpleXMLElement $who_node, SimpleXMLElement $when_node) {
+        $changeset = $tuleap_artifact->addChild('changeset');
+
+        $this->addSubmittedInfo($changeset, $who_node, $when_node);
+
+        return $changeset;
+    }
+
+    private function addSubmittedInfo(SimpleXMLElement $tuleap_node, SimpleXMLElement $who_node, SimpleXMLElement $when_node) {
+        $this->addUser($who_node);
+        //$submitted_by = $changeset->addChild('submitted_by', $who_node);
+        $submitted_by = $tuleap_node->addChild('submitted_by', 'janine');
+        $submitted_by->addAttribute('format', 'username');
+        $submitted_on = $tuleap_node->addChild('submitted_on', (string) $when_node);
+        $submitted_on->addAttribute('format', 'ISO8601');
+    }
+
+    private function addComments(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
+        foreach($bugzilla_bug->long_desc as $long_desc) {
+            $changeset = $this->createChangeset($tuleap_artifact, $long_desc->who, $long_desc->bug_when);
+            $comments = $changeset->addChild('comments');
+            $comment = $comments->addChild('comment');
+            $this->addSubmittedInfo($comment, $long_desc->who, $long_desc->bug_when);
+            $body = $this->addChildWithCDataValue($comment, 'body', (string) $long_desc->thetext);
+            $body->addAttribute('format', 'text');
+        }
     }
 
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
@@ -187,4 +210,13 @@ class Tracker {
         }
     }
 
+    public function addChildWithCDataValue(SimpleXMLElement $parent_node, $node_name, $node_value) {
+        $node     = $parent_node->addChild($node_name);
+        $dom_node = dom_import_simplexml($node);
+        $document = $dom_node->ownerDocument;
+        $value    = SupportedXmlCharEncoding::getXMLCompatibleString($node_value);
+        $cdata    = $document->createCDATASection($value);
+        $dom_node->appendChild($cdata);
+        return $node;
+    }
 }

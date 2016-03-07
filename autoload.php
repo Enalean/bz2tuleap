@@ -9,6 +9,7 @@ spl_autoload_register(
             $classes = array(
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',
+                'bz2tuleap\\tuleap\\supportedxmlcharencoding' => '/Bz2Tuleap/Tuleap/SupportedXmlCharEncoding.class.php',
                 'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php'
             );
         }
