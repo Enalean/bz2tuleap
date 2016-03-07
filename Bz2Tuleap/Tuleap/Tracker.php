@@ -30,6 +30,7 @@ class Tracker {
         $tracker->addChild('cannedResponses');
         $form_elements = $tracker->addChild('formElements');
         $this->addFields($form_elements);
+        $this->addSemantics($tracker);
         $this->addReports($tracker);
         $this->addPermissions($tracker);
     }
@@ -76,6 +77,17 @@ class Tracker {
         $field->addAttribute('rank', '3');
         $field->addChild('name', 'summary');
         $field->addChild('label', 'Summary');
+    }
+
+    private function addSemantics(SimpleXMLElement $tracker) {
+        $semantics = $tracker->addChild('semantics');
+        $title = $semantics->addChild('semantic');
+        $title->addAttribute('type', 'title');
+        $title->addChild('shortname', 'title');
+        $title->addChild('label');
+        $title->addChild('description');
+        $field = $title->addChild('field');
+        $field->addAttribute('REF', 'F4');
     }
 
     private function addReports(SimpleXMLElement $tracker) {
