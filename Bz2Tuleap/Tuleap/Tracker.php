@@ -31,6 +31,7 @@ class Tracker {
         $form_elements = $tracker->addChild('formElements');
         $this->addFields($form_elements);
         $this->addReports($tracker);
+        $this->addPermissions($tracker);
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
@@ -58,6 +59,28 @@ class Tracker {
         $columns = $renderer->addChild('columns');
         $field = $columns->addChild('field');
         $field->addAttribute('REF', 'F1');
+    }
+
+    private function addPermissions(SimpleXMLElement $tracker) {
+        $permissions = $tracker->addChild('permissions');
+        $this->addPermissionOnTracker($permissions, 'PLUGIN_TRACKER_ACCESS_FULL', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, 'F1', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        //$this->addPermissionOnField($permissions, 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_ANONYMOUS');
+    }
+
+    private function addPermissionOnTracker(SimpleXMLElement $permissions, $type, $ugroup) {
+        $permission = $permissions->addChild('permission');
+        $permission->addAttribute('scope', 'tracker');
+        $permission->addAttribute('ugroup', $ugroup);
+        $permission->addAttribute('type', $type);
+    }
+
+    private function addPermissionOnField(SimpleXMLElement $permissions, $field, $type, $ugroup) {
+        $permission = $permissions->addChild('permission');
+        $permission->addAttribute('scope', 'field');
+        $permission->addAttribute('REF', $field);
+        $permission->addAttribute('ugroup', $ugroup);
+        $permission->addAttribute('type', $type);
     }
 
     private function addArtifacts(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tracker) {
