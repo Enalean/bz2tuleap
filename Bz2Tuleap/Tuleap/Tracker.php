@@ -38,6 +38,7 @@ class Tracker {
         $this->addBugzillaId($form_elements);
         $this->addSubmittedBy($form_elements);
         $this->addSubmittedOn($form_elements);
+        $this->addTitle($form_elements);
     }
 
     private function addBugzillaId(SimpleXMLElement $form_elements) {
@@ -68,6 +69,15 @@ class Tracker {
         $field->addChild('label', 'Submitted on');
     }
 
+    private function addTitle(SimpleXMLElement $form_elements) {
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', 'string');
+        $field->addAttribute('ID', 'F4');
+        $field->addAttribute('rank', '3');
+        $field->addChild('name', 'summary');
+        $field->addChild('label', 'Summary');
+    }
+
     private function addReports(SimpleXMLElement $tracker) {
         $reports = $tracker->addChild('reports');
         $report  = $reports->addChild('report');
@@ -85,6 +95,7 @@ class Tracker {
         $this->addColumnToTableRenderer($columns, 'F1');
         $this->addColumnToTableRenderer($columns, 'F2');
         $this->addColumnToTableRenderer($columns, 'F3');
+        $this->addColumnToTableRenderer($columns, 'F4');
     }
 
     private function addColumnToTableRenderer(SimpleXMLElement $columns, $name) {
@@ -98,6 +109,10 @@ class Tracker {
         $this->addPermissionOnField($permissions, 'F1', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F2', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F3', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+
+        $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_REGISTERED');
+        $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_UPDATE', 'UGROUP_REGISTERED');
     }
 
     private function addPermissionOnTracker(SimpleXMLElement $permissions, $type, $ugroup) {
@@ -145,10 +160,22 @@ class Tracker {
     }
 
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
+        $this->addBugzillaIdData($bugzilla_bug, $tuleap_changeset);
+        $this->addTitleData($bugzilla_bug, $tuleap_changeset);
+    }
+
+    private function addBugzillaIdData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
         $field_change = $tuleap_changeset->addChild('field_change');
         $field_change->addAttribute('field_name', 'bugzilla_id');
         $field_change->addAttribute('type', 'int');
         $field_change->addChild('value', (int) $bugzilla_bug->bug_id);
+    }
+
+    private function addTitleData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
+        $field_change = $tuleap_changeset->addChild('field_change');
+        $field_change->addAttribute('field_name', 'summary');
+        $field_change->addAttribute('type', 'string');
+        $field_change->addChild('value', (string) $bugzilla_bug->short_desc);
     }
 
     private function addUser(SimpleXMLElement $bugzilla_user_node) {
