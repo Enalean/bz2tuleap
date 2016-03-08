@@ -54,13 +54,19 @@ class Tracker {
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
-        $this->addBugzillaId($form_elements);
-        $this->addSubmittedBy($form_elements);
-        $this->addSubmittedOn($form_elements);
-        $this->addTitle($form_elements);
-        $this->addLastUpdateBy($form_elements);
-        $this->addLastUpdateOn($form_elements);
-        $this->addSelectBox($form_elements, 'status', "Status", array(
+        $c1 = $this->addStructureField($form_elements, 'column', 'C1', 'C1', 0);
+        $this->addSubmittedBy($c1);
+        $this->addSubmittedOn($c1);
+        $c2 = $this->addStructureField($form_elements, 'column', 'C2', 'C2', 1);
+        $this->addLastUpdateBy($c2);
+        $this->addLastUpdateOn($c2);
+
+        $field_set_details = $this->addStructureField($form_elements, 'fieldset', 'details', 'Details', 3);
+        $this->addTitle($field_set_details);
+        $this->addBugzillaId($field_set_details);
+
+        $c3 = $this->addStructureField($field_set_details, 'column', 'C3', 'C3', 4);
+        $this->addSelectBox($c3, 'status', "Status", array(
             'NEW',
             'UNCONFIRMED',
             'CONFIRMED',
@@ -68,14 +74,16 @@ class Tracker {
             'RESOLVED',
             'VERIFIED',
         ));
-        $this->addSelectBox($form_elements, 'resolution', "Resolution", array(
+        $this->addSelectBox($c3, 'resolution', "Resolution", array(
             'FIXED',
             'INVALID',
             'WONTFIX',
             'DUPLICATE',
             'WORKSFORME',
         ));
-        $this->addSelectBox($form_elements, 'severity', "Severity", array(
+
+        $c4 = $this->addStructureField($field_set_details, 'column', 'C4', 'C4', 5);
+        $this->addSelectBox($c4, 'severity', "Severity", array(
             'blocker',
             'critical',
             'major',
@@ -84,7 +92,7 @@ class Tracker {
             'trivial',
             'enhancement',
         ));
-        $this->addSelectBox($form_elements, 'priority', "Priority", array(
+        $this->addSelectBox($c4, 'priority', "Priority", array(
             'P1',
             'P2',
             'P3',
@@ -107,6 +115,21 @@ class Tracker {
         $this->addDefaultPermissions($permissions, $this->getFieldReference('resolution'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('severity'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('priority'));
+    }
+
+    private function addStructureField(SimpleXMLElement $form_elements, $type, $name, $label, $rank) {
+        $field = $this->addSimpleField($form_elements, $type, $name, $label, $rank);
+        return $field->addChild('formElements');
+    }
+
+    private function addSimpleField(SimpleXMLElement $form_elements, $type, $name, $label, $rank) {
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', $type);
+        $field->addAttribute('ID', $this->getNewFieldId($name));
+        $field->addAttribute('rank', $rank);
+        $field->addChild('name', $name);
+        $field->addChild('label', $label);
+        return $field;
     }
 
     private function addBugzillaId(SimpleXMLElement $form_elements) {
