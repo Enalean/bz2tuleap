@@ -40,6 +40,8 @@ class Tracker {
         $this->addSubmittedBy($form_elements);
         $this->addSubmittedOn($form_elements);
         $this->addTitle($form_elements);
+        $this->addLastUpdateBy($form_elements);
+        $this->addLastUpdateOn($form_elements);
     }
 
     private function addBugzillaId(SimpleXMLElement $form_elements) {
@@ -79,6 +81,24 @@ class Tracker {
         $field->addChild('label', 'Summary');
     }
 
+    private function addLastUpdateBy(SimpleXMLElement $form_elements) {
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', 'luby');
+        $field->addAttribute('ID', 'F5');
+        $field->addAttribute('rank', '5');
+        $field->addChild('name', 'last_update_by');
+        $field->addChild('label', 'Last update by');
+    }
+
+    private function addLastUpdateOn(SimpleXMLElement $form_elements) {
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', 'lud');
+        $field->addAttribute('ID', 'F6');
+        $field->addAttribute('rank', '6');
+        $field->addChild('name', 'last_update_on');
+        $field->addChild('label', 'Last update on');
+    }
+
     private function addSemantics(SimpleXMLElement $tracker) {
         $semantics = $tracker->addChild('semantics');
         $title = $semantics->addChild('semantic');
@@ -108,6 +128,7 @@ class Tracker {
         $this->addColumnToTableRenderer($columns, 'F2');
         $this->addColumnToTableRenderer($columns, 'F3');
         $this->addColumnToTableRenderer($columns, 'F4');
+        $this->addColumnToTableRenderer($columns, 'F6');
     }
 
     private function addColumnToTableRenderer(SimpleXMLElement $columns, $name) {
@@ -121,6 +142,8 @@ class Tracker {
         $this->addPermissionOnField($permissions, 'F1', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F2', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F3', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, 'F5', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, 'F6', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
 
         $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_REGISTERED');
