@@ -176,8 +176,7 @@ class Tracker {
 
     private function addSubmittedInfo(SimpleXMLElement $tuleap_node, SimpleXMLElement $who_node, SimpleXMLElement $when_node) {
         $this->addUser($who_node);
-        //$submitted_by = $changeset->addChild('submitted_by', $who_node);
-        $submitted_by = $tuleap_node->addChild('submitted_by', 'janine');
+        $submitted_by = $tuleap_node->addChild('submitted_by', $who_node);
         $submitted_by->addAttribute('format', 'username');
         $submitted_on = $tuleap_node->addChild('submitted_on', (string) $when_node);
         $submitted_on->addAttribute('format', 'ISO8601');
@@ -222,7 +221,11 @@ class Tracker {
         }
     }
 
-    public function addChildWithCDataValue(SimpleXMLElement $parent_node, $node_name, $node_value) {
+    public function getUsers() {
+        return $this->users;
+    }
+
+    private function addChildWithCDataValue(SimpleXMLElement $parent_node, $node_name, $node_value) {
         $node     = $parent_node->addChild($node_name);
         $dom_node = dom_import_simplexml($node);
         $document = $dom_node->ownerDocument;
