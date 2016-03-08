@@ -282,24 +282,19 @@ class Tracker {
     }
 
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
-        $this->addBugzillaIdData($bugzilla_bug, $tuleap_changeset);
-        $this->addTitleData($bugzilla_bug, $tuleap_changeset);
+        $this->addScalarData($tuleap_changeset, 'bugzilla_id', 'int', (int) $bugzilla_bug->bug_id);
+        $this->addScalarData($tuleap_changeset, 'title', 'string', (string) $bugzilla_bug->short_desc);
         $this->addSelectBoxValue($tuleap_changeset, 'status', (string)$bugzilla_bug->bug_status);
         $this->addSelectBoxValue($tuleap_changeset, 'resolution', (string)$bugzilla_bug->resolution);
     }
 
-    private function addBugzillaIdData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
-        $field_change = $tuleap_changeset->addChild('field_change');
-        $field_change->addAttribute('field_name', 'bugzilla_id');
-        $field_change->addAttribute('type', 'int');
-        $field_change->addChild('value', (int) $bugzilla_bug->bug_id);
-    }
-
-    private function addTitleData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
-        $field_change = $tuleap_changeset->addChild('field_change');
-        $field_change->addAttribute('field_name', 'summary');
-        $field_change->addAttribute('type', 'string');
-        $field_change->addChild('value', (string) $bugzilla_bug->short_desc);
+    private function addScalarData(SimpleXMLElement $tuleap_changeset, $field_name, $type, $bugzilla_value) {
+        if ($bugzilla_value != "") {
+            $field_change = $tuleap_changeset->addChild('field_change');
+            $field_change->addAttribute('field_name', $field_name);
+            $field_change->addAttribute('type', $type);
+            $field_change->addChild('value', $bugzilla_value);
+        }
     }
 
     private function addSelectBoxValue(SimpleXMLElement $tuleap_changeset, $field_name, $bugzilla_value) {
