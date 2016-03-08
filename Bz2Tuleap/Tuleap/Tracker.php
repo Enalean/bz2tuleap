@@ -7,7 +7,7 @@ use SimpleXMLElement;
 class Tracker {
 
     private $users = array();
-    private $field_id_counter = 7;
+    private $field_id_counter = 0;
     private $fields_mapping = array();
     private $value_id_counter = 0;
     private $value_mapping = array();
@@ -15,6 +15,20 @@ class Tracker {
     public function convert(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tuleap_xml) {
         $trackers = $tuleap_xml->addChild('trackers');
         $this->addOneTracker($bugzilla_xml, $trackers);
+    }
+
+    private function getNewFieldId($name) {
+        $this->field_id_counter++;
+        $this->fields_mapping[$name] = $this->field_id_counter;
+        return $this->getFieldReference($name);
+    }
+
+    private function getFieldReference($name) {
+        return 'F'.$this->fields_mapping[$name];
+    }
+
+    private function getFieldId($name) {
+        return $this->fields_mapping[$name];
     }
 
     private function addOneTracker(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $trackers) {
@@ -54,12 +68,33 @@ class Tracker {
             'RESOLVED',
             'VERIFIED',
         ));
+        $this->addSelectBox($form_elements, 'resolution', "Resolution", array(
+            'FIXED',
+            'INVALID',
+            'WONTFIX',
+            'DUPLICATE',
+            'WORKSFORME',
+        ));
+    }
+
+    private function addPermissions(SimpleXMLElement $tracker) {
+        $permissions = $tracker->addChild('permissions');
+        $this->addPermissionOnTracker($permissions, 'PLUGIN_TRACKER_ACCESS_FULL', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->getFieldReference('bugzilla_id'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->getFieldReference('submitted_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->getFieldReference('submitted_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('title'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('status'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('resolution'));
     }
 
     private function addBugzillaId(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'int');
-        $field->addAttribute('ID', 'F1');
+        $field->addAttribute('ID', $this->getNewFieldId('bugzilla_id'));
         $field->addAttribute('rank', '0');
         $field->addChild('name', 'bugzilla_id');
         $field->addChild('label', 'Bugzilla Id');
@@ -69,7 +104,7 @@ class Tracker {
     private function addSubmittedBy(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'subby');
-        $field->addAttribute('ID', 'F2');
+        $field->addAttribute('ID', $this->getNewFieldId('submitted_by'));
         $field->addAttribute('rank', '1');
         $field->addChild('name', 'submitted_by');
         $field->addChild('label', 'Submitted by');
@@ -78,7 +113,7 @@ class Tracker {
     private function addSubmittedOn(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'subon');
-        $field->addAttribute('ID', 'F3');
+        $field->addAttribute('ID', $this->getNewFieldId('submitted_on'));
         $field->addAttribute('rank', '2');
         $field->addChild('name', 'submitted_on');
         $field->addChild('label', 'Submitted on');
@@ -87,7 +122,7 @@ class Tracker {
     private function addTitle(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'string');
-        $field->addAttribute('ID', 'F4');
+        $field->addAttribute('ID', $this->getNewFieldId('title'));
         $field->addAttribute('rank', '3');
         $field->addChild('name', 'summary');
         $field->addChild('label', 'Summary');
@@ -96,7 +131,7 @@ class Tracker {
     private function addLastUpdateBy(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'luby');
-        $field->addAttribute('ID', 'F5');
+        $field->addAttribute('ID', $this->getNewFieldId('last_update_by'));
         $field->addAttribute('rank', '5');
         $field->addChild('name', 'last_update_by');
         $field->addChild('label', 'Last update by');
@@ -105,18 +140,16 @@ class Tracker {
     private function addLastUpdateOn(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'lud');
-        $field->addAttribute('ID', 'F6');
+        $field->addAttribute('ID', $this->getNewFieldId('last_update_on'));
         $field->addAttribute('rank', '6');
         $field->addChild('name', 'last_update_on');
         $field->addChild('label', 'Last update on');
     }
 
     private function addSelectBox(SimpleXMLElement $form_elements, $name, $label, $values) {
-        $this->field_id_counter++;
-        $this->fields_mapping[$name] = $this->field_id_counter;
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'sb');
-        $field->addAttribute('ID', 'F'.$this->fields_mapping[$name]);
+        $field->addAttribute('ID', $this->getNewFieldId($name));
         $field->addAttribute('rank', $this->field_id_counter);
         $field->addChild('name', $name);
         $field->addChild('label', $label);
@@ -147,7 +180,7 @@ class Tracker {
         $title->addChild('label');
         $title->addChild('description');
         $field = $title->addChild('field');
-        $field->addAttribute('REF', 'F4');
+        $field->addAttribute('REF', $this->getFieldReference('title'));
     }
 
     private function addReports(SimpleXMLElement $tracker) {
@@ -164,33 +197,16 @@ class Tracker {
         $renderer->addAttribute('chunksz', '50');
         $renderer->addChild('name', 'Results');
         $columns = $renderer->addChild('columns');
-        $this->addColumnToTableRenderer($columns, 'F1');
-        $this->addColumnToTableRenderer($columns, 'F2');
-        $this->addColumnToTableRenderer($columns, 'F3');
-        $this->addColumnToTableRenderer($columns, 'F4');
-        $this->addColumnToTableRenderer($columns, 'F6');
+        $this->addColumnToTableRenderer($columns, $this->getFieldReference('bugzilla_id'));
+        $this->addColumnToTableRenderer($columns, $this->getFieldReference('title'));
+        $this->addColumnToTableRenderer($columns, $this->getFieldReference('submitted_by'));
+        $this->addColumnToTableRenderer($columns, $this->getFieldReference('submitted_on'));
+        $this->addColumnToTableRenderer($columns, $this->getFieldReference('last_update_by'));
     }
 
     private function addColumnToTableRenderer(SimpleXMLElement $columns, $name) {
         $field = $columns->addChild('field');
         $field->addAttribute('REF', $name);
-    }
-
-    private function addPermissions(SimpleXMLElement $tracker) {
-        $permissions = $tracker->addChild('permissions');
-        $this->addPermissionOnTracker($permissions, 'PLUGIN_TRACKER_ACCESS_FULL', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, 'F1', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, 'F2', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, 'F3', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, 'F5', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, 'F6', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-
-        $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_REGISTERED');
-        $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_UPDATE', 'UGROUP_REGISTERED');
-
-        $this->addDefaultPermissions($permissions, 'F4');
-        $this->addDefaultPermissions($permissions, 'F'.$this->fields_mapping['status']);
     }
 
     private function addDefaultPermissions(SimpleXMLElement $permissions, $field_id) {
@@ -268,7 +284,8 @@ class Tracker {
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
         $this->addBugzillaIdData($bugzilla_bug, $tuleap_changeset);
         $this->addTitleData($bugzilla_bug, $tuleap_changeset);
-        $this->addStatusData($bugzilla_bug, $tuleap_changeset);
+        $this->addSelectBoxValue($tuleap_changeset, 'status', (string)$bugzilla_bug->bug_status);
+        $this->addSelectBoxValue($tuleap_changeset, 'resolution', (string)$bugzilla_bug->resolution);
     }
 
     private function addBugzillaIdData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
@@ -285,17 +302,15 @@ class Tracker {
         $field_change->addChild('value', (string) $bugzilla_bug->short_desc);
     }
 
-    private function addStatusData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
-        $this->addSelectBoxValue($tuleap_changeset, 'status', $this->value_mapping[(string)$bugzilla_bug->bug_status]);
-    }
-
-    private function addSelectBoxValue(SimpleXMLElement $tuleap_changeset, $field_name, $value_id) {
-        $field_change = $tuleap_changeset->addChild('field_change');
-        $field_change->addAttribute('field_name', $field_name);
-        $field_change->addAttribute('type', 'list');
-        $field_change->addAttribute('bind', 'static');
-        $value = $field_change->addChild('value', $value_id);
-        $value->addAttribute('format', 'id');
+    private function addSelectBoxValue(SimpleXMLElement $tuleap_changeset, $field_name, $bugzilla_value) {
+        if ($bugzilla_value != "") {
+            $field_change = $tuleap_changeset->addChild('field_change');
+            $field_change->addAttribute('field_name', $field_name);
+            $field_change->addAttribute('type', 'list');
+            $field_change->addAttribute('bind', 'static');
+            $value = $field_change->addChild('value', $this->value_mapping[$bugzilla_value]);
+            $value->addAttribute('format', 'id');
+        }
     }
 
     private function addUser(SimpleXMLElement $bugzilla_user_node) {
