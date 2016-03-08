@@ -7,6 +7,10 @@ use SimpleXMLElement;
 class Tracker {
 
     private $users = array();
+    private $field_id_counter = 7;
+    private $fields_mapping = array();
+    private $value_id_counter = 0;
+    private $value_mapping = array();
 
     public function convert(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tuleap_xml) {
         $trackers = $tuleap_xml->addChild('trackers');
@@ -42,6 +46,14 @@ class Tracker {
         $this->addTitle($form_elements);
         $this->addLastUpdateBy($form_elements);
         $this->addLastUpdateOn($form_elements);
+        $this->addSelectBox($form_elements, 'status', "Status", array(
+            'NEW',
+            'UNCONFIRMED',
+            'CONFIRMED',
+            'IN_PROGRESS',
+            'RESOLVED',
+            'VERIFIED',
+        ));
     }
 
     private function addBugzillaId(SimpleXMLElement $form_elements) {
@@ -99,6 +111,34 @@ class Tracker {
         $field->addChild('label', 'Last update on');
     }
 
+    private function addSelectBox(SimpleXMLElement $form_elements, $name, $label, $values) {
+        $this->field_id_counter++;
+        $this->fields_mapping[$name] = $this->field_id_counter;
+        $field = $form_elements->addChild('formElement');
+        $field->addAttribute('type', 'sb');
+        $field->addAttribute('ID', 'F'.$this->fields_mapping[$name]);
+        $field->addAttribute('rank', $this->field_id_counter);
+        $field->addChild('name', $name);
+        $field->addChild('label', $label);
+
+        $bind = $field->addChild('bind');
+        $bind->addAttribute('type', 'static');
+        $bind->addAttribute('is_rank_alpha', '0');
+        $items = $bind->addChild('items');
+        foreach ($values as $value) {
+            $this->addBindItem($items, $value);
+        }
+    }
+
+    private function addBindItem(SimpleXMLElement $items, $label) {
+        $this->value_id_counter++;
+        $this->value_mapping[$label] = $this->value_id_counter;
+        $item = $items->addChild('item');
+        $item->addAttribute('ID', 'V'.$this->value_id_counter);
+        $item->addAttribute('label', $label);
+        $item->addAttribute('is_hidden', 0);
+    }
+
     private function addSemantics(SimpleXMLElement $tracker) {
         $semantics = $tracker->addChild('semantics');
         $title = $semantics->addChild('semantic');
@@ -148,6 +188,15 @@ class Tracker {
         $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_REGISTERED');
         $this->addPermissionOnField($permissions, 'F4', 'PLUGIN_TRACKER_FIELD_UPDATE', 'UGROUP_REGISTERED');
+
+        $this->addDefaultPermissions($permissions, 'F4');
+        $this->addDefaultPermissions($permissions, 'F'.$this->fields_mapping['status']);
+    }
+
+    private function addDefaultPermissions(SimpleXMLElement $permissions, $field_id) {
+        $this->addPermissionOnField($permissions, $field_id, 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $field_id, 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_REGISTERED');
+        $this->addPermissionOnField($permissions, $field_id, 'PLUGIN_TRACKER_FIELD_UPDATE', 'UGROUP_REGISTERED');
     }
 
     private function addPermissionOnTracker(SimpleXMLElement $permissions, $type, $ugroup) {
@@ -219,6 +268,7 @@ class Tracker {
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
         $this->addBugzillaIdData($bugzilla_bug, $tuleap_changeset);
         $this->addTitleData($bugzilla_bug, $tuleap_changeset);
+        $this->addStatusData($bugzilla_bug, $tuleap_changeset);
     }
 
     private function addBugzillaIdData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
@@ -233,6 +283,19 @@ class Tracker {
         $field_change->addAttribute('field_name', 'summary');
         $field_change->addAttribute('type', 'string');
         $field_change->addChild('value', (string) $bugzilla_bug->short_desc);
+    }
+
+    private function addStatusData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
+        $this->addSelectBoxValue($tuleap_changeset, 'status', $this->value_mapping[(string)$bugzilla_bug->bug_status]);
+    }
+
+    private function addSelectBoxValue(SimpleXMLElement $tuleap_changeset, $field_name, $value_id) {
+        $field_change = $tuleap_changeset->addChild('field_change');
+        $field_change->addAttribute('field_name', $field_name);
+        $field_change->addAttribute('type', 'list');
+        $field_change->addAttribute('bind', 'static');
+        $value = $field_change->addChild('value', $value_id);
+        $value->addAttribute('format', 'id');
     }
 
     private function addUser(SimpleXMLElement $bugzilla_user_node) {
