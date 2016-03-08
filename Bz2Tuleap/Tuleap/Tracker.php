@@ -55,17 +55,18 @@ class Tracker {
 
     private function addFields(SimpleXMLElement $form_elements) {
         $c1 = $this->addStructureField($form_elements, 'column', 'C1', 'C1', 0);
-        $this->addSubmittedBy($c1);
-        $this->addSubmittedOn($c1);
+        $this->addSimpleField($c1, 'subby', 'submitted_by', 'Submitted by', 0);
+        $this->addSimpleField($c1, 'subon', 'submitted_on', 'Submitted on', 1);
+
         $c2 = $this->addStructureField($form_elements, 'column', 'C2', 'C2', 1);
-        $this->addLastUpdateBy($c2);
-        $this->addLastUpdateOn($c2);
+        $this->addSimpleField($c2, 'luby', 'last_update_by', 'Last update by', 0);
+        $this->addSimpleField($c2, 'lud', 'last_update_on', 'Last update on', 1);
 
         $field_set_details = $this->addStructureField($form_elements, 'fieldset', 'details', 'Details', 3);
         $c5 = $this->addStructureField($field_set_details, 'column', 'C5', 'C5', 4);
-        $this->addTitle($c5);
+        $this->addSimpleField($c5, 'string', 'summary', 'Summary', 1);
         $c6 = $this->addStructureField($field_set_details, 'column', 'C6', 'C6', 5);
-        $this->addBugzillaId($c6);
+        $this->addSimpleField($c6, 'int', 'bugzilla_id', 'Bugzilla id', 1);
 
         $this->addSimpleField($field_set_details, 'linebreak', 'br', 'br', 6);
 
@@ -134,57 +135,6 @@ class Tracker {
         $field->addChild('name', $name);
         $field->addChild('label', $label);
         return $field;
-    }
-
-    private function addBugzillaId(SimpleXMLElement $form_elements) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'int');
-        $field->addAttribute('ID', $this->getNewFieldId('bugzilla_id'));
-        $field->addAttribute('rank', '0');
-        $field->addChild('name', 'bugzilla_id');
-        $field->addChild('label', 'Bugzilla Id');
-    }
-
-    private function addSubmittedBy(SimpleXMLElement $form_elements) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'subby');
-        $field->addAttribute('ID', $this->getNewFieldId('submitted_by'));
-        $field->addAttribute('rank', '1');
-        $field->addChild('name', 'submitted_by');
-        $field->addChild('label', 'Submitted by');
-    }
-
-    private function addSubmittedOn(SimpleXMLElement $form_elements) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'subon');
-        $field->addAttribute('ID', $this->getNewFieldId('submitted_on'));
-        $field->addAttribute('rank', '2');
-        $field->addChild('name', 'submitted_on');
-        $field->addChild('label', 'Submitted on');
-    }
-
-    private function addTitle(SimpleXMLElement $form_elements) {
-        $field = $this->addSimpleField($form_elements, 'string', 'summary', 'Summary', 3);
-        $properties = $field->addChild('properties');
-        $properties->addAttribute('size', 60);
-    }
-
-    private function addLastUpdateBy(SimpleXMLElement $form_elements) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'luby');
-        $field->addAttribute('ID', $this->getNewFieldId('last_update_by'));
-        $field->addAttribute('rank', '5');
-        $field->addChild('name', 'last_update_by');
-        $field->addChild('label', 'Last update by');
-    }
-
-    private function addLastUpdateOn(SimpleXMLElement $form_elements) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'lud');
-        $field->addAttribute('ID', $this->getNewFieldId('last_update_on'));
-        $field->addAttribute('rank', '6');
-        $field->addChild('name', 'last_update_on');
-        $field->addChild('label', 'Last update on');
     }
 
     private function addSelectBox(SimpleXMLElement $form_elements, $name, $label, $values) {
