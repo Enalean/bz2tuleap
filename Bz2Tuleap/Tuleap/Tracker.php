@@ -75,6 +75,22 @@ class Tracker {
             'DUPLICATE',
             'WORKSFORME',
         ));
+        $this->addSelectBox($form_elements, 'severity', "Severity", array(
+            'blocker',
+            'critical',
+            'major',
+            'normal',
+            'minor',
+            'trivial',
+            'enhancement',
+        ));
+        $this->addSelectBox($form_elements, 'priority', "Priority", array(
+            'P1',
+            'P2',
+            'P3',
+            'P4',
+            'P5',
+        ));
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
@@ -86,9 +102,11 @@ class Tracker {
         $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
         $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
 
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('title'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('summary'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('status'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('resolution'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('severity'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('priority'));
     }
 
     private function addBugzillaId(SimpleXMLElement $form_elements) {
@@ -99,7 +117,6 @@ class Tracker {
         $field->addChild('name', 'bugzilla_id');
         $field->addChild('label', 'Bugzilla Id');
     }
-
 
     private function addSubmittedBy(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
@@ -122,7 +139,7 @@ class Tracker {
     private function addTitle(SimpleXMLElement $form_elements) {
         $field = $form_elements->addChild('formElement');
         $field->addAttribute('type', 'string');
-        $field->addAttribute('ID', $this->getNewFieldId('title'));
+        $field->addAttribute('ID', $this->getNewFieldId('summary'));
         $field->addAttribute('rank', '3');
         $field->addChild('name', 'summary');
         $field->addChild('label', 'Summary');
@@ -180,7 +197,7 @@ class Tracker {
         $title->addChild('label');
         $title->addChild('description');
         $field = $title->addChild('field');
-        $field->addAttribute('REF', $this->getFieldReference('title'));
+        $field->addAttribute('REF', $this->getFieldReference('summary'));
     }
 
     private function addReports(SimpleXMLElement $tracker) {
@@ -198,7 +215,7 @@ class Tracker {
         $renderer->addChild('name', 'Results');
         $columns = $renderer->addChild('columns');
         $this->addColumnToTableRenderer($columns, $this->getFieldReference('bugzilla_id'));
-        $this->addColumnToTableRenderer($columns, $this->getFieldReference('title'));
+        $this->addColumnToTableRenderer($columns, $this->getFieldReference('summary'));
         $this->addColumnToTableRenderer($columns, $this->getFieldReference('submitted_by'));
         $this->addColumnToTableRenderer($columns, $this->getFieldReference('submitted_on'));
         $this->addColumnToTableRenderer($columns, $this->getFieldReference('last_update_by'));
@@ -283,9 +300,11 @@ class Tracker {
 
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
         $this->addScalarData($tuleap_changeset, 'bugzilla_id', 'int', (int) $bugzilla_bug->bug_id);
-        $this->addScalarData($tuleap_changeset, 'title', 'string', (string) $bugzilla_bug->short_desc);
+        $this->addScalarData($tuleap_changeset, 'summary', 'string', (string) $bugzilla_bug->short_desc);
         $this->addSelectBoxValue($tuleap_changeset, 'status', (string)$bugzilla_bug->bug_status);
         $this->addSelectBoxValue($tuleap_changeset, 'resolution', (string)$bugzilla_bug->resolution);
+        $this->addSelectBoxValue($tuleap_changeset, 'severity', (string)$bugzilla_bug->bug_severity);
+        $this->addSelectBoxValue($tuleap_changeset, 'priority', (string)$bugzilla_bug->priority);
     }
 
     private function addScalarData(SimpleXMLElement $tuleap_changeset, $field_name, $type, $bugzilla_value) {
