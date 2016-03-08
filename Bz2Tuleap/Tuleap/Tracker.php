@@ -62,10 +62,14 @@ class Tracker {
         $this->addLastUpdateOn($c2);
 
         $field_set_details = $this->addStructureField($form_elements, 'fieldset', 'details', 'Details', 3);
-        $this->addTitle($field_set_details);
-        $this->addBugzillaId($field_set_details);
+        $c5 = $this->addStructureField($field_set_details, 'column', 'C5', 'C5', 4);
+        $this->addTitle($c5);
+        $c6 = $this->addStructureField($field_set_details, 'column', 'C6', 'C6', 5);
+        $this->addBugzillaId($c6);
 
-        $c3 = $this->addStructureField($field_set_details, 'column', 'C3', 'C3', 4);
+        $this->addSimpleField($field_set_details, 'linebreak', 'br', 'br', 6);
+
+        $c3 = $this->addStructureField($field_set_details, 'column', 'C3', 'C3', 7);
         $this->addSelectBox($c3, 'status', "Status", array(
             'NEW',
             'UNCONFIRMED',
@@ -82,7 +86,7 @@ class Tracker {
             'WORKSFORME',
         ));
 
-        $c4 = $this->addStructureField($field_set_details, 'column', 'C4', 'C4', 5);
+        $c4 = $this->addStructureField($field_set_details, 'column', 'C4', 'C4', 8);
         $this->addSelectBox($c4, 'severity', "Severity", array(
             'blocker',
             'critical',
@@ -160,12 +164,9 @@ class Tracker {
     }
 
     private function addTitle(SimpleXMLElement $form_elements) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'string');
-        $field->addAttribute('ID', $this->getNewFieldId('summary'));
-        $field->addAttribute('rank', '3');
-        $field->addChild('name', 'summary');
-        $field->addChild('label', 'Summary');
+        $field = $this->addSimpleField($form_elements, 'string', 'summary', 'Summary', 3);
+        $properties = $field->addChild('properties');
+        $properties->addAttribute('size', 60);
     }
 
     private function addLastUpdateBy(SimpleXMLElement $form_elements) {
