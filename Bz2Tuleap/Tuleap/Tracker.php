@@ -254,8 +254,8 @@ class Tracker {
     }
 
     private function addSubmittedInfo(SimpleXMLElement $tuleap_node, SimpleXMLElement $who_node, SimpleXMLElement $when_node) {
-        $this->addUser($who_node);
-        $submitted_by = $tuleap_node->addChild('submitted_by', $who_node);
+        $username = $this->addUser($who_node);
+        $submitted_by = $tuleap_node->addChild('submitted_by', $username);
         $submitted_by->addAttribute('format', 'username');
         $submitted_on = $tuleap_node->addChild('submitted_on', (string) $when_node);
         $submitted_on->addAttribute('format', 'ISO8601');
@@ -302,13 +302,24 @@ class Tracker {
     }
 
     private function addUser(SimpleXMLElement $bugzilla_user_node) {
-        $user_name = (string) $bugzilla_user_node;
-        if (! isset($this->users[$user_name])) {
-            $this->users[$user_name] = array(
+        $email = (string) $bugzilla_user_node;
+
+        $at_place = strpos($email, '@');
+        if ($at_place !== false) {
+            $username = substr($email, 0, $at_place);
+        } else {
+            $username = $email;
+        }
+
+        if (! isset($this->users[$username])) {
+            $this->users[$username] = array(
                 'realname' => $bugzilla_user_node['name'],
             );
         }
+        return $username;
     }
+
+
 
     public function getUsers() {
         return $this->users;
