@@ -15,11 +15,12 @@ class StructureField  {
         $this->children = $childen;
     }
 
-    public function toXml(SimpleXMLElement $parent) {
-        $xml = $this->field->toXml($parent);
+    public function toXml(SimpleXMLElement $parent, $rank) {
+        $xml = $this->field->toXml($parent, $rank);
         $form_elements = $xml->addChild('formElements');
+        $sub_rank = 0;
         foreach($this->children as $child) {
-            $child->toXml($form_elements);
+            $child->toXml($form_elements, $sub_rank++);
         }
     }
 }

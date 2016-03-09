@@ -58,25 +58,25 @@ class Tracker {
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
-        $c1 = $this->addStructureField('column', 'C1', 'C1', 0, array(
-            $this->addSimpleField('subby', 'submitted_by', 'Submitted by', 0),
-            $this->addSimpleField('subon', 'submitted_on', 'Submitted on', 1),
+        $c1 = $this->addStructureField('column', 'C1', 'C1', array(
+            $this->addSimpleField('subby', 'submitted_by', 'Submitted by'),
+            $this->addSimpleField('subon', 'submitted_on', 'Submitted on'),
         ));
 
-        $c2 = $this->addStructureField('column', 'C2', 'C2', 1, array(
-            $this->addSimpleField('luby', 'last_update_by', 'Last update by', 0),
-            $this->addSimpleField('lud', 'last_update_on', 'Last update on', 1),
+        $c2 = $this->addStructureField('column', 'C2', 'C2', array(
+            $this->addSimpleField('luby', 'last_update_by', 'Last update by'),
+            $this->addSimpleField('lud', 'last_update_on', 'Last update on'),
         ));
 
-        $field_set_details = $this->addStructureField('fieldset', 'details', 'Details', 3, array(
-            $this->addStructureField('column', 'C5', 'C5', 4, array(
-                $this->addSimpleField('string', 'summary', 'Summary', 1)
+        $field_set_details = $this->addStructureField('fieldset', 'details', 'Details', array(
+            $this->addStructureField('column', 'C5', 'C5', array(
+                $this->addSimpleField('string', 'summary', 'Summary')
             )),
-            $this->addStructureField('column', 'C6', 'C6', 5, array(
-                $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id', 1)
+            $this->addStructureField('column', 'C6', 'C6', array(
+                $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id')
             )),
-            $this->addSimpleField('text', 'description', 'Description', 6),
-            $this->addStructureField('column', 'C3', 'C3', 7, array(
+            $this->addSimpleField('text', 'description', 'Description'),
+            $this->addStructureField('column', 'C3', 'C3', array(
                 $this->addSelectBox('status', "Status", array(
                     'NEW',
                     'UNCONFIRMED',
@@ -93,7 +93,7 @@ class Tracker {
                     'WORKSFORME',
                 )),
             )),
-            $this->addStructureField('column', 'C4', 'C4', 8, array(
+            $this->addStructureField('column', 'C4', 'C4', array(
                 $this->addSelectBox('severity', "Severity", array(
                     'blocker',
                     'critical',
@@ -111,14 +111,15 @@ class Tracker {
                     'P5',
                 )),
             )),
-            $this->addStructureField('fieldset', 'links', 'Links', 4, array(
-                $this->addSimpleField('art_link', 'links', 'Links', 0)
+            $this->addStructureField('fieldset', 'links', 'Links', array(
+                $this->addSimpleField('art_link', 'links', 'Links')
             )),
         ));
 
-        $c1->toXml($form_elements);
-        $c2->toXml($form_elements);
-        $field_set_details->toXml($form_elements);
+        $rank = 0;
+        $c1->toXml($form_elements, $rank++);
+        $c2->toXml($form_elements, $rank++);
+        $field_set_details->toXml($form_elements, $rank++);
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
@@ -139,15 +140,15 @@ class Tracker {
         $this->addDefaultPermissions($permissions, $this->getFieldReference('links'));
     }
 
-    private function addStructureField($type, $name, $label, $rank, array $children) {
+    private function addStructureField($type, $name, $label, array $children) {
         return new StructureField(
-            $this->addSimpleField($type, $name, $label, $rank),
+            $this->addSimpleField($type, $name, $label),
             $children
         );
     }
 
-    private function addSimpleField($type, $name, $label, $rank) {
-        return new Field($this->getNewFieldId($name), $type, $name, $label, $rank);
+    private function addSimpleField($type, $name, $label) {
+        return new Field($this->getNewFieldId($name), $type, $name, $label);
     }
 
     private function addSelectBox($name, $label, $values) {

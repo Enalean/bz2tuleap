@@ -19,8 +19,8 @@ class SelectBoxField  {
         $this->mapper = $mapper;
     }
 
-    public function toXml(SimpleXMLElement $parent) {
-        $xml = $this->field->toXml($parent);
+    public function toXml(SimpleXMLElement $parent, $rank) {
+        $xml = $this->field->toXml($parent, $rank);
         $bind = $xml->addChild('bind');
         $bind->addAttribute('type', 'static');
         $bind->addAttribute('is_rank_alpha', '0');
