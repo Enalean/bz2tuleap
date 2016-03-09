@@ -8,6 +8,7 @@ spl_autoload_register(
         if ($classes === null) {
             $classes = array(
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
+                'bz2tuleap\\tuleap\\column' => '/Bz2Tuleap/Tuleap/Column.php',
                 'bz2tuleap\\tuleap\\field' => '/Bz2Tuleap/Tuleap/Field.php',
                 'bz2tuleap\\tuleap\\idmapper' => '/Bz2Tuleap/Tuleap/IdMapper.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',

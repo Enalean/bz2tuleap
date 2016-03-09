@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class StructureField  {
+class Column  {
 
     /**
      * @var IdMapper
@@ -14,9 +14,9 @@ class StructureField  {
 
     private $children = array();
 
-    public function __construct(IdMapper $mapper, $type, array $childen) {
+    public function __construct(IdMapper $mapper, array $childen) {
         $this->children = $childen;
-        $this->type     = $type;
+        $this->type     = 'column';
         $this->mapper   = $mapper;
     }
 

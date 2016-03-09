@@ -43,25 +43,25 @@ class Tracker {
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
-        $c1 = $this->addStructureField('column', 'C1', 'C1', array(
+        $c1 = new Column($this->field_mapper, array(
             $this->addSimpleField('subby', 'submitted_by', 'Submitted by'),
             $this->addSimpleField('subon', 'submitted_on', 'Submitted on'),
         ));
 
-        $c2 = $this->addStructureField('column', 'C2', 'C2', array(
+        $c2 = new Column($this->field_mapper, array(
             $this->addSimpleField('luby', 'last_update_by', 'Last update by'),
             $this->addSimpleField('lud', 'last_update_on', 'Last update on'),
         ));
 
-        $field_set_details = $this->addStructureField('fieldset', 'details', 'Details', array(
-            $this->addStructureField('column', 'C5', 'C5', array(
+        $field_set_details = new StructureField($this->field_mapper, 'fieldset', array(
+            new Column($this->field_mapper, array(
                 $this->addSimpleField('string', 'summary', 'Summary')
             )),
-            $this->addStructureField('column', 'C6', 'C6', array(
+            new Column($this->field_mapper, array(
                 $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id')
             )),
             $this->addSimpleField('text', 'description', 'Description'),
-            $this->addStructureField('column', 'C3', 'C3', array(
+            new Column($this->field_mapper, array(
                 $this->addSelectBox('status', "Status", array(
                     'NEW',
                     'UNCONFIRMED',
@@ -78,7 +78,7 @@ class Tracker {
                     'WORKSFORME',
                 )),
             )),
-            $this->addStructureField('column', 'C4', 'C4', array(
+            new Column($this->field_mapper, array(
                 $this->addSelectBox('severity', "Severity", array(
                     'blocker',
                     'critical',
@@ -96,15 +96,17 @@ class Tracker {
                     'P5',
                 )),
             )),
-            $this->addStructureField('fieldset', 'links', 'Links', array(
-                $this->addSimpleField('art_link', 'links', 'Links')
-            )),
+        ));
+
+        $fieldset_links = new StructureField($this->field_mapper, 'fieldset', array(
+            $this->addSimpleField('art_link', 'links', 'Links'),
         ));
 
         $rank = 0;
         $c1->toXml($form_elements, $rank++);
         $c2->toXml($form_elements, $rank++);
         $field_set_details->toXml($form_elements, $rank++);
+        $fieldset_links->toXml($form_elements, $rank++);
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
@@ -123,13 +125,6 @@ class Tracker {
         $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('severity'));
         $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('priority'));
         $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('links'));
-    }
-
-    private function addStructureField($type, $name, $label, array $children) {
-        return new StructureField(
-            $this->addSimpleField($type, $name, $label),
-            $children
-        );
     }
 
     private function addSimpleField($type, $name, $label) {
