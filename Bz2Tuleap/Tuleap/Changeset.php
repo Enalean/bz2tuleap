@@ -34,4 +34,10 @@ class Changeset {
         $submitted_on = $node->addChild('submitted_on', $when);
         $submitted_on->addAttribute('format', 'ISO8601');
     }
+
+    public function cleanUp(array $artifacts) {
+        $this->field_changes = array_filter($this->field_changes, function ($change) use ($artifacts) {
+            return $change->isValid($artifacts);
+        });
+    }
 }

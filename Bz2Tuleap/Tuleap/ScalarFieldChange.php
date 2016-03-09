@@ -4,23 +4,35 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class ListFieldChange {
+class ScalarFieldChange {
 
     private $value;
     private $type;
     private $name;
 
-    public function __construct($name, $value) {
+    public function __construct($name, $type, $value) {
         $this->name  = $name;
+        $this->type  = $type;
         $this->value = $value;
     }
 
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);
-        $field_change->addAttribute('type', 'list');
-        $field_change->addAttribute('bind', 'static');
-        $value = $field_change->addChild('value', $this->value);
-        $value->addAttribute('format', 'id');
+        $field_change->addAttribute('type', $this->type);
+        $field_change->addChild('value', $this->value);
+    }
+
+    public function isValid(array $artifacts) {
+        if ($this->type == 'art_link') {
+            foreach ($artifacts as $artifact) {
+                if ($artifact->getId() == $this->value) {
+                    return true;
+                }
+            }
+            return false;
+        } else {
+            return $this->value != '';
+        }
     }
 }

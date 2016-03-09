@@ -28,8 +28,9 @@ class Tracker {
         $tracker->addAttribute('parent_id', '0');
         $tracker->addAttribute('instantiate_for_new_projects', '1');
         $this->addTrackerMetadata($tracker);
-        foreach ($this->getArtifacts($bugzilla_xml, $tracker) as $artifact) {
-            $artifact->toXml($tracker);
+        $artifacts = $tracker->addChild('artifacts');
+        foreach ($this->getArtifacts($bugzilla_xml) as $artifact) {
+            $artifact->toXml($artifacts);
         }
     }
 
@@ -161,6 +162,14 @@ class Tracker {
     }
 
     private function getArtifacts(SimpleXMLElement $bugzilla_xml) {
+        $artifacts = $this->getArtifactsFromBugzilla($bugzilla_xml);
+        array_walk($artifacts, function ($artifact) use ($artifacts) {
+            return $artifact->cleanUp($artifacts);
+        });
+        return $artifacts;
+    }
+
+    private function getArtifactsFromBugzilla(SimpleXMLElement $bugzilla_xml) {
         $artifacts = array();
         foreach($bugzilla_xml as $bugzilla_bug) {
             $artifacts[] = new Artifact(
@@ -205,13 +214,11 @@ class Tracker {
         return array_filter(array(
             $this->getScalarData('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
             $this->getScalarData('summary', 'string', (string) $bugzilla_bug->short_desc),
-            // cannot add a link to a non existing target
-            //$this->addScalarData($tuleap_changeset, 'links', 'art_link', (string) $bugzilla_bug->dependson);
+            $this->getScalarData('links', 'art_link', (string) $bugzilla_bug->dependson),
             $this->getSelectBoxValue('status', (string)$bugzilla_bug->bug_status),
             $this->getSelectBoxValue('resolution', (string)$bugzilla_bug->resolution),
             $this->getSelectBoxValue('severity', (string)$bugzilla_bug->bug_severity),
             $this->getSelectBoxValue('priority', (string)$bugzilla_bug->priority),
-
             $this->getScalarData('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
         ));
     }
