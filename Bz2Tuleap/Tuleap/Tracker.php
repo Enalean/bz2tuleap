@@ -9,10 +9,12 @@ class Tracker {
     private $users = array();
     private $value_mapper;
     private $field_mapper;
+    private $user_mapper;
 
     public function __construct() {
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
+        $this->user_mapper  = new UserMapper();
     }
 
     public function convert(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tuleap_xml) {
@@ -157,57 +159,42 @@ class Tracker {
     }
 
     private function addArtifacts(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tracker) {
-        $tuleap_artifacts = $tracker->addChild('artifacts');
         foreach($bugzilla_xml as $bugzilla_bug) {
-            $tuleap_artifact = $tuleap_artifacts->addChild('artifact');
-            $this->addArtifact($bugzilla_bug, $tuleap_artifact);
+            $artifact = new Artifact(
+                (int) $bugzilla_bug->bug_id,
+                $this->getChangesets($bugzilla_bug)
+            );
+            $artifact->toXml($tracker);
         }
     }
 
-    private function addArtifact(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
-        $tuleap_artifact->addAttribute('id', (int) $bugzilla_bug->bug_id);
-        $this->addChangesets($bugzilla_bug, $tuleap_artifact);
+    private function getChangesets(SimpleXMLElement $bugzilla_bug) {
+        $changeset = array($this->getInitialChangeset($bugzilla_bug));
+        return array_merge($changeset, $this->getChangesetComments($bugzilla_bug));
     }
 
-    private function addChangesets(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
-        $this->addInitialChangeset($bugzilla_bug, $tuleap_artifact);
-        $this->addComments($bugzilla_bug, $tuleap_artifact);
+    private function getInitialChangeset(SimpleXMLElement $bugzilla_bug) {
+        return new Changeset(
+            (string)$bugzilla_bug->creation_ts,
+            (string)$this->user_mapper->getUser($bugzilla_bug->reporter),
+            ''
+        );
+        // field changes
     }
 
-    private function addInitialChangeset(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
-        $changeset = $this->createChangeset($tuleap_artifact, $bugzilla_bug->reporter, $bugzilla_bug->creation_ts);
-        $changeset->addChild('comments');
-        $this->addFieldsData($bugzilla_bug, $changeset);
-    }
-
-    private function createChangeset(SimpleXMLElement $tuleap_artifact, SimpleXMLElement $who_node, SimpleXMLElement $when_node) {
-        $changeset = $tuleap_artifact->addChild('changeset');
-
-        $this->addSubmittedInfo($changeset, $who_node, $when_node);
-
-        return $changeset;
-    }
-
-    private function addSubmittedInfo(SimpleXMLElement $tuleap_node, SimpleXMLElement $who_node, SimpleXMLElement $when_node) {
-        $username = $this->addUser($who_node);
-        $submitted_by = $tuleap_node->addChild('submitted_by', $username);
-        $submitted_by->addAttribute('format', 'username');
-        $submitted_on = $tuleap_node->addChild('submitted_on', (string) $when_node);
-        $submitted_on->addAttribute('format', 'ISO8601');
-    }
-
-    private function addComments(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
+    private function getChangesetComments(SimpleXMLElement $bugzilla_bug) {
+        $changesets = array();
         foreach($bugzilla_bug->long_desc as $long_desc) {
             if ((int)$long_desc->comment_count === 0) {
                 continue;
             }
-            $changeset = $this->createChangeset($tuleap_artifact, $long_desc->who, $long_desc->bug_when);
-            $comments = $changeset->addChild('comments');
-            $comment = $comments->addChild('comment');
-            $this->addSubmittedInfo($comment, $long_desc->who, $long_desc->bug_when);
-            $body = $this->addChildWithCDataValue($comment, 'body', (string) $long_desc->thetext);
-            $body->addAttribute('format', 'text');
+            $changesets[] = new Changeset(
+                (string)$long_desc->bug_when,
+                $this->user_mapper->getUser($long_desc->who),
+                (string) $long_desc->thetext
+            );
         }
+        return $changesets;
     }
 
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
@@ -244,37 +231,7 @@ class Tracker {
         }
     }
 
-    private function addUser(SimpleXMLElement $bugzilla_user_node) {
-        $email = (string) $bugzilla_user_node;
-
-        $at_place = strpos($email, '@');
-        if ($at_place !== false) {
-            $username = substr($email, 0, $at_place);
-        } else {
-            $username = $email;
-        }
-
-        if (! isset($this->users[$username])) {
-            $this->users[$username] = array(
-                'realname' => $bugzilla_user_node['name'],
-            );
-        }
-        return $username;
-    }
-
-
-
     public function getUsers() {
-        return $this->users;
-    }
-
-    private function addChildWithCDataValue(SimpleXMLElement $parent_node, $node_name, $node_value) {
-        $node     = $parent_node->addChild($node_name);
-        $dom_node = dom_import_simplexml($node);
-        $document = $dom_node->ownerDocument;
-        $value    = SupportedXmlCharEncoding::getXMLCompatibleString($node_value);
-        $cdata    = $document->createCDATASection($value);
-        $dom_node->appendChild($cdata);
-        return $node;
+        return $this->user_mapper->getUsers();
     }
 }
