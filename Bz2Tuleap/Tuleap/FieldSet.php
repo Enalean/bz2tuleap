@@ -24,12 +24,10 @@ class FieldSet  {
     }
 
     public function toXml(SimpleXMLElement $parent, $rank) {
-        $field = new Field($this->mapper, $this->type, 'struct'.$rank, $this->label);
-        $xml = $field->toXml($parent, $rank);
-        $form_elements = $xml->addChild('formElements');
-        $sub_rank = 0;
-        foreach($this->children as $child) {
-            $child->toXml($form_elements, $sub_rank++);
-        }
+        $field = new StructureField(
+            new Field($this->mapper, $this->type, 'struct'.$rank, $this->label),
+            $this->children
+        );
+        $field->toXml($parent, $rank);
     }
 }

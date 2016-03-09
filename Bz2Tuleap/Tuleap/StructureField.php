@@ -6,23 +6,16 @@ use SimpleXMLElement;
 
 class StructureField  {
 
-    /**
-     * @var IdMapper
-     */
-    private $mapper;
-    private $type;
+    private $children;
+    private $field;
 
-    private $children = array();
-
-    public function __construct(IdMapper $mapper, $type, array $childen) {
-        $this->children = $childen;
-        $this->type     = $type;
-        $this->mapper   = $mapper;
+    public function __construct($field, $children) {
+        $this->field    = $field;
+        $this->children = $children;
     }
 
     public function toXml(SimpleXMLElement $parent, $rank) {
-        $field = new Field($this->mapper, $this->type, 'struct'.$rank, 'struct'.$rank);
-        $xml = $field->toXml($parent, $rank);
+        $xml = $this->field->toXml($parent, $rank);
         $form_elements = $xml->addChild('formElements');
         $sub_rank = 0;
         foreach($this->children as $child) {
