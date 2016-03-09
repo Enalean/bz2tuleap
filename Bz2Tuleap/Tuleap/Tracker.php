@@ -44,25 +44,25 @@ class Tracker {
     private function addFields(SimpleXMLElement $tracker) {
         $form_elements = new FormElements(array(
             new Column($this->field_mapper, array(
-                $this->addSimpleField('subby', 'submitted_by', 'Submitted by'),
-                $this->addSimpleField('subon', 'submitted_on', 'Submitted on'),
+                new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by'),
+                new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on'),
             )),
 
             new Column($this->field_mapper, array(
-                $this->addSimpleField('luby', 'last_update_by', 'Last update by'),
-                $this->addSimpleField('lud', 'last_update_on', 'Last update on'),
+                new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by'),
+                new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on'),
             )),
 
             new FieldSet($this->field_mapper, 'Details', array(
                 new Column($this->field_mapper, array(
-                    $this->addSimpleField('string', 'summary', 'Summary')
+                    new Field($this->field_mapper, 'string', 'summary', 'Summary')
                 )),
                 new Column($this->field_mapper, array(
-                    $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id')
+                    new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id')
                 )),
-                $this->addSimpleField('text', 'description', 'Description'),
+                new Field($this->field_mapper, 'text', 'description', 'Description'),
                 new Column($this->field_mapper, array(
-                    $this->addSelectBox('status', "Status", array(
+                    new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                         'NEW',
                         'UNCONFIRMED',
                         'CONFIRMED',
@@ -70,7 +70,7 @@ class Tracker {
                         'RESOLVED',
                         'VERIFIED',
                     )),
-                    $this->addSelectBox('resolution', "Resolution", array(
+                    new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
                         'FIXED',
                         'INVALID',
                         'WONTFIX',
@@ -79,7 +79,7 @@ class Tracker {
                     )),
                 )),
                 new Column($this->field_mapper, array(
-                    $this->addSelectBox('severity', "Severity", array(
+                    new SelectBoxField($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
                         'blocker',
                         'critical',
                         'major',
@@ -88,7 +88,7 @@ class Tracker {
                         'trivial',
                         'enhancement',
                     )),
-                    $this->addSelectBox('priority', "Priority", array(
+                    new SelectBoxField($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
                         'P1',
                         'P2',
                         'P3',
@@ -99,7 +99,7 @@ class Tracker {
             )),
 
             new FieldSet($this->field_mapper, 'Links', array(
-                $this->addSimpleField('art_link', 'links', 'Links'),
+                new Field($this->field_mapper, 'art_link', 'links', 'Links'),
             )),
         ));
 
@@ -122,14 +122,6 @@ class Tracker {
         $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('severity'));
         $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('priority'));
         $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('links'));
-    }
-
-    private function addSimpleField($type, $name, $label) {
-        return new Field($this->field_mapper, $type, $name, $label);
-    }
-
-    private function addSelectBox($name, $label, $values) {
-        return new SelectBoxField($this->addSimpleField('sb', $name, $label), $values, $this->value_mapper);
     }
 
     private function addSemantics(SimpleXMLElement $tracker) {

@@ -7,16 +7,16 @@ use SimpleXMLElement;
 class SelectBoxField  {
 
     /** @var IdMapper */
-    private $mapper;
+    private $value_mapper;
 
     /** @var Field */
     private $field;
     private $values = array();
 
-    public function __construct(Field $field, array $values, IdMapper $mapper) {
-        $this->field  = $field;
-        $this->values = $values;
-        $this->mapper = $mapper;
+    public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values) {
+        $this->field        = new Field($field_mapper, 'sb', $name, $label);
+        $this->values       = $values;
+        $this->value_mapper = $value_mapper;
     }
 
     public function toXml(SimpleXMLElement $parent, $rank) {
@@ -32,7 +32,7 @@ class SelectBoxField  {
 
     private function addBindItem(SimpleXMLElement $items, $label) {
         $item = $items->addChild('item');
-        $item->addAttribute('ID', $this->mapper->map($label));
+        $item->addAttribute('ID', $this->value_mapper->map($label));
         $item->addAttribute('label', $label);
         $item->addAttribute('is_hidden', 0);
     }
