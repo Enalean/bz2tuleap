@@ -8,9 +8,14 @@ spl_autoload_register(
         if ($classes === null) {
             $classes = array(
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
+                'bz2tuleap\\tuleap\\field' => '/Bz2Tuleap/Tuleap/Field.php',
+                'bz2tuleap\\tuleap\\idmapper' => '/Bz2Tuleap/Tuleap/IdMapper.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',
+                'bz2tuleap\\tuleap\\selectboxfield' => '/Bz2Tuleap/Tuleap/SelectBoxField.php',
+                'bz2tuleap\\tuleap\\structurefield' => '/Bz2Tuleap/Tuleap/StructureField.php',
                 'bz2tuleap\\tuleap\\supportedxmlcharencoding' => '/Bz2Tuleap/Tuleap/SupportedXmlCharEncoding.class.php',
-                'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php'
+                'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php',
+                'bz2tuleap\\tuleap\\tracker2xml' => '/Bz2Tuleap/Tuleap/TrackerToXml.php'
             );
         }
         $cn = strtolower($class);

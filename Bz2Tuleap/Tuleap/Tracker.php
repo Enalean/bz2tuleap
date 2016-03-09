@@ -9,8 +9,12 @@ class Tracker {
     private $users = array();
     private $field_id_counter = 0;
     private $fields_mapping = array();
-    private $value_id_counter = 0;
     private $value_mapping = array();
+    private $value_mapper;
+
+    public function __construct() {
+        $this->value_mapper = new IdMapper('V');
+    }
 
     public function convert(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tuleap_xml) {
         $trackers = $tuleap_xml->addChild('trackers');
@@ -54,59 +58,67 @@ class Tracker {
     }
 
     private function addFields(SimpleXMLElement $form_elements) {
-        $c1 = $this->addStructureField($form_elements, 'column', 'C1', 'C1', 0);
-        $this->addSimpleField($c1, 'subby', 'submitted_by', 'Submitted by', 0);
-        $this->addSimpleField($c1, 'subon', 'submitted_on', 'Submitted on', 1);
-
-        $c2 = $this->addStructureField($form_elements, 'column', 'C2', 'C2', 1);
-        $this->addSimpleField($c2, 'luby', 'last_update_by', 'Last update by', 0);
-        $this->addSimpleField($c2, 'lud', 'last_update_on', 'Last update on', 1);
-
-        $field_set_details = $this->addStructureField($form_elements, 'fieldset', 'details', 'Details', 3);
-        $c5 = $this->addStructureField($field_set_details, 'column', 'C5', 'C5', 4);
-        $this->addSimpleField($c5, 'string', 'summary', 'Summary', 1);
-        $c6 = $this->addStructureField($field_set_details, 'column', 'C6', 'C6', 5);
-        $this->addSimpleField($c6, 'int', 'bugzilla_id', 'Bugzilla id', 1);
-
-        $this->addSimpleField($field_set_details, 'text', 'description', 'Description', 6);
-
-        $c3 = $this->addStructureField($field_set_details, 'column', 'C3', 'C3', 7);
-        $this->addSelectBox($c3, 'status', "Status", array(
-            'NEW',
-            'UNCONFIRMED',
-            'CONFIRMED',
-            'IN_PROGRESS',
-            'RESOLVED',
-            'VERIFIED',
-        ));
-        $this->addSelectBox($c3, 'resolution', "Resolution", array(
-            'FIXED',
-            'INVALID',
-            'WONTFIX',
-            'DUPLICATE',
-            'WORKSFORME',
+        $c1 = $this->addStructureField('column', 'C1', 'C1', 0, array(
+            $this->addSimpleField('subby', 'submitted_by', 'Submitted by', 0),
+            $this->addSimpleField('subon', 'submitted_on', 'Submitted on', 1),
         ));
 
-        $c4 = $this->addStructureField($field_set_details, 'column', 'C4', 'C4', 8);
-        $this->addSelectBox($c4, 'severity', "Severity", array(
-            'blocker',
-            'critical',
-            'major',
-            'normal',
-            'minor',
-            'trivial',
-            'enhancement',
-        ));
-        $this->addSelectBox($c4, 'priority', "Priority", array(
-            'P1',
-            'P2',
-            'P3',
-            'P4',
-            'P5',
+        $c2 = $this->addStructureField('column', 'C2', 'C2', 1, array(
+            $this->addSimpleField('luby', 'last_update_by', 'Last update by', 0),
+            $this->addSimpleField('lud', 'last_update_on', 'Last update on', 1),
         ));
 
-        $field_set_links = $this->addStructureField($form_elements, 'fieldset', 'links', 'Links', 4);
-        $this->addSimpleField($field_set_links, 'art_link', 'links', 'Links', 0);
+        $field_set_details = $this->addStructureField('fieldset', 'details', 'Details', 3, array(
+            $this->addStructureField('column', 'C5', 'C5', 4, array(
+                $this->addSimpleField('string', 'summary', 'Summary', 1)
+            )),
+            $this->addStructureField('column', 'C6', 'C6', 5, array(
+                $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id', 1)
+            )),
+            $this->addSimpleField('text', 'description', 'Description', 6),
+            $this->addStructureField('column', 'C3', 'C3', 7, array(
+                $this->addSelectBox('status', "Status", array(
+                    'NEW',
+                    'UNCONFIRMED',
+                    'CONFIRMED',
+                    'IN_PROGRESS',
+                    'RESOLVED',
+                    'VERIFIED',
+                )),
+                $this->addSelectBox('resolution', "Resolution", array(
+                    'FIXED',
+                    'INVALID',
+                    'WONTFIX',
+                    'DUPLICATE',
+                    'WORKSFORME',
+                )),
+            )),
+            $this->addStructureField('column', 'C4', 'C4', 8, array(
+                $this->addSelectBox('severity', "Severity", array(
+                    'blocker',
+                    'critical',
+                    'major',
+                    'normal',
+                    'minor',
+                    'trivial',
+                    'enhancement',
+                )),
+                $this->addSelectBox('priority', "Priority", array(
+                    'P1',
+                    'P2',
+                    'P3',
+                    'P4',
+                    'P5',
+                )),
+            )),
+            $this->addStructureField('fieldset', 'links', 'Links', 4, array(
+                $this->addSimpleField('art_link', 'links', 'Links', 0)
+            )),
+        ));
+
+        $c1->toXml($form_elements);
+        $c2->toXml($form_elements);
+        $field_set_details->toXml($form_elements);
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
@@ -127,45 +139,19 @@ class Tracker {
         $this->addDefaultPermissions($permissions, $this->getFieldReference('links'));
     }
 
-    private function addStructureField(SimpleXMLElement $form_elements, $type, $name, $label, $rank) {
-        $field = $this->addSimpleField($form_elements, $type, $name, $label, $rank);
-        return $field->addChild('formElements');
+    private function addStructureField($type, $name, $label, $rank, array $children) {
+        return new StructureField(
+            $this->addSimpleField($type, $name, $label, $rank),
+            $children
+        );
     }
 
-    private function addSimpleField(SimpleXMLElement $form_elements, $type, $name, $label, $rank) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', $type);
-        $field->addAttribute('ID', $this->getNewFieldId($name));
-        $field->addAttribute('rank', $rank);
-        $field->addChild('name', $name);
-        $field->addChild('label', $label);
-        return $field;
+    private function addSimpleField($type, $name, $label, $rank) {
+        return new Field($this->getNewFieldId($name), $type, $name, $label, $rank);
     }
 
-    private function addSelectBox(SimpleXMLElement $form_elements, $name, $label, $values) {
-        $field = $form_elements->addChild('formElement');
-        $field->addAttribute('type', 'sb');
-        $field->addAttribute('ID', $this->getNewFieldId($name));
-        $field->addAttribute('rank', $this->field_id_counter);
-        $field->addChild('name', $name);
-        $field->addChild('label', $label);
-
-        $bind = $field->addChild('bind');
-        $bind->addAttribute('type', 'static');
-        $bind->addAttribute('is_rank_alpha', '0');
-        $items = $bind->addChild('items');
-        foreach ($values as $value) {
-            $this->addBindItem($items, $value);
-        }
-    }
-
-    private function addBindItem(SimpleXMLElement $items, $label) {
-        $this->value_id_counter++;
-        $this->value_mapping[$label] = $this->value_id_counter;
-        $item = $items->addChild('item');
-        $item->addAttribute('ID', 'V'.$this->value_id_counter);
-        $item->addAttribute('label', $label);
-        $item->addAttribute('is_hidden', 0);
+    private function addSelectBox($name, $label, $values) {
+        return new SelectBoxField($this->addSimpleField('sb', $name, $label, 0), $values, $this->value_mapper);
     }
 
     private function addSemantics(SimpleXMLElement $tracker) {
@@ -309,7 +295,7 @@ class Tracker {
             $field_change->addAttribute('field_name', $field_name);
             $field_change->addAttribute('type', 'list');
             $field_change->addAttribute('bind', 'static');
-            $value = $field_change->addChild('value', $this->value_mapping[$bugzilla_value]);
+            $value = $field_change->addChild('value', $this->value_mapper->getId($bugzilla_value));
             $value->addAttribute('format', 'id');
         }
     }
