@@ -35,32 +35,33 @@ class Tracker {
         $tracker->addChild('description', 'Bugs and requests');
         $tracker->addChild('color', 'inca_silver');
         $tracker->addChild('cannedResponses');
-        $this->addFields($tracker);
+        $fields = $this->getFields($tracker);
+        $fields->toXml($tracker);
         $this->addSemantics($tracker);
         $this->addReports($tracker);
-        $this->addPermissions($tracker);
+        $this->addPermissions($tracker, $fields);
     }
 
-    private function addFields(SimpleXMLElement $tracker) {
-        $form_elements = new FormElements(array(
+    private function getFields() {
+        return new FormElements(array(
             new Column($this->field_mapper, array(
-                new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by'),
-                new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on'),
+                new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new ReadOnlyFieldPermissions()),
+                new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new ReadOnlyFieldPermissions()),
             )),
 
             new Column($this->field_mapper, array(
-                new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by'),
-                new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on'),
+                new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new ReadOnlyFieldPermissions()),
+                new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new ReadOnlyFieldPermissions()),
             )),
 
             new FieldSet($this->field_mapper, 'Details', array(
                 new Column($this->field_mapper, array(
-                    new Field($this->field_mapper, 'string', 'summary', 'Summary')
+                    new Field($this->field_mapper, 'string', 'summary', 'Summary', new DefaultFieldPermissions())
                 )),
                 new Column($this->field_mapper, array(
-                    new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id')
+                    new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new ReadOnlyFieldPermissions())
                 )),
-                new Field($this->field_mapper, 'text', 'description', 'Description'),
+                new Field($this->field_mapper, 'text', 'description', 'Description', new DefaultFieldPermissions()),
                 new Column($this->field_mapper, array(
                     new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                         'NEW',
@@ -69,14 +70,14 @@ class Tracker {
                         'IN_PROGRESS',
                         'RESOLVED',
                         'VERIFIED',
-                    )),
+                    ), new DefaultFieldPermissions()),
                     new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
                         'FIXED',
                         'INVALID',
                         'WONTFIX',
                         'DUPLICATE',
                         'WORKSFORME',
-                    )),
+                    ), new DefaultFieldPermissions()),
                 )),
                 new Column($this->field_mapper, array(
                     new SelectBoxField($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
@@ -87,41 +88,28 @@ class Tracker {
                         'minor',
                         'trivial',
                         'enhancement',
-                    )),
+                    ), new DefaultFieldPermissions()),
                     new SelectBoxField($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
                         'P1',
                         'P2',
                         'P3',
                         'P4',
                         'P5',
-                    )),
+                    ), new DefaultFieldPermissions()),
                 )),
             )),
 
             new FieldSet($this->field_mapper, 'Links', array(
-                new Field($this->field_mapper, 'art_link', 'links', 'Links'),
+                new Field($this->field_mapper, 'art_link', 'links', 'Links', new DefaultFieldPermissions()),
             )),
         ));
-
-        $form_elements->toXml($tracker);
     }
 
-    private function addPermissions(SimpleXMLElement $tracker) {
+    private function addPermissions(SimpleXMLElement $tracker, $fields) {
         $permissions = $tracker->addChild('permissions');
         $this->addPermissionOnTracker($permissions, 'PLUGIN_TRACKER_ACCESS_FULL', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('bugzilla_id'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('submitted_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('submitted_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('last_update_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('last_update_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
 
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('summary'));
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('description'));
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('status'));
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('resolution'));
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('severity'));
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('priority'));
-        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('links'));
+        $fields->permissionsToXml($permissions);
     }
 
     private function addSemantics(SimpleXMLElement $tracker) {
@@ -161,23 +149,9 @@ class Tracker {
         $field->addAttribute('REF', $name);
     }
 
-    private function addDefaultPermissions(SimpleXMLElement $permissions, $field_id) {
-        $this->addPermissionOnField($permissions, $field_id, 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $field_id, 'PLUGIN_TRACKER_FIELD_SUBMIT', 'UGROUP_REGISTERED');
-        $this->addPermissionOnField($permissions, $field_id, 'PLUGIN_TRACKER_FIELD_UPDATE', 'UGROUP_REGISTERED');
-    }
-
     private function addPermissionOnTracker(SimpleXMLElement $permissions, $type, $ugroup) {
         $permission = $permissions->addChild('permission');
         $permission->addAttribute('scope', 'tracker');
-        $permission->addAttribute('ugroup', $ugroup);
-        $permission->addAttribute('type', $type);
-    }
-
-    private function addPermissionOnField(SimpleXMLElement $permissions, $field, $type, $ugroup) {
-        $permission = $permissions->addChild('permission');
-        $permission->addAttribute('scope', 'field');
-        $permission->addAttribute('REF', $field);
         $permission->addAttribute('ugroup', $ugroup);
         $permission->addAttribute('type', $type);
     }

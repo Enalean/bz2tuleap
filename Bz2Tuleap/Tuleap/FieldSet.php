@@ -25,9 +25,15 @@ class FieldSet  {
 
     public function toXml(SimpleXMLElement $parent, $rank) {
         $field = new StructureField(
-            new Field($this->mapper, $this->type, 'struct'.$rank, $this->label),
+            new Field($this->mapper, $this->type, 'struct'.$rank, $this->label, new NoFieldPermissions()),
             $this->children
         );
         $field->toXml($parent, $rank);
+    }
+
+    public function permissionsToXml(SimpleXMLElement $parent) {
+        foreach($this->children as $child) {
+            $child->permissionsToXml($parent);
+        }
     }
 }

@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class Column  {
+class Column {
 
     /**
      * @var IdMapper
@@ -22,9 +22,15 @@ class Column  {
 
     public function toXml(SimpleXMLElement $parent, $rank) {
         $field = new StructureField(
-            new Field($this->mapper, $this->type, 'struct'.$rank, 'struct'.$rank),
+            new Field($this->mapper, $this->type, 'struct'.$rank, 'struct'.$rank, new NoFieldPermissions()),
             $this->children
         );
         $field->toXml($parent, $rank);
+    }
+
+    public function permissionsToXml(SimpleXMLElement $parent) {
+        foreach($this->children as $child) {
+            $child->permissionsToXml($parent);
+        }
     }
 }

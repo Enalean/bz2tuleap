@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class SelectBoxField  {
+class SelectBoxField implements IField {
 
     /** @var IdMapper */
     private $value_mapper;
@@ -13,12 +13,16 @@ class SelectBoxField  {
     private $field;
     private $values = array();
 
-    public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values) {
-        $this->field        = new Field($field_mapper, 'sb', $name, $label);
+    public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values, $permissions) {
+        $this->field        = new Field($field_mapper, 'sb', $name, $label, $permissions);
         $this->values       = $values;
         $this->value_mapper = $value_mapper;
     }
 
+    public function getReference() {
+        $this->field->getReference();
+    }
+    
     public function toXml(SimpleXMLElement $parent, $rank) {
         $xml = $this->field->toXml($parent, $rank);
         $bind = $xml->addChild('bind');
@@ -35,5 +39,9 @@ class SelectBoxField  {
         $item->addAttribute('ID', $this->value_mapper->map($label));
         $item->addAttribute('label', $label);
         $item->addAttribute('is_hidden', 0);
+    }
+
+    public function permissionsToXml(SimpleXMLElement $parent) {
+        $this->field->permissionsToXml($parent);
     }
 }

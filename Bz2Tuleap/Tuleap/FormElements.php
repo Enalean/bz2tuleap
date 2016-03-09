@@ -25,4 +25,10 @@ class FormElements  {
             $child->toXml($form_elements, $sub_rank++);
         }
     }
+
+    public function permissionsToXml(SimpleXMLElement $parent) {
+        foreach($this->children as $child) {
+            $child->permissionsToXml($parent);
+        }
+    }
 }
