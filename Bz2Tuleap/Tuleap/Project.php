@@ -7,15 +7,20 @@ use SimpleXMLElement;
 class Project {
 
     public function convert(SimpleXMLElement $bugzilla_xml) {
+        $user_mapper = new UserMapper();
+
+        $factory = new TrackerFactory($user_mapper);
+        $tracker = $factory->getTrackerFromBugzilla($bugzilla_xml);
+
         $project_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                              <project />');
 
         $this->projectAttributes($project_xml);
         $this->addServices($project_xml);
-        $tracker = new Tracker();
-        $tracker->convert($bugzilla_xml, $project_xml);
 
-        $users_xml = $this->getUsers($tracker);
+        $tracker->toXml($project_xml);
+
+        $users_xml = $this->getUsers($user_mapper);
 
         return array($project_xml, $users_xml);
     }
@@ -36,11 +41,11 @@ class Project {
         $service->addAttribute('enabled', 'true');
     }
 
-    private function getUsers(Tracker $tracker) {
+    private function getUsers(UserMapper $user_mapper) {
         $users = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                              <users />');
         $user_id = 101;
-        foreach ($tracker->getUsers() as $email => $user_details) {
+        foreach ($user_mapper->getUsers() as $email => $user_details) {
             $user = $users->addChild('user');
             $user->addChild('id', $user_id++);
             $at_place = strpos($email, '@');

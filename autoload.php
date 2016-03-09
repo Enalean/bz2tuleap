@@ -28,8 +28,10 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\selectboxfield' => '/Bz2Tuleap/Tuleap/SelectBoxField.php',
                 'bz2tuleap\\tuleap\\structurefield' => '/Bz2Tuleap/Tuleap/StructureField.php',
                 'bz2tuleap\\tuleap\\supportedxmlcharencoding' => '/Bz2Tuleap/Tuleap/SupportedXmlCharEncoding.class.php',
+                'bz2tuleap\\tuleap\\titlesemantic' => '/Bz2Tuleap/Tuleap/TitleSemantic.php',
                 'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php',
                 'bz2tuleap\\tuleap\\tracker2xml' => '/Bz2Tuleap/Tuleap/TrackerToXml.php',
+                'bz2tuleap\\tuleap\\trackerfactory' => '/Bz2Tuleap/Tuleap/TrackerFactory.php',
                 'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php'
             );
         }
