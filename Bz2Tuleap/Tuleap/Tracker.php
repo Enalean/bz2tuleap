@@ -28,7 +28,9 @@ class Tracker {
         $tracker->addAttribute('parent_id', '0');
         $tracker->addAttribute('instantiate_for_new_projects', '1');
         $this->addTrackerMetadata($tracker);
-        $this->addArtifacts($bugzilla_xml, $tracker);
+        foreach ($this->getArtifacts($bugzilla_xml, $tracker) as $artifact) {
+            $artifact->toXml($tracker);
+        }
     }
 
     private function addTrackerMetadata(SimpleXMLElement $tracker) {
@@ -158,14 +160,15 @@ class Tracker {
         $permission->addAttribute('type', $type);
     }
 
-    private function addArtifacts(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tracker) {
+    private function getArtifacts(SimpleXMLElement $bugzilla_xml) {
+        $artifacts = array();
         foreach($bugzilla_xml as $bugzilla_bug) {
-            $artifact = new Artifact(
+            $artifacts[] = new Artifact(
                 (int) $bugzilla_bug->bug_id,
                 $this->getChangesets($bugzilla_bug)
             );
-            $artifact->toXml($tracker);
         }
+        return $artifacts;
     }
 
     private function getChangesets(SimpleXMLElement $bugzilla_bug) {
@@ -177,9 +180,9 @@ class Tracker {
         return new Changeset(
             (string)$bugzilla_bug->creation_ts,
             (string)$this->user_mapper->getUser($bugzilla_bug->reporter),
-            ''
+            '',
+            $this->getFieldsData($bugzilla_bug)
         );
-        // field changes
     }
 
     private function getChangesetComments(SimpleXMLElement $bugzilla_bug) {
@@ -191,44 +194,40 @@ class Tracker {
             $changesets[] = new Changeset(
                 (string)$long_desc->bug_when,
                 $this->user_mapper->getUser($long_desc->who),
-                (string) $long_desc->thetext
+                (string) $long_desc->thetext,
+                array()
             );
         }
         return $changesets;
     }
 
-    private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
-        $this->addScalarData($tuleap_changeset, 'bugzilla_id', 'int', (int) $bugzilla_bug->bug_id);
-        $this->addScalarData($tuleap_changeset, 'summary', 'string', (string) $bugzilla_bug->short_desc);
-        // cannot add a link to a non existing target
-        //$this->addScalarData($tuleap_changeset, 'links', 'art_link', (string) $bugzilla_bug->dependson);
-        $this->addSelectBoxValue($tuleap_changeset, 'status', (string)$bugzilla_bug->bug_status);
-        $this->addSelectBoxValue($tuleap_changeset, 'resolution', (string)$bugzilla_bug->resolution);
-        $this->addSelectBoxValue($tuleap_changeset, 'severity', (string)$bugzilla_bug->bug_severity);
-        $this->addSelectBoxValue($tuleap_changeset, 'priority', (string)$bugzilla_bug->priority);
+    private function getFieldsData(SimpleXMLElement $bugzilla_bug) {
+        return array_filter(array(
+            $this->getScalarData('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
+            $this->getScalarData('summary', 'string', (string) $bugzilla_bug->short_desc),
+            // cannot add a link to a non existing target
+            //$this->addScalarData($tuleap_changeset, 'links', 'art_link', (string) $bugzilla_bug->dependson);
+            $this->getSelectBoxValue('status', (string)$bugzilla_bug->bug_status),
+            $this->getSelectBoxValue('resolution', (string)$bugzilla_bug->resolution),
+            $this->getSelectBoxValue('severity', (string)$bugzilla_bug->bug_severity),
+            $this->getSelectBoxValue('priority', (string)$bugzilla_bug->priority),
 
-        $first_long = $bugzilla_bug->long_desc[0];
-        $this->addScalarData($tuleap_changeset, 'description', 'text', (string) $first_long->thetext);
+            $this->getScalarData('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
+        ));
     }
 
-    private function addScalarData(SimpleXMLElement $tuleap_changeset, $field_name, $type, $bugzilla_value) {
+    private function getScalarData($field_name, $type, $bugzilla_value) {
         if ($bugzilla_value != "") {
-            $field_change = $tuleap_changeset->addChild('field_change');
-            $field_change->addAttribute('field_name', $field_name);
-            $field_change->addAttribute('type', $type);
-            $field_change->addChild('value', $bugzilla_value);
+            return new ScalarFieldChange($field_name, $type, $bugzilla_value);
         }
+        return null;
     }
 
-    private function addSelectBoxValue(SimpleXMLElement $tuleap_changeset, $field_name, $bugzilla_value) {
+    private function getSelectBoxValue($field_name, $bugzilla_value) {
         if ($bugzilla_value != "") {
-            $field_change = $tuleap_changeset->addChild('field_change');
-            $field_change->addAttribute('field_name', $field_name);
-            $field_change->addAttribute('type', 'list');
-            $field_change->addAttribute('bind', 'static');
-            $value = $field_change->addChild('value', $this->value_mapper->getId($bugzilla_value));
-            $value->addAttribute('format', 'id');
+            return new ListFieldChange($field_name, $this->value_mapper->getId($bugzilla_value));
         }
+        return null;
     }
 
     public function getUsers() {

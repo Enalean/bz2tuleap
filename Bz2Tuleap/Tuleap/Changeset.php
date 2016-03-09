@@ -6,21 +6,26 @@ use SimpleXMLElement;
 
 class Changeset {
 
+    private $field_changes;
     private $submitted_by;
     private $submitted_on;
     /** @var Comment */
     private $comment;
 
-    public function __construct($submitted_on, $submitted_by, $comment) {
-        $this->submitted_on = $submitted_on;
-        $this->submitted_by = $submitted_by;
-        $this->comment = new Comment($submitted_on, $submitted_by, $comment);
+    public function __construct($submitted_on, $submitted_by, $comment, array $field_changes) {
+        $this->submitted_on  = $submitted_on;
+        $this->submitted_by  = $submitted_by;
+        $this->comment       = new Comment($submitted_on, $submitted_by, $comment);
+        $this->field_changes = $field_changes;
     }
 
     public function toXml(SimpleXMLElement $parent) {
         $changeset = $parent->addChild('changeset');
         $this->addSubmittedInfo($changeset, $this->submitted_by, $this->submitted_on);
         $this->comment->toXml($changeset);
+        foreach($this->field_changes as $change) {
+            $change->toXml($changeset);
+        }
     }
 
     private function addSubmittedInfo(SimpleXMLElement $node, $who, $when) {
