@@ -35,78 +35,75 @@ class Tracker {
         $tracker->addChild('description', 'Bugs and requests');
         $tracker->addChild('color', 'inca_silver');
         $tracker->addChild('cannedResponses');
-        $form_elements = $tracker->addChild('formElements');
-        $this->addFields($form_elements);
+        $this->addFields($tracker);
         $this->addSemantics($tracker);
         $this->addReports($tracker);
         $this->addPermissions($tracker);
     }
 
-    private function addFields(SimpleXMLElement $form_elements) {
-        $c1 = new Column($this->field_mapper, array(
-            $this->addSimpleField('subby', 'submitted_by', 'Submitted by'),
-            $this->addSimpleField('subon', 'submitted_on', 'Submitted on'),
+    private function addFields(SimpleXMLElement $tracker) {
+        $form_elements = new FormElements(array(
+            new Column($this->field_mapper, array(
+                $this->addSimpleField('subby', 'submitted_by', 'Submitted by'),
+                $this->addSimpleField('subon', 'submitted_on', 'Submitted on'),
+            )),
+
+            new Column($this->field_mapper, array(
+                $this->addSimpleField('luby', 'last_update_by', 'Last update by'),
+                $this->addSimpleField('lud', 'last_update_on', 'Last update on'),
+            )),
+
+            new FieldSet($this->field_mapper, 'Details', array(
+                new Column($this->field_mapper, array(
+                    $this->addSimpleField('string', 'summary', 'Summary')
+                )),
+                new Column($this->field_mapper, array(
+                    $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id')
+                )),
+                $this->addSimpleField('text', 'description', 'Description'),
+                new Column($this->field_mapper, array(
+                    $this->addSelectBox('status', "Status", array(
+                        'NEW',
+                        'UNCONFIRMED',
+                        'CONFIRMED',
+                        'IN_PROGRESS',
+                        'RESOLVED',
+                        'VERIFIED',
+                    )),
+                    $this->addSelectBox('resolution', "Resolution", array(
+                        'FIXED',
+                        'INVALID',
+                        'WONTFIX',
+                        'DUPLICATE',
+                        'WORKSFORME',
+                    )),
+                )),
+                new Column($this->field_mapper, array(
+                    $this->addSelectBox('severity', "Severity", array(
+                        'blocker',
+                        'critical',
+                        'major',
+                        'normal',
+                        'minor',
+                        'trivial',
+                        'enhancement',
+                    )),
+                    $this->addSelectBox('priority', "Priority", array(
+                        'P1',
+                        'P2',
+                        'P3',
+                        'P4',
+                        'P5',
+                    )),
+                )),
+            )),
+
+            new FieldSet($this->field_mapper, 'Links', array(
+                $this->addSimpleField('art_link', 'links', 'Links'),
+            )),
         ));
 
-        $c2 = new Column($this->field_mapper, array(
-            $this->addSimpleField('luby', 'last_update_by', 'Last update by'),
-            $this->addSimpleField('lud', 'last_update_on', 'Last update on'),
-        ));
-
-        $field_set_details = new FieldSet($this->field_mapper, 'Details', array(
-            new Column($this->field_mapper, array(
-                $this->addSimpleField('string', 'summary', 'Summary')
-            )),
-            new Column($this->field_mapper, array(
-                $this->addSimpleField('int', 'bugzilla_id', 'Bugzilla id')
-            )),
-            $this->addSimpleField('text', 'description', 'Description'),
-            new Column($this->field_mapper, array(
-                $this->addSelectBox('status', "Status", array(
-                    'NEW',
-                    'UNCONFIRMED',
-                    'CONFIRMED',
-                    'IN_PROGRESS',
-                    'RESOLVED',
-                    'VERIFIED',
-                )),
-                $this->addSelectBox('resolution', "Resolution", array(
-                    'FIXED',
-                    'INVALID',
-                    'WONTFIX',
-                    'DUPLICATE',
-                    'WORKSFORME',
-                )),
-            )),
-            new Column($this->field_mapper, array(
-                $this->addSelectBox('severity', "Severity", array(
-                    'blocker',
-                    'critical',
-                    'major',
-                    'normal',
-                    'minor',
-                    'trivial',
-                    'enhancement',
-                )),
-                $this->addSelectBox('priority', "Priority", array(
-                    'P1',
-                    'P2',
-                    'P3',
-                    'P4',
-                    'P5',
-                )),
-            )),
-        ));
-
-        $fieldset_links = new FieldSet($this->field_mapper, 'Links', array(
-            $this->addSimpleField('art_link', 'links', 'Links'),
-        ));
-
-        $rank = 0;
-        $c1->toXml($form_elements, $rank++);
-        $c2->toXml($form_elements, $rank++);
-        $field_set_details->toXml($form_elements, $rank++);
-        $fieldset_links->toXml($form_elements, $rank++);
+        $form_elements->toXml($tracker);
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
