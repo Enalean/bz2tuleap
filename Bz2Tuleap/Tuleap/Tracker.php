@@ -68,7 +68,6 @@ class Tracker {
         $c6 = $this->addStructureField($field_set_details, 'column', 'C6', 'C6', 5);
         $this->addSimpleField($c6, 'int', 'bugzilla_id', 'Bugzilla id', 1);
 
-        //$this->addSimpleField($field_set_details, 'linebreak', 'br', 'br', 6);
         $this->addSimpleField($field_set_details, 'text', 'description', 'Description', 6);
 
         $c3 = $this->addStructureField($field_set_details, 'column', 'C3', 'C3', 7);
@@ -105,6 +104,9 @@ class Tracker {
             'P4',
             'P5',
         ));
+
+        $field_set_links = $this->addStructureField($form_elements, 'fieldset', 'links', 'Links', 4);
+        $this->addSimpleField($field_set_links, 'art_link', 'links', 'Links', 0);
     }
 
     private function addPermissions(SimpleXMLElement $tracker) {
@@ -122,6 +124,7 @@ class Tracker {
         $this->addDefaultPermissions($permissions, $this->getFieldReference('resolution'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('severity'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('priority'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('links'));
     }
 
     private function addStructureField(SimpleXMLElement $form_elements, $type, $name, $label, $rank) {
@@ -280,6 +283,8 @@ class Tracker {
     private function addFieldsData(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_changeset) {
         $this->addScalarData($tuleap_changeset, 'bugzilla_id', 'int', (int) $bugzilla_bug->bug_id);
         $this->addScalarData($tuleap_changeset, 'summary', 'string', (string) $bugzilla_bug->short_desc);
+        // cannot add a link to a non existing target
+        //$this->addScalarData($tuleap_changeset, 'links', 'art_link', (string) $bugzilla_bug->dependson);
         $this->addSelectBoxValue($tuleap_changeset, 'status', (string)$bugzilla_bug->bug_status);
         $this->addSelectBoxValue($tuleap_changeset, 'resolution', (string)$bugzilla_bug->resolution);
         $this->addSelectBoxValue($tuleap_changeset, 'severity', (string)$bugzilla_bug->bug_severity);
