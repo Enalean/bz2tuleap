@@ -11,12 +11,16 @@ class IdMapper {
         $this->prefix = $prefix;
     }
 
+    public function getReference($value) {
+        return $this->prefix.$this->getId($value);
+    }
+
     public function getId($value) {
         return $this->map[$value];
     }
 
     public function map($value) {
         $this->map[$value] = $this->id_counter++;
-        return $this->prefix.$this->getId($value);
+        return $this->getReference($value);
     }
 }

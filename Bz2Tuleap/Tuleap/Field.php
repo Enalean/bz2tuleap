@@ -11,8 +11,8 @@ class Field {
     private $type;
     private $field_id;
 
-    public function __construct($field_id, $type, $name, $label) {
-        $this->field_id = $field_id;
+    public function __construct(IdMapper $mapper, $type, $name, $label) {
+        $this->field_id = $mapper->map($name);
         $this->name = $name;
         $this->type = $type;
         $this->label = $label;

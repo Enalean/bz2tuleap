@@ -7,32 +7,17 @@ use SimpleXMLElement;
 class Tracker {
 
     private $users = array();
-    private $field_id_counter = 0;
-    private $fields_mapping = array();
-    private $value_mapping = array();
     private $value_mapper;
+    private $field_mapper;
 
     public function __construct() {
         $this->value_mapper = new IdMapper('V');
+        $this->field_mapper = new IdMapper('F');
     }
 
     public function convert(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $tuleap_xml) {
         $trackers = $tuleap_xml->addChild('trackers');
         $this->addOneTracker($bugzilla_xml, $trackers);
-    }
-
-    private function getNewFieldId($name) {
-        $this->field_id_counter++;
-        $this->fields_mapping[$name] = $this->field_id_counter;
-        return $this->getFieldReference($name);
-    }
-
-    private function getFieldReference($name) {
-        return 'F'.$this->fields_mapping[$name];
-    }
-
-    private function getFieldId($name) {
-        return $this->fields_mapping[$name];
     }
 
     private function addOneTracker(SimpleXMLElement $bugzilla_xml, SimpleXMLElement $trackers) {
@@ -125,19 +110,19 @@ class Tracker {
     private function addPermissions(SimpleXMLElement $tracker) {
         $permissions = $tracker->addChild('permissions');
         $this->addPermissionOnTracker($permissions, 'PLUGIN_TRACKER_ACCESS_FULL', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->getFieldReference('bugzilla_id'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->getFieldReference('submitted_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->getFieldReference('submitted_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
-        $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('bugzilla_id'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('submitted_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('submitted_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('last_update_on'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
+        $this->addPermissionOnField($permissions, $this->field_mapper->getReference('last_update_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
 
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('summary'));
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('description'));
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('status'));
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('resolution'));
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('severity'));
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('priority'));
-        $this->addDefaultPermissions($permissions, $this->getFieldReference('links'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('summary'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('description'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('status'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('resolution'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('severity'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('priority'));
+        $this->addDefaultPermissions($permissions, $this->field_mapper->getReference('links'));
     }
 
     private function addStructureField($type, $name, $label, array $children) {
@@ -148,11 +133,11 @@ class Tracker {
     }
 
     private function addSimpleField($type, $name, $label) {
-        return new Field($this->getNewFieldId($name), $type, $name, $label);
+        return new Field($this->field_mapper, $type, $name, $label);
     }
 
     private function addSelectBox($name, $label, $values) {
-        return new SelectBoxField($this->addSimpleField('sb', $name, $label, 0), $values, $this->value_mapper);
+        return new SelectBoxField($this->addSimpleField('sb', $name, $label), $values, $this->value_mapper);
     }
 
     private function addSemantics(SimpleXMLElement $tracker) {
@@ -163,7 +148,7 @@ class Tracker {
         $title->addChild('label');
         $title->addChild('description');
         $field = $title->addChild('field');
-        $field->addAttribute('REF', $this->getFieldReference('summary'));
+        $field->addAttribute('REF', $this->field_mapper->getReference('summary'));
     }
 
     private function addReports(SimpleXMLElement $tracker) {
@@ -180,11 +165,11 @@ class Tracker {
         $renderer->addAttribute('chunksz', '50');
         $renderer->addChild('name', 'Results');
         $columns = $renderer->addChild('columns');
-        $this->addColumnToTableRenderer($columns, $this->getFieldReference('bugzilla_id'));
-        $this->addColumnToTableRenderer($columns, $this->getFieldReference('summary'));
-        $this->addColumnToTableRenderer($columns, $this->getFieldReference('submitted_by'));
-        $this->addColumnToTableRenderer($columns, $this->getFieldReference('submitted_on'));
-        $this->addColumnToTableRenderer($columns, $this->getFieldReference('last_update_by'));
+        $this->addColumnToTableRenderer($columns, $this->field_mapper->getReference('bugzilla_id'));
+        $this->addColumnToTableRenderer($columns, $this->field_mapper->getReference('summary'));
+        $this->addColumnToTableRenderer($columns, $this->field_mapper->getReference('submitted_by'));
+        $this->addColumnToTableRenderer($columns, $this->field_mapper->getReference('submitted_on'));
+        $this->addColumnToTableRenderer($columns, $this->field_mapper->getReference('last_update_by'));
     }
 
     private function addColumnToTableRenderer(SimpleXMLElement $columns, $name) {
