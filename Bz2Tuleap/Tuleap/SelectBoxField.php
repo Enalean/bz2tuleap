@@ -13,7 +13,7 @@ class SelectBoxField implements IField {
     private $field;
     private $values = array();
 
-    public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values, $permissions) {
+    public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values, IPermissions $permissions) {
         $this->field        = new Field($field_mapper, 'sb', $name, $label, $permissions);
         $this->values       = $values;
         $this->value_mapper = $value_mapper;

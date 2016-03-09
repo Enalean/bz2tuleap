@@ -13,7 +13,7 @@ class Field implements IField {
     private $field_id;
     private $reference;
 
-    public function __construct(IdMapper $mapper, $type, $name, $label, $permissions) {
+    public function __construct(IdMapper $mapper, $type, $name, $label, IPermissions $permissions) {
         $this->field_id  = $mapper->map($name);
         $this->reference = $mapper->getReference($name);
         $this->name      = $name;

@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class NoFieldPermissions  {
+class NoFieldPermissions implements IPermissions {
 
     public function toXml(SimpleXMLElement $permissions, IField $field) {
     }

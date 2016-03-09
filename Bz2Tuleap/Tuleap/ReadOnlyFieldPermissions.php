@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class ReadOnlyFieldPermissions  {
+class ReadOnlyFieldPermissions implements IPermissions {
 
     public function toXml(SimpleXMLElement $permissions, IField $field) {
         $this->addPermissionOnField($permissions, $field->getReference(), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
