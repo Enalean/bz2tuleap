@@ -16,7 +16,10 @@ class IdMapper {
     }
 
     public function getId($value) {
-        return $this->map[$value];
+        if (isset($this->map[$value])) {
+            return $this->map[$value];
+        }
+        return null;
     }
 
     public function map($value) {

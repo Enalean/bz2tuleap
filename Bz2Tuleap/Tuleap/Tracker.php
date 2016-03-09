@@ -211,30 +211,16 @@ class Tracker {
     }
 
     private function getFieldsData(SimpleXMLElement $bugzilla_bug) {
-        return array_filter(array(
-            $this->getScalarData('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
-            $this->getScalarData('summary', 'string', (string) $bugzilla_bug->short_desc),
-            $this->getScalarData('links', 'art_link', (string) $bugzilla_bug->dependson),
-            $this->getSelectBoxValue('status', (string)$bugzilla_bug->bug_status),
-            $this->getSelectBoxValue('resolution', (string)$bugzilla_bug->resolution),
-            $this->getSelectBoxValue('severity', (string)$bugzilla_bug->bug_severity),
-            $this->getSelectBoxValue('priority', (string)$bugzilla_bug->priority),
-            $this->getScalarData('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
-        ));
-    }
-
-    private function getScalarData($field_name, $type, $bugzilla_value) {
-        if ($bugzilla_value != "") {
-            return new ScalarFieldChange($field_name, $type, $bugzilla_value);
-        }
-        return null;
-    }
-
-    private function getSelectBoxValue($field_name, $bugzilla_value) {
-        if ($bugzilla_value != "") {
-            return new ListFieldChange($field_name, $this->value_mapper->getId($bugzilla_value));
-        }
-        return null;
+        return array(
+            new ScalarFieldChange('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
+            new ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
+            new ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
+            new ListFieldChange('status', $this->value_mapper->getId((string)$bugzilla_bug->bug_status)),
+            new ListFieldChange('resolution', $this->value_mapper->getId((string)$bugzilla_bug->resolution)),
+            new ListFieldChange('severity', $this->value_mapper->getId((string)$bugzilla_bug->bug_severity)),
+            new ListFieldChange('priority', $this->value_mapper->getId((string)$bugzilla_bug->priority)),
+            new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
+        );
     }
 
     public function getUsers() {
