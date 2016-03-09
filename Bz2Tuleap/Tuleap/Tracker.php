@@ -53,7 +53,7 @@ class Tracker {
             $this->addSimpleField('lud', 'last_update_on', 'Last update on'),
         ));
 
-        $field_set_details = new StructureField($this->field_mapper, 'fieldset', array(
+        $field_set_details = new FieldSet($this->field_mapper, 'Details', array(
             new Column($this->field_mapper, array(
                 $this->addSimpleField('string', 'summary', 'Summary')
             )),
@@ -98,7 +98,7 @@ class Tracker {
             )),
         ));
 
-        $fieldset_links = new StructureField($this->field_mapper, 'fieldset', array(
+        $fieldset_links = new FieldSet($this->field_mapper, 'Links', array(
             $this->addSimpleField('art_link', 'links', 'Links'),
         ));
 
