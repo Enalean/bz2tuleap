@@ -68,7 +68,8 @@ class Tracker {
         $c6 = $this->addStructureField($field_set_details, 'column', 'C6', 'C6', 5);
         $this->addSimpleField($c6, 'int', 'bugzilla_id', 'Bugzilla id', 1);
 
-        $this->addSimpleField($field_set_details, 'linebreak', 'br', 'br', 6);
+        //$this->addSimpleField($field_set_details, 'linebreak', 'br', 'br', 6);
+        $this->addSimpleField($field_set_details, 'text', 'description', 'Description', 6);
 
         $c3 = $this->addStructureField($field_set_details, 'column', 'C3', 'C3', 7);
         $this->addSelectBox($c3, 'status', "Status", array(
@@ -116,6 +117,7 @@ class Tracker {
         $this->addPermissionOnField($permissions, $this->getFieldReference('last_update_by'), 'PLUGIN_TRACKER_FIELD_READ', 'UGROUP_ANONYMOUS');
 
         $this->addDefaultPermissions($permissions, $this->getFieldReference('summary'));
+        $this->addDefaultPermissions($permissions, $this->getFieldReference('description'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('status'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('resolution'));
         $this->addDefaultPermissions($permissions, $this->getFieldReference('severity'));
@@ -263,6 +265,9 @@ class Tracker {
 
     private function addComments(SimpleXMLElement $bugzilla_bug, SimpleXMLElement $tuleap_artifact) {
         foreach($bugzilla_bug->long_desc as $long_desc) {
+            if ((int)$long_desc->comment_count === 0) {
+                continue;
+            }
             $changeset = $this->createChangeset($tuleap_artifact, $long_desc->who, $long_desc->bug_when);
             $comments = $changeset->addChild('comments');
             $comment = $comments->addChild('comment');
@@ -279,6 +284,9 @@ class Tracker {
         $this->addSelectBoxValue($tuleap_changeset, 'resolution', (string)$bugzilla_bug->resolution);
         $this->addSelectBoxValue($tuleap_changeset, 'severity', (string)$bugzilla_bug->bug_severity);
         $this->addSelectBoxValue($tuleap_changeset, 'priority', (string)$bugzilla_bug->priority);
+
+        $first_long = $bugzilla_bug->long_desc[0];
+        $this->addScalarData($tuleap_changeset, 'description', 'text', (string) $first_long->thetext);
     }
 
     private function addScalarData(SimpleXMLElement $tuleap_changeset, $field_name, $type, $bugzilla_value) {
