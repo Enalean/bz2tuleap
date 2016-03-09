@@ -15,6 +15,7 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\formelements' => '/Bz2Tuleap/Tuleap/FormElements.php',
                 'bz2tuleap\\tuleap\\idmapper' => '/Bz2Tuleap/Tuleap/IdMapper.php',
                 'bz2tuleap\\tuleap\\ifield' => '/Bz2Tuleap/Tuleap/IField.php',
+                'bz2tuleap\\tuleap\\iformelement' => '/Bz2Tuleap/Tuleap/IFormElement.php',
                 'bz2tuleap\\tuleap\\ipermissions' => '/Bz2Tuleap/Tuleap/IPermissions.php',
                 'bz2tuleap\\tuleap\\nofieldpermissions' => '/Bz2Tuleap/Tuleap/NoFieldPermissions.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',

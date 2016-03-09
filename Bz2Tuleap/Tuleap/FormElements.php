@@ -10,7 +10,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class FormElements  {
+class FormElements implements IFormElement {
 
     private $children;
 
@@ -18,7 +18,7 @@ class FormElements  {
         $this->children = $children;
     }
 
-    public function toXml(SimpleXMLElement $parent) {
+    public function toXml(SimpleXMLElement $parent, $rank = 0) {
         $form_elements = $parent->addChild('formElements');
         $sub_rank = 0;
         foreach($this->children as $child) {

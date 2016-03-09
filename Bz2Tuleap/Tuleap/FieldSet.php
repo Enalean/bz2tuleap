@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class FieldSet  {
+class FieldSet implements IFormElement {
 
     private $label;
 

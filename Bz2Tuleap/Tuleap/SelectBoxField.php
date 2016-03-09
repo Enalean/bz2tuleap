@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class SelectBoxField implements IField {
+class SelectBoxField implements IField, IFormElement {
 
     /** @var IdMapper */
     private $value_mapper;

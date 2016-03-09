@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class Column {
+class Column implements IFormElement {
 
     /**
      * @var IdMapper

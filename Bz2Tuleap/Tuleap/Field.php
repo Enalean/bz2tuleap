@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class Field implements IField {
+class Field implements IField, IFormElement {
 
     private $permissions;
     private $label;
@@ -14,11 +14,11 @@ class Field implements IField {
     private $reference;
 
     public function __construct(IdMapper $mapper, $type, $name, $label, IPermissions $permissions) {
-        $this->field_id  = $mapper->map($name);
-        $this->reference = $mapper->getReference($name);
-        $this->name      = $name;
-        $this->type      = $type;
-        $this->label     = $label;
+        $this->field_id    = $mapper->map($name);
+        $this->reference   = $mapper->getReference($name);
+        $this->name        = $name;
+        $this->type        = $type;
+        $this->label       = $label;
         $this->permissions = $permissions;
     }
 
