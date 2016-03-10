@@ -6,6 +6,10 @@ use SimpleXMLElement;
 
 class Field implements IField, IFormElement {
 
+    /**
+     * @var IProperties
+     */
+    private $properties;
     private $permissions;
     private $label;
     private $name;
@@ -13,12 +17,13 @@ class Field implements IField, IFormElement {
     private $field_id;
     private $reference;
 
-    public function __construct(IdMapper $mapper, $type, $name, $label, IPermissions $permissions) {
+    public function __construct(IdMapper $mapper, $type, $name, $label, IProperties $properties, IPermissions $permissions) {
         $this->field_id    = $mapper->map($name);
         $this->reference   = $mapper->getReference($name);
         $this->name        = $name;
         $this->type        = $type;
         $this->label       = $label;
+        $this->properties  = $properties;
         $this->permissions = $permissions;
     }
 
@@ -33,6 +38,7 @@ class Field implements IField, IFormElement {
         $field->addAttribute('rank', $rank);
         $field->addChild('name', $this->name);
         $field->addChild('label', $this->label);
+        $this->properties->toXml($field);
         return $field;
     }
 

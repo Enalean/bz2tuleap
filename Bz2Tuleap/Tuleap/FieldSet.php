@@ -25,7 +25,7 @@ class FieldSet implements IFormElement {
 
     public function toXml(SimpleXMLElement $parent, $rank) {
         $field = new StructureField(
-            new Field($this->mapper, $this->type, 'struct'.$rank, $this->label, new NoFieldPermissions()),
+            new Field($this->mapper, $this->type, 'struct'.$rank, $this->label, new NoProperties(), new NoFieldPermissions()),
             $this->children
         );
         $field->toXml($parent, $rank);

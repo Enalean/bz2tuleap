@@ -23,13 +23,13 @@ class TrackerFactory {
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
         $this->fields       = array(
-            'submitted_by'   => new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new ReadOnlyFieldPermissions()),
-            'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new ReadOnlyFieldPermissions()),
-            'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new ReadOnlyFieldPermissions()),
-            'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new ReadOnlyFieldPermissions()),
-            'summary'        => new Field($this->field_mapper, 'string', 'summary', 'Summary', new DefaultFieldPermissions()),
-            'bugzilla_id'    => new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new ReadOnlyFieldPermissions()),
-            'description'    => new Field($this->field_mapper, 'text', 'description', 'Description', new DefaultFieldPermissions()),
+            'submitted_by'   => new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'summary'        => new Field($this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultFieldPermissions()),
+            'bugzilla_id'    => new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'description'    => new Field($this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()),
             'cc'             => new CCField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions()),
             'status'         => new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                 'NEW',
@@ -63,7 +63,7 @@ class TrackerFactory {
                 'P4',
                 'P5',
             ), new DefaultFieldPermissions()),
-            'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new DefaultFieldPermissions()),
+            'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultFieldPermissions()),
         );
     }
 
