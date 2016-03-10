@@ -22,6 +22,9 @@ class SelectBoxField implements IField, IFormElement {
     }
 
     public function getValueReference($label) {
+        if ($label === null) {
+            return null;
+        }
         return $this->values[$label];
     }
 

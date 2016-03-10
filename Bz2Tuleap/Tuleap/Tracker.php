@@ -7,6 +7,11 @@ use SimpleXMLElement;
 class Tracker {
 
     /**
+     * @var Rules
+     */
+    private $rules;
+
+    /**
      * @var array
      */
     private $semantics;
@@ -18,11 +23,12 @@ class Tracker {
     private $artifacts;
     private $report_columns;
 
-    public function __construct(FormElements $fields, array $report_columns, array $semantics, array $artifacts) {
+    public function __construct(FormElements $fields, array $report_columns, array $semantics, Rules $rules, array $artifacts) {
         $this->fields         = $fields;
         $this->report_columns = $report_columns;
         $this->semantics      = $semantics;
         $this->artifacts      = $artifacts;
+        $this->rules = $rules;
     }
 
     public function toXml(SimpleXMLElement $tuleap_xml) {
@@ -50,6 +56,7 @@ class Tracker {
         $tracker->addChild('cannedResponses');
         $this->fields->toXml($tracker);
         $this->addSemantics($tracker);
+        $this->rules->toXml($tracker);
         $this->addReports($tracker);
         $this->addPermissions($tracker, $this->fields);
     }

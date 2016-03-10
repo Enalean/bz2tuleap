@@ -72,6 +72,7 @@ class TrackerFactory {
             $this->getFields(),
             $this->getReportColumns(),
             $this->getSemantics(),
+            $this->getRules(),
             $this->getArtifacts($bugzilla_xml)
         );
     }
@@ -114,7 +115,53 @@ class TrackerFactory {
         ));
     }
 
-    public function getSemantics() {
+    private function getRules() {
+        return new Rules(
+            new ListRules(
+                $this->getListRules('status', 'resolution', array(
+                    'NEW'         => array(null),
+                    'UNCONFIRMED' => array(null),
+                    'CONFIRMED'   => array(null),
+                    'IN_PROGRESS' => array(null),
+                    'RESOLVED'    => array(
+                        'FIXED',
+                        'INVALID',
+                        'WONTFIX',
+                        'DUPLICATE',
+                        'WORKSFORME',
+                    ),
+                    'VERIFIED'    => array(
+                        'FIXED',
+                        'INVALID',
+                        'WONTFIX',
+                        'DUPLICATE',
+                        'WORKSFORME',
+                    )
+                ))
+            )
+        );
+    }
+
+    private function getListRules($source_field, $target_field, array $dependencies) {
+        $rules = array();
+        foreach ($dependencies as $source_value => $target_values) {
+            foreach ($target_values as $target_value) {
+                $rules[] = $this->getRule($source_field, $target_field, $source_value, $target_value);
+            }
+        }
+        return $rules;
+    }
+
+    private function getRule($source_field, $target_field, $source_value, $target_value) {
+        return new ListRule(
+            $this->fields[$source_field],
+            $this->fields[$target_field],
+            $this->fields[$source_field]->getValueReference($source_value),
+            $this->fields[$target_field]->getValueReference($target_value)
+        );
+    }
+
+    private function getSemantics() {
         return array(
             new TitleSemantic($this->fields['summary']),
             new StatusSemantic($this->fields['status'], array(

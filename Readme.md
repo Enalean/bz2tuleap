@@ -10,14 +10,14 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
   * Bugzilla ID
   * Priority
   * Severity
-  * Status  (with semantic)
+  * Status  (with semantic and dependencies with resolution)
   * Submitted by
   * Submitted on
   * Last update by
   * Last update on
   * Assigned to (with semantic)
   * CC list
-  * Dependencies
+  * Artifact dependencies
 * Import comments with authors and dates
 
 Not covered:
