@@ -18,6 +18,8 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\defaultfieldpermissions' => '/Bz2Tuleap/Tuleap/DefaultFieldPermissions.php',
                 'bz2tuleap\\tuleap\\field' => '/Bz2Tuleap/Tuleap/Field.php',
                 'bz2tuleap\\tuleap\\fieldset' => '/Bz2Tuleap/Tuleap/FieldSet.php',
+                'bz2tuleap\\tuleap\\filefieldchange' => '/Bz2Tuleap/Tuleap/FileFieldChange.php',
+                'bz2tuleap\\tuleap\\filesdata' => '/Bz2Tuleap/Tuleap/FilesData.php',
                 'bz2tuleap\\tuleap\\formelements' => '/Bz2Tuleap/Tuleap/FormElements.php',
                 'bz2tuleap\\tuleap\\idmapper' => '/Bz2Tuleap/Tuleap/IdMapper.php',
                 'bz2tuleap\\tuleap\\ifield' => '/Bz2Tuleap/Tuleap/IField.php',

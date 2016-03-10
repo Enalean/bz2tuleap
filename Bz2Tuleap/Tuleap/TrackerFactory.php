@@ -8,7 +8,8 @@ use SimpleXMLElement;
  * This is where we know stuff about Bugzilla
  */
 class TrackerFactory {
-    
+
+    private $data_path;
     private $value_mapper;
     private $field_mapper;
 
@@ -18,7 +19,7 @@ class TrackerFactory {
     private $user_mapper;
     private $fields;
 
-    public function __construct(UserMapper $user_mapper) {
+    public function __construct(UserMapper $user_mapper, $data_path) {
         $this->user_mapper  = $user_mapper;
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
@@ -64,7 +65,9 @@ class TrackerFactory {
                 'P5',
             ), new DefaultFieldPermissions()),
             'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultFieldPermissions()),
+            'attachments'    => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
         );
+        $this->data_path = $data_path;
     }
 
     public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
@@ -107,6 +110,7 @@ class TrackerFactory {
                     $this->fields['severity'],
                     $this->fields['priority'],
                 )),
+                $this->fields['attachments'],
             )),
 
             new FieldSet($this->field_mapper, 'Links', array(
@@ -196,17 +200,36 @@ class TrackerFactory {
     private function getArtifactsFromBugzilla(SimpleXMLElement $bugzilla_xml) {
         $artifacts = array();
         foreach($bugzilla_xml as $bugzilla_bug) {
+            $files = $this->getFiles($bugzilla_bug);
             $artifacts[] = new Artifact(
                 (int) $bugzilla_bug->bug_id,
-                $this->getChangesets($bugzilla_bug)
+                $this->getChangesets($bugzilla_bug, $files),
+                $files
             );
         }
         return $artifacts;
     }
 
-    private function getChangesets(SimpleXMLElement $bugzilla_bug) {
-        $changeset = array($this->getInitialChangeset($bugzilla_bug));
-        return array_merge($changeset, $this->getChangesetComments($bugzilla_bug));
+    private function getFiles(SimpleXMLElement $bugzilla_xml) {
+        $files = array();
+        foreach ($bugzilla_xml->attachment as $attachment) {
+            $id = 'attach_'.(int) $attachment->attachid;
+            file_put_contents($this->data_path.'/'.$id, (string) $attachment->filename);
+            //https://bugs.eclipse.org/bugs/attachment.cgi?id=256190
+            $files[(int) $attachment->attachid] = array(
+                'id'          => $id,
+                'filename'    => (string) $attachment->filename,
+                'filetype'    => (string) $attachment->type,
+                'filesize'    => (string) $attachment->size,
+                'description' => (string) $attachment->desc,
+            );
+        }
+        return new FilesData($files);
+    }
+
+    private function getChangesets(SimpleXMLElement $bugzilla_bug, FilesData $files) {
+        $changeset = array($this->getInitialChangeset($bugzilla_bug)); // WARNING: add attch here too
+        return array_merge($changeset, $this->getChangesetComments($bugzilla_bug, $files));
     }
 
     private function getInitialChangeset(SimpleXMLElement $bugzilla_bug) {
@@ -218,7 +241,7 @@ class TrackerFactory {
         );
     }
 
-    private function getChangesetComments(SimpleXMLElement $bugzilla_bug) {
+    private function getChangesetComments(SimpleXMLElement $bugzilla_bug, FilesData $files) {
         $changesets = array();
         foreach($bugzilla_bug->long_desc as $long_desc) {
             if ((int)$long_desc->comment_count === 0) {
@@ -228,10 +251,18 @@ class TrackerFactory {
                 (string)$long_desc->bug_when,
                 $this->user_mapper->getUser($long_desc->who),
                 (string) $long_desc->thetext,
-                array()
+                $this->getCommentChanges($long_desc, $files)
             );
         }
         return $changesets;
+    }
+
+    private function getCommentChanges(SimpleXMLElement $long_desc, FilesData $files) {
+        $values = array();
+        if (isset($long_desc->attachid)) {
+            $values[] = new FileFieldChange('attachments', $files->getFile((int) $long_desc->attachid));
+        }
+        return $values;
     }
 
     private function getFieldsData(SimpleXMLElement $bugzilla_bug) {

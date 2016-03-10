@@ -6,10 +6,10 @@ use SimpleXMLElement;
 
 class Project {
 
-    public function convert(SimpleXMLElement $bugzilla_xml) {
+    public function convert(SimpleXMLElement $bugzilla_xml, $data_path) {
         $user_mapper = new UserMapper();
 
-        $factory = new TrackerFactory($user_mapper);
+        $factory = new TrackerFactory($user_mapper, $data_path);
         $tracker = $factory->getTrackerFromBugzilla($bugzilla_xml);
 
         $project_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
