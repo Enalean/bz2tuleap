@@ -14,6 +14,9 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
   - Submitted on
   - Last update by
   - Last update on
+  - Assigned to
+  - CC list
+  - Dependencies
 - Import comments with authors and dates
 
 Not covered:
