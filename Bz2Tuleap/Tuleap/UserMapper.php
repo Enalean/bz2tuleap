@@ -6,6 +6,7 @@ use SimpleXMLElement;
 
 class UserMapper {
 
+    private $user_id = 0;
     private $users;
 
     public function getUser(SimpleXMLElement $bugzilla_user_node) {
@@ -20,7 +21,10 @@ class UserMapper {
 
         if (! isset($this->users[$username])) {
             $this->users[$username] = array(
+                'id'       => $this->user_id++,
                 'realname' => $bugzilla_user_node['name'],
+                'email'    => $username.'@example.com',
+                'username' => $username,
             );
         }
         return $username;

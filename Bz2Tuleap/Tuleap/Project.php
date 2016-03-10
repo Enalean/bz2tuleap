@@ -16,6 +16,7 @@ class Project {
                                              <project />');
 
         $this->projectAttributes($project_xml);
+        $this->addUserGroups($project_xml, $user_mapper);
         $this->addServices($project_xml);
 
         $tracker->toXml($project_xml);
@@ -34,6 +35,18 @@ class Project {
         $tuleap_xml->addChild('long-description', '');
     }
 
+    private function addUserGroups(SimpleXMLElement $tuleap_xml, UserMapper $user_mapper) {
+        $ugroups = $tuleap_xml->addChild('ugroups');
+        $ugroup  = $ugroups->addChild('ugroup');
+        $ugroup->addAttribute('name', 'project_members');
+        $ugroup->addAttribute('description', '');
+        $members = $ugroup->addChild('members');
+        foreach ($user_mapper->getUsers() as $user) {
+            $member = $members->addChild('member', $user['username']);
+            $member->addAttribute('format', 'username');
+        }
+    }
+
     private function addServices(SimpleXMLElement $tuleap_xml) {
         $services = $tuleap_xml->addChild('services');
         $service = $services->addChild('service');
@@ -43,20 +56,13 @@ class Project {
 
     private function getUsers(UserMapper $user_mapper) {
         $users = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-                                             <users />');
-        $user_id = 101;
-        foreach ($user_mapper->getUsers() as $email => $user_details) {
+                                       <users />');
+        foreach ($user_mapper->getUsers() as $user_details) {
             $user = $users->addChild('user');
-            $user->addChild('id', $user_id++);
-            $at_place = strpos($email, '@');
-            if ($at_place !== false) {
-                $username = substr($email, 0, ($at_place - 1));
-            } else {
-                $username = $email;
-            }
-            $user->addChild('username', $username);
+            $user->addChild('id',       $user_details['id']);
+            $user->addChild('username', $user_details['username']);
             $user->addChild('realname', $user_details['realname']);
-            $user->addChild('email', $email.'@example.com');
+            $user->addChild('email',    $user_details['email']);
             $user->addChild('ldapid', '');
         }
         return $users;
