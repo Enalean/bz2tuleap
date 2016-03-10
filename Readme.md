@@ -18,9 +18,12 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
   * Assigned to (with semantic)
   * CC list
   * Artifact dependencies (simple)
-  * Files attachments (/!\ hardcoded with bugzilla URL)
+  * Files attachments (/!\ d/l link hardcoded with eclipse URL, update to try with another one)
   * Product (list of possible products is built out of the query result, might not be complete)
-  * Component (list of possible components is built out of the query result, might not be complete)
+  * Component (idem)
+  * Target milestone (idem)
+  * Hardware (idem)
+  * OS (idem)
 * Import comments with authors and dates
 
 Need to be improved:
@@ -30,14 +33,10 @@ Need to be improved:
 
 Not imported yet:
 
-* Target milestone
-* Hardware
-
 * QA contact: missing examples
 * URL: missing examples
 * Whiteboard: missing examples
 * Keywords: missing examples
-* Tags (feature doesn't exist in Tuleap)
 
 Not importable:
 
@@ -45,6 +44,14 @@ Not importable:
 
   For instance when "status" changed from NEW to CONFIRMED
   There is no informations about changes in bugzilla XML.
+
+* Tags
+
+  feature doesn't exist in Tuleap
+
+* Private comment or attachment
+
+  feature doesn't exist in Tuleap
 
 How to use it
 -------------

@@ -86,11 +86,14 @@ class TrackerFactory {
                 'P4',
                 'P5',
             ), new DefaultFieldPermissions()),
-            'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultFieldPermissions()),
-            'attachments'    => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
-            'product'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultFieldPermissions()),
-            'component'      => new SelectBoxField($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultFieldPermissions()),
-            'version'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new DefaultFieldPermissions()),
+            'links'            => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultFieldPermissions()),
+            'attachments'      => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
+            'product'          => new SelectBoxField($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultFieldPermissions()),
+            'component'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultFieldPermissions()),
+            'version'          => new SelectBoxField($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new DefaultFieldPermissions()),
+            'target_milestone' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'target_milestone', 'Target milestone', $this->getUsedValuesFor($bugzilla_xml, 'target_milestone'), new DefaultFieldPermissions()),
+            'hardware'         => new SelectBoxField($this->field_mapper, $this->value_mapper, 'hardware', 'Hardware', $this->getUsedValuesFor($bugzilla_xml, 'rep_platform'), new DefaultFieldPermissions()),
+            'os'               => new SelectBoxField($this->field_mapper, $this->value_mapper, 'os', 'OS', $this->getUsedValuesFor($bugzilla_xml, 'op_sys'), new DefaultFieldPermissions()),
         );
     }
 
@@ -155,9 +158,12 @@ class TrackerFactory {
                 new Column($this->field_mapper, array(
                     $this->fields['product'],
                     $this->fields['component'],
+                    $this->fields['hardware'],
                 )),
                 new Column($this->field_mapper, array(
                     $this->fields['version'],
+                    $this->fields['target_milestone'],
+                    $this->fields['os'],
                 )),
             )),
 
@@ -318,7 +324,7 @@ class TrackerFactory {
     private function getCommentChanges(SimpleXMLElement $long_desc, FilesData $files) {
         $values = array();
         if (isset($long_desc->attachid)) {
-            $values[] = new FileFieldChange('attachments    ', $files->getFile((int) $long_desc->attachid));
+            $values[] = new FileFieldChange('attachments', $files->getFile((int) $long_desc->attachid));
         }
         return $values;
     }
@@ -336,6 +342,9 @@ class TrackerFactory {
             new ListFieldChange('product', $this->getValueId($this->fields['product'], $bugzilla_bug, 'product')),
             new ListFieldChange('component', $this->getValueId($this->fields['component'], $bugzilla_bug, 'component')),
             new ListFieldChange('version', $this->getValueId($this->fields['version'], $bugzilla_bug, 'version')),
+            new ListFieldChange('target_milestone', $this->getValueId($this->fields['target_milestone'], $bugzilla_bug, 'target_milestone')),
+            new ListFieldChange('hardware', $this->getValueId($this->fields['hardware'], $bugzilla_bug, 'rep_platform')),
+            new ListFieldChange('os', $this->getValueId($this->fields['os'], $bugzilla_bug, 'op_sys')),
             new UsersSelectBoxFieldChange('assigned_to', $this->user_mapper->getUser($bugzilla_bug->assigned_to)),
         );
 
