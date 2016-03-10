@@ -4,9 +4,9 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class UsersOpenListField implements IField, IFormElement {
+class CCField implements IField, IFormElement {
     
-   private $permissions;
+    private $permissions;
     private $label;
     private $name;
     private $type;

@@ -4,7 +4,7 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
-class UserOpenListFieldChange {
+class CCFieldChange {
 
     private $values;
     private $name;

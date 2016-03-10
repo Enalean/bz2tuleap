@@ -59,7 +59,7 @@ class TrackerFactory {
                 'P5',
             ), new DefaultFieldPermissions()),
             'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new DefaultFieldPermissions()),
-            'cc'             => new UsersOpenListField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions())
+            'cc'             => new CCField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions())
         );
     }
 
@@ -191,7 +191,7 @@ class TrackerFactory {
             foreach ($bugzilla_bug->cc as $cc) {
                 $cc_list[] = (string) $cc;
             }
-            $values[] = new UserOpenListFieldChange('cc', $cc_list);
+            $values[] = new CCFieldChange('cc', $cc_list);
         }
 
         return $values;

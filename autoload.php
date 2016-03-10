@@ -9,6 +9,8 @@ spl_autoload_register(
             $classes = array(
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
                 'bz2tuleap\\tuleap\\artifact' => '/Bz2Tuleap/Tuleap/Artifact.php',
+                'bz2tuleap\\tuleap\\ccfield' => '/Bz2Tuleap/Tuleap/CCField.php',
+                'bz2tuleap\\tuleap\\ccfieldchange' => '/Bz2Tuleap/Tuleap/CCFieldChange.php',
                 'bz2tuleap\\tuleap\\changeset' => '/Bz2Tuleap/Tuleap/Changeset.php',
                 'bz2tuleap\\tuleap\\column' => '/Bz2Tuleap/Tuleap/Column.php',
                 'bz2tuleap\\tuleap\\comment' => '/Bz2Tuleap/Tuleap/Comment.php',
@@ -32,9 +34,7 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php',
                 'bz2tuleap\\tuleap\\tracker2xml' => '/Bz2Tuleap/Tuleap/TrackerToXml.php',
                 'bz2tuleap\\tuleap\\trackerfactory' => '/Bz2Tuleap/Tuleap/TrackerFactory.php',
-                'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php',
-                'bz2tuleap\\tuleap\\useropenlistfieldchange' => '/Bz2Tuleap/Tuleap/UserOpenListFieldChange.php',
-                'bz2tuleap\\tuleap\\usersopenlistfield' => '/Bz2Tuleap/Tuleap/UsersOpenListField.php'
+                'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php'
             );
         }
         $cn = strtolower($class);
