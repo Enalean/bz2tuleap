@@ -12,8 +12,7 @@ class SelectBoxField implements IField, IFormElement {
 
     public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values, IPermissions $permissions) {
         $this->field        = new Field($field_mapper, 'sb', $name, $label, $permissions);
-        $this->values       = $values;
-        foreach ($this->values as $value) {
+        foreach ($values as $value) {
             $this->values[$value] = $value_mapper->map($label);
         }
     }
