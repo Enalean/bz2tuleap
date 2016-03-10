@@ -116,7 +116,14 @@ class TrackerFactory {
 
     public function getSemantics() {
         return array(
-            new TitleSemantic($this->fields['summary'])
+            new TitleSemantic($this->fields['summary']),
+            new StatusSemantic($this->fields['status'], array(
+                $this->fields['status']->getValueReference('NEW'),
+                $this->fields['status']->getValueReference('UNCONFIRMED'),
+                $this->fields['status']->getValueReference('CONFIRMED'),
+                $this->fields['status']->getValueReference('IN_PROGRESS'),
+            )),
+            new AssignedToSemantic($this->fields['assigned_to']),
         );
     }
 
@@ -127,6 +134,7 @@ class TrackerFactory {
             $this->fields['submitted_by'],
             $this->fields['submitted_on'],
             $this->fields['last_update_by'],
+            $this->fields['assigned_to'],
         );
     }
 

@@ -9,6 +9,7 @@ spl_autoload_register(
             $classes = array(
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
                 'bz2tuleap\\tuleap\\artifact' => '/Bz2Tuleap/Tuleap/Artifact.php',
+                'bz2tuleap\\tuleap\\assignedtosemantic' => '/Bz2Tuleap/Tuleap/AssignedToSemantic.php',
                 'bz2tuleap\\tuleap\\ccfield' => '/Bz2Tuleap/Tuleap/CCField.php',
                 'bz2tuleap\\tuleap\\ccfieldchange' => '/Bz2Tuleap/Tuleap/CCFieldChange.php',
                 'bz2tuleap\\tuleap\\changeset' => '/Bz2Tuleap/Tuleap/Changeset.php',
@@ -28,6 +29,7 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\readonlyfieldpermissions' => '/Bz2Tuleap/Tuleap/ReadOnlyFieldPermissions.php',
                 'bz2tuleap\\tuleap\\scalarfieldchange' => '/Bz2Tuleap/Tuleap/ScalarFieldChange.php',
                 'bz2tuleap\\tuleap\\selectboxfield' => '/Bz2Tuleap/Tuleap/SelectBoxField.php',
+                'bz2tuleap\\tuleap\\statussemantic' => '/Bz2Tuleap/Tuleap/StatusSemantic.php',
                 'bz2tuleap\\tuleap\\structurefield' => '/Bz2Tuleap/Tuleap/StructureField.php',
                 'bz2tuleap\\tuleap\\supportedxmlcharencoding' => '/Bz2Tuleap/Tuleap/SupportedXmlCharEncoding.class.php',
                 'bz2tuleap\\tuleap\\titlesemantic' => '/Bz2Tuleap/Tuleap/TitleSemantic.php',
