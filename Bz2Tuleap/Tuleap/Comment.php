@@ -21,7 +21,7 @@ class Comment {
         if ($this->body != '') {
             $comment = $comments->addChild('comment');
             $this->addSubmittedInfo($comment, $this->submitted_by, $this->submitted_on);
-            $body = $this->addChildWithCDataValue($comment, 'body', $this->body);
+            $body = CData::addChild($comment, 'body', $this->body);
             $body->addAttribute('format', 'text');
         }
     }
@@ -31,15 +31,5 @@ class Comment {
         $submitted_by->addAttribute('format', 'username');
         $submitted_on = $node->addChild('submitted_on', $when);
         $submitted_on->addAttribute('format', 'ISO8601');
-    }
-
-    private function addChildWithCDataValue(SimpleXMLElement $parent_node, $node_name, $node_value) {
-        $node     = $parent_node->addChild($node_name);
-        $dom_node = dom_import_simplexml($node);
-        $document = $dom_node->ownerDocument;
-        $value    = SupportedXmlCharEncoding::getXMLCompatibleString($node_value);
-        $cdata    = $document->createCDATASection($value);
-        $dom_node->appendChild($cdata);
-        return $node;
     }
 }

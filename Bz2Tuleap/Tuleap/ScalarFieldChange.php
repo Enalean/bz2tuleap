@@ -20,7 +20,7 @@ class ScalarFieldChange {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);
         $field_change->addAttribute('type', $this->type);
-        $field_change->addChild('value', $this->value);
+        CData::addChild($field_change, 'value', $this->value);
     }
 
     public function isValid(array $artifacts) {

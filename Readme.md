@@ -30,7 +30,6 @@ Need to be improved:
 
 Not imported yet:
 
-* Version
 * Target milestone
 * Hardware
 

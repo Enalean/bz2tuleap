@@ -12,6 +12,7 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\assignedtosemantic' => '/Bz2Tuleap/Tuleap/AssignedToSemantic.php',
                 'bz2tuleap\\tuleap\\ccfield' => '/Bz2Tuleap/Tuleap/CCField.php',
                 'bz2tuleap\\tuleap\\ccfieldchange' => '/Bz2Tuleap/Tuleap/CCFieldChange.php',
+                'bz2tuleap\\tuleap\\cdata' => '/Bz2Tuleap/Tuleap/CData.php',
                 'bz2tuleap\\tuleap\\changeset' => '/Bz2Tuleap/Tuleap/Changeset.php',
                 'bz2tuleap\\tuleap\\column' => '/Bz2Tuleap/Tuleap/Column.php',
                 'bz2tuleap\\tuleap\\comment' => '/Bz2Tuleap/Tuleap/Comment.php',

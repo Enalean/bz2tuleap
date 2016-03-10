@@ -53,9 +53,12 @@ class TrackerFactory {
                 'NEW',
                 'UNCONFIRMED',
                 'CONFIRMED',
+                'ASSIGNED',
+                'REOPENED',
                 'IN_PROGRESS',
                 'RESOLVED',
                 'VERIFIED',
+                'CLOSED',
             ), new DefaultFieldPermissions()),
             'resolution'     => new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
                 'FIXED',
@@ -63,6 +66,8 @@ class TrackerFactory {
                 'WONTFIX',
                 'DUPLICATE',
                 'WORKSFORME',
+                'MOVED',
+                'NOT_ECLIPSE',
             ), new DefaultFieldPermissions()),
             'assigned_to'    => new UsersSelectBoxField($this->field_mapper, 'assigned_to', 'Assigned to', new DefaultFieldPermissions()),
             'severity'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
@@ -85,16 +90,29 @@ class TrackerFactory {
             'attachments'    => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
             'product'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultFieldPermissions()),
             'component'      => new SelectBoxField($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultFieldPermissions()),
+            'version'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new DefaultFieldPermissions()),
         );
     }
-
 
     private function getUsedValuesFor(SimpleXMLElement $bugzilla_xml, $field) {
         $values = array();
         foreach ($bugzilla_xml->bug as $bug) {
-            $values[(string)$bug->$field] = true;
+            $bugzilla_value = (string)$bug->$field;
+            if (! $this->correspondsToNone($field, $bugzilla_value)) {
+                $values[$bugzilla_value] = true;
+            }
         }
         return array_filter(array_keys($values));
+    }
+
+    private function correspondsToNone($name, $value) {
+        if ($name == 'version' && $value == 'unspecified') {
+            return true;
+        }
+        if ($name == 'milestone' && $value == '---') {
+            return true;
+        }
+        return false;
     }
 
     private function getFields() {
@@ -139,7 +157,7 @@ class TrackerFactory {
                     $this->fields['component'],
                 )),
                 new Column($this->field_mapper, array(
-
+                    $this->fields['version'],
                 )),
             )),
 
@@ -311,12 +329,13 @@ class TrackerFactory {
             new ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
             new ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
             new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
-            new ListFieldChange('status', $this->fields['status']->getValueId((string)$bugzilla_bug->bug_status)),
-            new ListFieldChange('resolution', $this->fields['resolution']->getValueId((string)$bugzilla_bug->resolution)),
-            new ListFieldChange('severity', $this->fields['severity']->getValueId((string)$bugzilla_bug->bug_severity)),
-            new ListFieldChange('priority', $this->fields['priority']->getValueId((string)$bugzilla_bug->priority)),
-            new ListFieldChange('product', $this->fields['product']->getValueId((string)$bugzilla_bug->product)),
-            new ListFieldChange('component', $this->fields['component']->getValueId((string)$bugzilla_bug->component)),
+            new ListFieldChange('status', $this->getValueId($this->fields['status'], $bugzilla_bug, 'bug_status')),
+            new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $bugzilla_bug, 'resolution')),
+            new ListFieldChange('severity', $this->getValueId($this->fields['severity'], $bugzilla_bug, 'bug_severity')),
+            new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $bugzilla_bug, 'priority')),
+            new ListFieldChange('product', $this->getValueId($this->fields['product'], $bugzilla_bug, 'product')),
+            new ListFieldChange('component', $this->getValueId($this->fields['component'], $bugzilla_bug, 'component')),
+            new ListFieldChange('version', $this->getValueId($this->fields['version'], $bugzilla_bug, 'version')),
             new UsersSelectBoxFieldChange('assigned_to', $this->user_mapper->getUser($bugzilla_bug->assigned_to)),
         );
 
@@ -331,4 +350,11 @@ class TrackerFactory {
         return $values;
     }
 
+    private function getValueId(SelectBoxField $field, SimpleXMLElement $bugzilla_bug, $bugzilla_field_name) {
+        $bugzilla_value = (string)$bugzilla_bug->$bugzilla_field_name;
+        if ($this->correspondsToNone($bugzilla_field_name, $bugzilla_value)) {
+            return null;
+        }
+        return $field->getValueId($bugzilla_value);
+    }
 }
