@@ -18,6 +18,7 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
   * Assigned to (with semantic)
   * CC list
   * Artifact dependencies
+  * Files attachments (/!\ hardcoded with bugzilla URL)
 * Import comments with authors and dates
 
 Not covered:

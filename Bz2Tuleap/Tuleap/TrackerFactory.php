@@ -9,6 +9,7 @@ use SimpleXMLElement;
  */
 class TrackerFactory {
 
+    private $bugzilla_location;
     private $data_path;
     private $value_mapper;
     private $field_mapper;
@@ -19,7 +20,7 @@ class TrackerFactory {
     private $user_mapper;
     private $fields;
 
-    public function __construct(UserMapper $user_mapper, $data_path) {
+    public function __construct(UserMapper $user_mapper, $data_path, $bugzilla_location) {
         $this->user_mapper  = $user_mapper;
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
@@ -68,6 +69,7 @@ class TrackerFactory {
             'attachments'    => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
         );
         $this->data_path = $data_path;
+        $this->bugzilla_location = $bugzilla_location;
     }
 
     public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
@@ -213,14 +215,24 @@ class TrackerFactory {
     private function getFiles(SimpleXMLElement $bugzilla_xml) {
         $files = array();
         foreach ($bugzilla_xml->attachment as $attachment) {
-            $id = 'attach_'.(int) $attachment->attachid;
-            file_put_contents($this->data_path.'/'.$id, (string) $attachment->filename);
-            //https://bugs.eclipse.org/bugs/attachment.cgi?id=256190
-            $files[(int) $attachment->attachid] = array(
+            $attchid = (int) $attachment->attachid;
+            $id      = 'attach_'.$attchid;
+            $size    = (int) $attachment->size;
+            $path    = $this->data_path.'/'.$id;
+            if (file_exists($path) && filesize($path) == $size) {
+                echo "Attachment $attchid was already downloaded, skip\n";
+            } else {
+                echo "Downloading attachment $attchid ($size)\n";
+                file_put_contents(
+                    $path,
+                    file_get_contents($this->bugzilla_location.'/attachment.cgi?id='.$attchid));
+            }
+            $files[$attchid] = array(
                 'id'          => $id,
+                'path'        => $path,
                 'filename'    => (string) $attachment->filename,
                 'filetype'    => (string) $attachment->type,
-                'filesize'    => (string) $attachment->size,
+                'filesize'    => $size,
                 'description' => (string) $attachment->desc,
             );
         }
@@ -260,7 +272,7 @@ class TrackerFactory {
     private function getCommentChanges(SimpleXMLElement $long_desc, FilesData $files) {
         $values = array();
         if (isset($long_desc->attachid)) {
-            $values[] = new FileFieldChange('attachments', $files->getFile((int) $long_desc->attachid));
+            $values[] = new FileFieldChange('attachments    ', $files->getFile((int) $long_desc->attachid));
         }
         return $values;
     }
