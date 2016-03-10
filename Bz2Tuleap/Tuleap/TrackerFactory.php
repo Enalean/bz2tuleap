@@ -59,6 +59,7 @@ class TrackerFactory {
                 'P5',
             ), new DefaultFieldPermissions()),
             'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new DefaultFieldPermissions()),
+            'cc'             => new UsersOpenListField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions())
         );
     }
 
@@ -90,7 +91,8 @@ class TrackerFactory {
                 new Column($this->field_mapper, array(
                     $this->fields['bugzilla_id'],
                 )),
-                new Field($this->field_mapper, 'text', 'description', 'Description', new DefaultFieldPermissions()),
+                $this->fields['description'],
+                $this->fields['cc'],
                 new Column($this->field_mapper, array(
                     $this->fields['status'],
                     $this->fields['resolution'],
@@ -173,7 +175,7 @@ class TrackerFactory {
     }
 
     private function getFieldsData(SimpleXMLElement $bugzilla_bug) {
-        return array(
+        $values = array(
             new ScalarFieldChange('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
             new ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
             new ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
@@ -183,6 +185,16 @@ class TrackerFactory {
             new ListFieldChange('priority', $this->value_mapper->getId((string)$bugzilla_bug->priority)),
             new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
         );
+
+        if (isset($bugzilla_bug->cc)) {
+            $cc_list = array();
+            foreach ($bugzilla_bug->cc as $cc) {
+                $cc_list[] = (string) $cc;
+            }
+            $values[] = new UserOpenListFieldChange('cc', $cc_list);
+        }
+
+        return $values;
     }
 
 }

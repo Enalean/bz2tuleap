@@ -32,7 +32,9 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php',
                 'bz2tuleap\\tuleap\\tracker2xml' => '/Bz2Tuleap/Tuleap/TrackerToXml.php',
                 'bz2tuleap\\tuleap\\trackerfactory' => '/Bz2Tuleap/Tuleap/TrackerFactory.php',
-                'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php'
+                'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php',
+                'bz2tuleap\\tuleap\\useropenlistfieldchange' => '/Bz2Tuleap/Tuleap/UserOpenListFieldChange.php',
+                'bz2tuleap\\tuleap\\usersopenlistfield' => '/Bz2Tuleap/Tuleap/UsersOpenListField.php'
             );
         }
         $cn = strtolower($class);
