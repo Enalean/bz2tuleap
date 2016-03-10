@@ -182,7 +182,7 @@ class TrackerFactory {
                     'CONFIRMED'   => array(null),
                     'IN_PROGRESS' => array(null),
                     'ASSIGNED'    => array(null),
-                    'REOPEN'      => array(null),
+                    'REOPENED'    => array(null),
                     'RESOLVED'    => array(
                         'FIXED',
                         'INVALID',
