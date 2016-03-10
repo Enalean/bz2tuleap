@@ -4,6 +4,9 @@ namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
 
+/**
+ * This is where we know stuff about Bugzilla
+ */
 class TrackerFactory {
     
     private $value_mapper;
@@ -27,6 +30,7 @@ class TrackerFactory {
             'summary'        => new Field($this->field_mapper, 'string', 'summary', 'Summary', new DefaultFieldPermissions()),
             'bugzilla_id'    => new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new ReadOnlyFieldPermissions()),
             'description'    => new Field($this->field_mapper, 'text', 'description', 'Description', new DefaultFieldPermissions()),
+            'cc'             => new CCField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions()),
             'status'         => new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                 'NEW',
                 'UNCONFIRMED',
@@ -42,6 +46,7 @@ class TrackerFactory {
                 'DUPLICATE',
                 'WORKSFORME',
             ), new DefaultFieldPermissions()),
+            'assigned_to'    => new UsersSelectBoxField($this->field_mapper, 'assigned_to', 'Assigned to', new DefaultFieldPermissions()),
             'severity'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
                 'blocker',
                 'critical',
@@ -59,7 +64,6 @@ class TrackerFactory {
                 'P5',
             ), new DefaultFieldPermissions()),
             'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new DefaultFieldPermissions()),
-            'cc'             => new CCField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions())
         );
     }
 
@@ -96,6 +100,7 @@ class TrackerFactory {
                 new Column($this->field_mapper, array(
                     $this->fields['status'],
                     $this->fields['resolution'],
+                    $this->fields['assigned_to'],
                 )),
                 new Column($this->field_mapper, array(
                     $this->fields['severity'],
@@ -179,11 +184,12 @@ class TrackerFactory {
             new ScalarFieldChange('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
             new ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
             new ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
+            new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
             new ListFieldChange('status', $this->value_mapper->getId((string)$bugzilla_bug->bug_status)),
             new ListFieldChange('resolution', $this->value_mapper->getId((string)$bugzilla_bug->resolution)),
             new ListFieldChange('severity', $this->value_mapper->getId((string)$bugzilla_bug->bug_severity)),
             new ListFieldChange('priority', $this->value_mapper->getId((string)$bugzilla_bug->priority)),
-            new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
+            new UsersSelectBoxFieldChange('assigned_to', $this->user_mapper->getUser($bugzilla_bug->assigned_to)),
         );
 
         if (isset($bugzilla_bug->cc)) {
