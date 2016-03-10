@@ -2,6 +2,7 @@ Converter from Bugzilla to tuleap
 =================================
 
 Convert any XML export obtained from bugzilla into a Tuleap compatible archive
+
 * Manage users (requires you to be authenticated when doing XML export)
 * Manage one or several bugs (query)
 * Fields imported
@@ -20,6 +21,7 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
 * Import comments with authors and dates
 
 Not covered:
+
 * Import of changes
 
 How to use it
