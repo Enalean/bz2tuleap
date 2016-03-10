@@ -181,12 +181,16 @@ class TrackerFactory {
                     'UNCONFIRMED' => array(null),
                     'CONFIRMED'   => array(null),
                     'IN_PROGRESS' => array(null),
+                    'ASSIGNED'    => array(null),
+                    'REOPEN'      => array(null),
                     'RESOLVED'    => array(
                         'FIXED',
                         'INVALID',
                         'WONTFIX',
                         'DUPLICATE',
                         'WORKSFORME',
+                        'MOVED',
+                        'NOT_ECLIPSE',
                     ),
                     'VERIFIED'    => array(
                         'FIXED',
@@ -194,6 +198,17 @@ class TrackerFactory {
                         'WONTFIX',
                         'DUPLICATE',
                         'WORKSFORME',
+                        'MOVED',
+                        'NOT_ECLIPSE',
+                    ),
+                    'CLOSED'      => array(
+                        'FIXED',
+                        'INVALID',
+                        'WONTFIX',
+                        'DUPLICATE',
+                        'WORKSFORME',
+                        'MOVED',
+                        'NOT_ECLIPSE',
                     )
                 ))
             )
@@ -226,6 +241,8 @@ class TrackerFactory {
                 $this->fields['status']->getValueReference('NEW'),
                 $this->fields['status']->getValueReference('UNCONFIRMED'),
                 $this->fields['status']->getValueReference('CONFIRMED'),
+                $this->fields['status']->getValueReference('ASSIGNED'),
+                $this->fields['status']->getValueReference('REOPENED'),
                 $this->fields['status']->getValueReference('IN_PROGRESS'),
             )),
             new AssignedToSemantic($this->fields['assigned_to']),

@@ -18,7 +18,7 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
   * Assigned to (with semantic)
   * CC list
   * Artifact dependencies (simple)
-  * Files attachments (/!\ d/l link hardcoded with eclipse URL, update to try with another one)
+  * Files attachments
   * Product (list of possible products is built out of the query result, might not be complete)
   * Component (idem)
   * Target milestone (idem)
@@ -30,6 +30,9 @@ Need to be improved:
 
 * Depends/blocks: as of today, links are imported but without semantic. Need
   Tuleap Artifact links v2.
+
+* Field dependencies between status and resolutions are basic and it need to be
+  verified by a bugzilla user.
 
 Not imported yet:
 
@@ -59,5 +62,10 @@ How to use it
     $> php converter.php /path/to/bugzilla.xml target_directory
 
 Then you should import `target_directory` following Tuleap process.
+
+Notes:
+
+* URL for attachment download is harcoded to Eclipse fundation Bz instance.
+* User's urls are rewritten to be "example.com", you might want to remove that too.
 
 Was tested and developed against Eclipse Bugzilla as of version 4.4.7.
