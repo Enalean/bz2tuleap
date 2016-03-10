@@ -13,7 +13,7 @@ if [ -f $1 ]; then
     target_directory=$(dirname $1)
     name=$(basename $1 .xml)
     final_dir="${target_directory}/${name}_tuleap"
-    mkdir $final_dir
+    mkdir -p $final_dir
     php $mydir/converter.php $1 $final_dir
 else
     echo "$1 is not a file"

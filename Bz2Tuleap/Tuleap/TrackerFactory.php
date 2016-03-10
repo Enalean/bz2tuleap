@@ -20,12 +20,11 @@ class TrackerFactory {
     private $user_mapper;
     private $fields;
 
-    public function __construct(UserMapper $user_mapper, $data_path, $bugzilla_location) {
+    public function __construct(UserMapper $user_mapper, $data_path) {
         $this->user_mapper  = $user_mapper;
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
         $this->data_path = $data_path;
-        $this->bugzilla_location = $bugzilla_location;
     }
 
     public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
@@ -271,7 +270,7 @@ class TrackerFactory {
     private function getArtifactsFromBugzilla(SimpleXMLElement $bugzilla_xml) {
         $artifacts = array();
         foreach($bugzilla_xml as $bugzilla_bug) {
-            $files = $this->getFiles($bugzilla_bug);
+            $files = $this->getFiles($bugzilla_bug, (string)$bugzilla_xml['urlbase']);
             $artifacts[] = new Artifact(
                 (int) $bugzilla_bug->bug_id,
                 $this->getChangesets($bugzilla_bug, $files),
@@ -281,7 +280,7 @@ class TrackerFactory {
         return $artifacts;
     }
 
-    private function getFiles(SimpleXMLElement $bugzilla_xml) {
+    private function getFiles(SimpleXMLElement $bugzilla_xml, $baseurl) {
         $files = array();
         foreach ($bugzilla_xml->attachment as $attachment) {
             $attchid = (int) $attachment->attachid;
@@ -294,7 +293,7 @@ class TrackerFactory {
                 echo "Downloading attachment $attchid ($size)\n";
                 file_put_contents(
                     $path,
-                    file_get_contents($this->bugzilla_location.'/attachment.cgi?id='.$attchid));
+                    file_get_contents($baseurl.'/attachment.cgi?id='.$attchid));
             }
             $files[$attchid] = array(
                 'id'          => $id,

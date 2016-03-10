@@ -65,7 +65,6 @@ Then you should import `target_directory` following Tuleap process.
 
 Notes:
 
-* URL for attachment download is harcoded to Eclipse fundation Bz instance.
 * User's urls are rewritten to be "example.com", you might want to remove that too.
 
 Was tested and developed against Eclipse Bugzilla as of version 4.4.7.
