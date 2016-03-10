@@ -24,7 +24,23 @@ class TrackerFactory {
         $this->user_mapper  = $user_mapper;
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
-        $this->fields       = array(
+        $this->data_path = $data_path;
+        $this->bugzilla_location = $bugzilla_location;
+    }
+
+    public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
+        $this->initFields($bugzilla_xml);
+        return new Tracker(
+            $this->getFields(),
+            $this->getReportColumns(),
+            $this->getSemantics(),
+            $this->getRules(),
+            $this->getArtifacts($bugzilla_xml)
+        );
+    }
+
+    private function initFields(SimpleXMLElement $bugzilla_xml) {
+        $this->fields = array(
             'submitted_by'   => new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new NoProperties(), new ReadOnlyFieldPermissions()),
             'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyFieldPermissions()),
             'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyFieldPermissions()),
@@ -67,19 +83,18 @@ class TrackerFactory {
             ), new DefaultFieldPermissions()),
             'links'          => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultFieldPermissions()),
             'attachments'    => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
+            'product'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultFieldPermissions()),
+            'component'      => new SelectBoxField($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultFieldPermissions()),
         );
-        $this->data_path = $data_path;
-        $this->bugzilla_location = $bugzilla_location;
     }
 
-    public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
-        return new Tracker(
-            $this->getFields(),
-            $this->getReportColumns(),
-            $this->getSemantics(),
-            $this->getRules(),
-            $this->getArtifacts($bugzilla_xml)
-        );
+
+    private function getUsedValuesFor(SimpleXMLElement $bugzilla_xml, $field) {
+        $values = array();
+        foreach ($bugzilla_xml->bug as $bug) {
+            $values[(string)$bug->$field] = true;
+        }
+        return array_filter(array_keys($values));
     }
 
     private function getFields() {
@@ -103,6 +118,10 @@ class TrackerFactory {
                 )),
                 $this->fields['description'],
                 $this->fields['cc'],
+                $this->fields['attachments'],
+            )),
+
+            new FieldSet($this->field_mapper, 'Progress', array(
                 new Column($this->field_mapper, array(
                     $this->fields['status'],
                     $this->fields['resolution'],
@@ -112,7 +131,16 @@ class TrackerFactory {
                     $this->fields['severity'],
                     $this->fields['priority'],
                 )),
-                $this->fields['attachments'],
+            )),
+
+            new FieldSet($this->field_mapper, 'Product and versions', array(
+                new Column($this->field_mapper, array(
+                    $this->fields['product'],
+                    $this->fields['component'],
+                )),
+                new Column($this->field_mapper, array(
+
+                )),
             )),
 
             new FieldSet($this->field_mapper, 'Links', array(
@@ -283,10 +311,12 @@ class TrackerFactory {
             new ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
             new ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
             new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
-            new ListFieldChange('status', $this->value_mapper->getId((string)$bugzilla_bug->bug_status)),
-            new ListFieldChange('resolution', $this->value_mapper->getId((string)$bugzilla_bug->resolution)),
-            new ListFieldChange('severity', $this->value_mapper->getId((string)$bugzilla_bug->bug_severity)),
-            new ListFieldChange('priority', $this->value_mapper->getId((string)$bugzilla_bug->priority)),
+            new ListFieldChange('status', $this->fields['status']->getValueId((string)$bugzilla_bug->bug_status)),
+            new ListFieldChange('resolution', $this->fields['resolution']->getValueId((string)$bugzilla_bug->resolution)),
+            new ListFieldChange('severity', $this->fields['severity']->getValueId((string)$bugzilla_bug->bug_severity)),
+            new ListFieldChange('priority', $this->fields['priority']->getValueId((string)$bugzilla_bug->priority)),
+            new ListFieldChange('product', $this->fields['product']->getValueId((string)$bugzilla_bug->product)),
+            new ListFieldChange('component', $this->fields['component']->getValueId((string)$bugzilla_bug->component)),
             new UsersSelectBoxFieldChange('assigned_to', $this->user_mapper->getUser($bugzilla_bug->assigned_to)),
         );
 

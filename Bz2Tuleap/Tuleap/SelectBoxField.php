@@ -9,16 +9,26 @@ class SelectBoxField implements IField, IFormElement {
     /** @var Field */
     private $field;
     private $values = array();
+    private $value_ids = array();
 
     public function __construct(IdMapper $field_mapper, IdMapper $value_mapper, $name, $label, array $values, IPermissions $permissions) {
-        $this->field        = new Field($field_mapper, 'sb', $name, $label, new NoProperties(), $permissions);
+        $this->field = new Field($field_mapper, 'sb', $name, $label, new NoProperties(), $permissions);
         foreach ($values as $value) {
-            $this->values[$value] = $value_mapper->map($label);
+            $value_mapper->map($label);
+            $this->values[$value]    = $value_mapper->getReference($label);
+            $this->value_ids[$value] = $value_mapper->getId($label);
         }
     }
 
     public function getReference() {
         return $this->field->getReference();
+    }
+
+    public function getValueId($label) {
+        if ($label == null) {
+            return null;
+        }
+        return $this->value_ids[$label];
     }
 
     public function getValueReference($label) {

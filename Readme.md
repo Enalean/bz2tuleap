@@ -17,13 +17,35 @@ Convert any XML export obtained from bugzilla into a Tuleap compatible archive
   * Last update on
   * Assigned to (with semantic)
   * CC list
-  * Artifact dependencies
+  * Artifact dependencies (simple)
   * Files attachments (/!\ hardcoded with bugzilla URL)
+  * Product (list of possible products is built out of the query result, might not be complete)
+  * Component (list of possible components is built out of the query result, might not be complete)
 * Import comments with authors and dates
 
-Not covered:
+Need to be improved:
 
-* Import of changes
+* Depends/blocks: as of today, links are imported but without semantic. Need
+  Tuleap Artifact links v2.
+
+Not imported yet:
+
+* Version
+* Target milestone
+* Hardware
+
+* QA contact: missing examples
+* URL: missing examples
+* Whiteboard: missing examples
+* Keywords: missing examples
+* Tags (feature doesn't exist in Tuleap)
+
+Not importable:
+
+* Field values changes
+
+  For instance when "status" changed from NEW to CONFIRMED
+  There is no informations about changes in bugzilla XML.
 
 How to use it
 -------------

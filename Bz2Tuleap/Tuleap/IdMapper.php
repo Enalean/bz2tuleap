@@ -3,7 +3,7 @@
 namespace Bz2Tuleap\Tuleap;
 
 class IdMapper {
-    private $id_counter = 0;
+    private $id_counter = 1;
     private $map        = array();
     private $prefix;
 
