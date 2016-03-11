@@ -24,7 +24,7 @@ class Tracker {
     private $artifacts;
     private $report_columns;
 
-    public function __construct(Field\FormElements $fields, array $report_columns, array $semantics, Rules $rules, array $artifacts) {
+    public function __construct(Field\FormElements $fields, array $report_columns, array $semantics, Rule\Rules $rules, array $artifacts) {
         $this->fields         = $fields;
         $this->report_columns = $report_columns;
         $this->semantics      = $semantics;

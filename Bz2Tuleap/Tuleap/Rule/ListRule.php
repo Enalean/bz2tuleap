@@ -1,6 +1,6 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Rule;
 
 use Bz2Tuleap\Tuleap\Field;
 use SimpleXMLElement;
