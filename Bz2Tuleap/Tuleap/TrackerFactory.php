@@ -2,34 +2,6 @@
 
 namespace Bz2Tuleap\Tuleap;
 
-use Bz2Tuleap\Tuleap\Field\IdMapper;
-use Bz2Tuleap\Tuleap\Field\Field;
-use Bz2Tuleap\Tuleap\Field\CC;
-use Bz2Tuleap\Tuleap\Field\UsersSelectBox;
-use Bz2Tuleap\Tuleap\Field\FormElements;
-use Bz2Tuleap\Tuleap\Field\Column;
-use Bz2Tuleap\Tuleap\Field\FieldSet;
-use Bz2Tuleap\Tuleap\Field\SelectBox;
-use Bz2Tuleap\Tuleap\Field\NoProperties;
-use Bz2Tuleap\Tuleap\Field\Properties;
-use Bz2Tuleap\Tuleap\Field\DefaultPermissions;
-use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
-use Bz2Tuleap\Tuleap\Field\ReadOnlyPermissions;
-use Bz2Tuleap\Tuleap\Semantic\Title;
-use Bz2Tuleap\Tuleap\Semantic\Status;
-use Bz2Tuleap\Tuleap\Semantic\AssignedTo;
-use Bz2Tuleap\Tuleap\Rule\Rules;
-use Bz2Tuleap\Tuleap\Rule\ListRules;
-use Bz2Tuleap\Tuleap\Rule\ListRule;
-use Bz2Tuleap\Tuleap\Artifact\Artifact;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\Changeset;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\FilesData;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\Comment;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\ListFieldChange;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\ScalarFieldChange;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\UsersSelectBoxFieldChange;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\CCFieldChange;
-use Bz2Tuleap\Tuleap\Artifact\Changeset\FileFieldChange;
 use SimpleXMLElement;
 
 /**
@@ -49,8 +21,8 @@ class TrackerFactory {
 
     public function __construct(UserMapper $user_mapper, $data_path) {
         $this->user_mapper  = $user_mapper;
-        $this->value_mapper = new IdMapper('V');
-        $this->field_mapper = new IdMapper('F');
+        $this->value_mapper = new Field\IdMapper('V');
+        $this->field_mapper = new Field\IdMapper('F');
         $this->data_path = $data_path;
     }
 
@@ -67,15 +39,15 @@ class TrackerFactory {
 
     private function initFields(SimpleXMLElement $bugzilla_xml) {
         $this->fields = array(
-            'submitted_by'   => new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new NoProperties(), new ReadOnlyPermissions()),
-            'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyPermissions()),
-            'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyPermissions()),
-            'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyPermissions()),
-            'summary'        => new Field($this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultPermissions()),
-            'bugzilla_id'    => new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new NoProperties(), new ReadOnlyPermissions()),
-            'description'    => new Field($this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultPermissions()),
-            'cc'             => new CC($this->field_mapper, 'cc', 'CC', new DefaultPermissions()),
-            'status'         => new SelectBox($this->field_mapper, $this->value_mapper, 'status', "Status", array(
+            'submitted_by'   => new Field\Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new Field\NoProperties(), new Field\ReadOnlyPermissions()),
+            'submitted_on'   => new Field\Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new Field\NoProperties(), new Field\ReadOnlyPermissions()),
+            'last_update_by' => new Field\Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new Field\NoProperties(), new Field\ReadOnlyPermissions()),
+            'last_update_on' => new Field\Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new Field\NoProperties(), new Field\ReadOnlyPermissions()),
+            'summary'        => new Field\Field($this->field_mapper, 'string', 'summary', 'Summary', new Field\Properties(array('size' => 61)), new Field\DefaultPermissions()),
+            'bugzilla_id'    => new Field\Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new Field\NoProperties(), new Field\ReadOnlyPermissions()),
+            'description'    => new Field\Field($this->field_mapper, 'text', 'description', 'Description', new Field\Properties(array('rows' => 7, 'cols' => 80)), new Field\DefaultPermissions()),
+            'cc'             => new Field\CC($this->field_mapper, 'cc', 'CC', new Field\DefaultPermissions()),
+            'status'         => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                 'NEW',
                 'UNCONFIRMED',
                 'CONFIRMED',
@@ -85,8 +57,8 @@ class TrackerFactory {
                 'RESOLVED',
                 'VERIFIED',
                 'CLOSED',
-            ), new DefaultPermissions()),
-            'resolution'     => new SelectBox($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
+            ), new Field\DefaultPermissions()),
+            'resolution'     => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
                 'FIXED',
                 'INVALID',
                 'WONTFIX',
@@ -94,9 +66,9 @@ class TrackerFactory {
                 'WORKSFORME',
                 'MOVED',
                 'NOT_ECLIPSE',
-            ), new DefaultPermissions()),
-            'assigned_to'    => new UsersSelectBox($this->field_mapper, 'assigned_to', 'Assigned to', new DefaultPermissions()),
-            'severity'       => new SelectBox($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
+            ), new Field\DefaultPermissions()),
+            'assigned_to'    => new Field\UsersSelectBox($this->field_mapper, 'assigned_to', 'Assigned to', new Field\DefaultPermissions()),
+            'severity'       => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
                 'blocker',
                 'critical',
                 'major',
@@ -104,22 +76,22 @@ class TrackerFactory {
                 'minor',
                 'trivial',
                 'enhancement',
-            ), new DefaultPermissions()),
-            'priority'       => new SelectBox($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
+            ), new Field\DefaultPermissions()),
+            'priority'       => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
                 'P1',
                 'P2',
                 'P3',
                 'P4',
                 'P5',
-            ), new DefaultPermissions()),
-            'links'            => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultPermissions()),
-            'attachments'      => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultPermissions()),
-            'product'          => new SelectBox($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultPermissions()),
-            'component'        => new SelectBox($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultPermissions()),
-            'version'          => new SelectBox($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new DefaultPermissions()),
-            'target_milestone' => new SelectBox($this->field_mapper, $this->value_mapper, 'target_milestone', 'Target milestone', $this->getUsedValuesFor($bugzilla_xml, 'target_milestone'), new DefaultPermissions()),
-            'hardware'         => new SelectBox($this->field_mapper, $this->value_mapper, 'hardware', 'Hardware', $this->getUsedValuesFor($bugzilla_xml, 'rep_platform'), new DefaultPermissions()),
-            'os'               => new SelectBox($this->field_mapper, $this->value_mapper, 'os', 'OS', $this->getUsedValuesFor($bugzilla_xml, 'op_sys'), new DefaultPermissions()),
+            ), new Field\DefaultPermissions()),
+            'links'            => new Field\Field($this->field_mapper, 'art_link', 'links', 'Links', new Field\NoProperties(), new Field\DefaultPermissions()),
+            'attachments'      => new Field\Field($this->field_mapper, 'file', 'attachments', 'Attachments', new Field\NoProperties(), new Field\DefaultPermissions()),
+            'product'          => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new Field\DefaultPermissions()),
+            'component'        => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new Field\DefaultPermissions()),
+            'version'          => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new Field\DefaultPermissions()),
+            'target_milestone' => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'target_milestone', 'Target milestone', $this->getUsedValuesFor($bugzilla_xml, 'target_milestone'), new Field\DefaultPermissions()),
+            'hardware'         => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'hardware', 'Hardware', $this->getUsedValuesFor($bugzilla_xml, 'rep_platform'), new Field\DefaultPermissions()),
+            'os'               => new Field\SelectBox($this->field_mapper, $this->value_mapper, 'os', 'OS', $this->getUsedValuesFor($bugzilla_xml, 'op_sys'), new Field\DefaultPermissions()),
         );
     }
 
@@ -145,22 +117,22 @@ class TrackerFactory {
     }
 
     private function getFields() {
-        return new FormElements(array(
-            new Column($this->field_mapper, array(
+        return new Field\FormElements(array(
+            new Field\Column($this->field_mapper, array(
                 $this->fields['submitted_by'],
                 $this->fields['submitted_on'],
             )),
 
-            new Column($this->field_mapper, array(
+            new Field\Column($this->field_mapper, array(
                 $this->fields['last_update_by'],
                 $this->fields['last_update_on'],
             )),
 
-            new FieldSet($this->field_mapper, 'Details', array(
-                new Column($this->field_mapper, array(
+            new Field\FieldSet($this->field_mapper, 'Details', array(
+                new Field\Column($this->field_mapper, array(
                     $this->fields['summary'],
                 )),
-                new Column($this->field_mapper, array(
+                new Field\Column($this->field_mapper, array(
                     $this->fields['bugzilla_id'],
                 )),
                 $this->fields['description'],
@@ -168,40 +140,40 @@ class TrackerFactory {
                 $this->fields['attachments'],
             )),
 
-            new FieldSet($this->field_mapper, 'Progress', array(
-                new Column($this->field_mapper, array(
+            new Field\FieldSet($this->field_mapper, 'Progress', array(
+                new Field\Column($this->field_mapper, array(
                     $this->fields['status'],
                     $this->fields['resolution'],
                     $this->fields['assigned_to'],
                 )),
-                new Column($this->field_mapper, array(
+                new Field\Column($this->field_mapper, array(
                     $this->fields['severity'],
                     $this->fields['priority'],
                 )),
             )),
 
-            new FieldSet($this->field_mapper, 'Product and versions', array(
-                new Column($this->field_mapper, array(
+            new Field\FieldSet($this->field_mapper, 'Product and versions', array(
+                new Field\Column($this->field_mapper, array(
                     $this->fields['product'],
                     $this->fields['component'],
                     $this->fields['hardware'],
                 )),
-                new Column($this->field_mapper, array(
+                new Field\Column($this->field_mapper, array(
                     $this->fields['version'],
                     $this->fields['target_milestone'],
                     $this->fields['os'],
                 )),
             )),
 
-            new FieldSet($this->field_mapper, 'Links', array(
+            new Field\FieldSet($this->field_mapper, 'Links', array(
                 $this->fields['links'],
             )),
         ));
     }
 
     private function getRules() {
-        return new Rules(
-            new ListRules(
+        return new Rule\Rules(
+            new Rule\ListRules(
                 $this->getListRules('status', 'resolution', array(
                     'NEW'         => array(null),
                     'UNCONFIRMED' => array(null),
@@ -252,7 +224,7 @@ class TrackerFactory {
     }
 
     private function getRule($source_field, $target_field, $source_value, $target_value) {
-        return new ListRule(
+        return new Rule\ListRule(
             $this->fields[$source_field],
             $this->fields[$target_field],
             $this->fields[$source_field]->getValueReference($source_value),
@@ -262,8 +234,8 @@ class TrackerFactory {
 
     private function getSemantics() {
         return array(
-            new Title($this->fields['summary']),
-            new Status($this->fields['status'], array(
+            new Semantic\Title($this->fields['summary']),
+            new Semantic\Status($this->fields['status'], array(
                 $this->fields['status']->getValueReference('NEW'),
                 $this->fields['status']->getValueReference('UNCONFIRMED'),
                 $this->fields['status']->getValueReference('CONFIRMED'),
@@ -271,7 +243,7 @@ class TrackerFactory {
                 $this->fields['status']->getValueReference('REOPENED'),
                 $this->fields['status']->getValueReference('IN_PROGRESS'),
             )),
-            new AssignedTo($this->fields['assigned_to']),
+            new Semantic\AssignedTo($this->fields['assigned_to']),
         );
     }
 
@@ -298,7 +270,7 @@ class TrackerFactory {
         $artifacts = array();
         foreach($bugzilla_xml as $bugzilla_bug) {
             $files = $this->getFiles($bugzilla_bug, (string)$bugzilla_xml['urlbase']);
-            $artifacts[] = new Artifact(
+            $artifacts[] = new Artifact\Artifact(
                 (int) $bugzilla_bug->bug_id,
                 $this->getChangesets($bugzilla_bug, $files),
                 $files
@@ -331,16 +303,16 @@ class TrackerFactory {
                 'description' => (string) $attachment->desc,
             );
         }
-        return new FilesData($files);
+        return new Artifact\Changeset\FilesData($files);
     }
 
-    private function getChangesets(SimpleXMLElement $bugzilla_bug, FilesData $files) {
+    private function getChangesets(SimpleXMLElement $bugzilla_bug, Artifact\Changeset\FilesData $files) {
         $changeset = array($this->getInitialChangeset($bugzilla_bug)); // WARNING: add attch here too
         return array_merge($changeset, $this->getChangesetComments($bugzilla_bug, $files));
     }
 
     private function getInitialChangeset(SimpleXMLElement $bugzilla_bug) {
-        return new Changeset(
+        return new Artifact\Changeset\Changeset(
             (string)$bugzilla_bug->creation_ts,
             (string)$this->user_mapper->getUser($bugzilla_bug->reporter),
             '',
@@ -348,13 +320,13 @@ class TrackerFactory {
         );
     }
 
-    private function getChangesetComments(SimpleXMLElement $bugzilla_bug, FilesData $files) {
+    private function getChangesetComments(SimpleXMLElement $bugzilla_bug, Artifact\Changeset\FilesData $files) {
         $changesets = array();
         foreach($bugzilla_bug->long_desc as $long_desc) {
             if ((int)$long_desc->comment_count === 0) {
                 continue;
             }
-            $changesets[] = new Changeset(
+            $changesets[] = new Artifact\Changeset\Changeset(
                 (string)$long_desc->bug_when,
                 $this->user_mapper->getUser($long_desc->who),
                 (string) $long_desc->thetext,
@@ -364,31 +336,31 @@ class TrackerFactory {
         return $changesets;
     }
 
-    private function getCommentChanges(SimpleXMLElement $long_desc, FilesData $files) {
+    private function getCommentChanges(SimpleXMLElement $long_desc, Artifact\Changeset\FilesData $files) {
         $values = array();
         if (isset($long_desc->attachid)) {
-            $values[] = new FileFieldChange('attachments', $files->getFile((int) $long_desc->attachid));
+            $values[] = new Artifact\Changeset\FileFieldChange('attachments', $files->getFile((int) $long_desc->attachid));
         }
         return $values;
     }
 
     private function getFieldsData(SimpleXMLElement $bugzilla_bug) {
         $values = array(
-            new ScalarFieldChange('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
-            new ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
-            new ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
-            new ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
-            new ListFieldChange('status', $this->getValueId($this->fields['status'], $bugzilla_bug, 'bug_status')),
-            new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $bugzilla_bug, 'resolution')),
-            new ListFieldChange('severity', $this->getValueId($this->fields['severity'], $bugzilla_bug, 'bug_severity')),
-            new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $bugzilla_bug, 'priority')),
-            new ListFieldChange('product', $this->getValueId($this->fields['product'], $bugzilla_bug, 'product')),
-            new ListFieldChange('component', $this->getValueId($this->fields['component'], $bugzilla_bug, 'component')),
-            new ListFieldChange('version', $this->getValueId($this->fields['version'], $bugzilla_bug, 'version')),
-            new ListFieldChange('target_milestone', $this->getValueId($this->fields['target_milestone'], $bugzilla_bug, 'target_milestone')),
-            new ListFieldChange('hardware', $this->getValueId($this->fields['hardware'], $bugzilla_bug, 'rep_platform')),
-            new ListFieldChange('os', $this->getValueId($this->fields['os'], $bugzilla_bug, 'op_sys')),
-            new UsersSelectBoxFieldChange('assigned_to', $this->user_mapper->getUser($bugzilla_bug->assigned_to)),
+            new Artifact\Changeset\ScalarFieldChange('bugzilla_id', 'int', (int) $bugzilla_bug->bug_id),
+            new Artifact\Changeset\ScalarFieldChange('summary', 'string', (string) $bugzilla_bug->short_desc),
+            new Artifact\Changeset\ScalarFieldChange('links', 'art_link', (string) $bugzilla_bug->dependson),
+            new Artifact\Changeset\ScalarFieldChange('description', 'text', (string) $bugzilla_bug->long_desc[0]->thetext),
+            new Artifact\Changeset\ListFieldChange('status', $this->getValueId($this->fields['status'], $bugzilla_bug, 'bug_status')),
+            new Artifact\Changeset\ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $bugzilla_bug, 'resolution')),
+            new Artifact\Changeset\ListFieldChange('severity', $this->getValueId($this->fields['severity'], $bugzilla_bug, 'bug_severity')),
+            new Artifact\Changeset\ListFieldChange('priority', $this->getValueId($this->fields['priority'], $bugzilla_bug, 'priority')),
+            new Artifact\Changeset\ListFieldChange('product', $this->getValueId($this->fields['product'], $bugzilla_bug, 'product')),
+            new Artifact\Changeset\ListFieldChange('component', $this->getValueId($this->fields['component'], $bugzilla_bug, 'component')),
+            new Artifact\Changeset\ListFieldChange('version', $this->getValueId($this->fields['version'], $bugzilla_bug, 'version')),
+            new Artifact\Changeset\ListFieldChange('target_milestone', $this->getValueId($this->fields['target_milestone'], $bugzilla_bug, 'target_milestone')),
+            new Artifact\Changeset\ListFieldChange('hardware', $this->getValueId($this->fields['hardware'], $bugzilla_bug, 'rep_platform')),
+            new Artifact\Changeset\ListFieldChange('os', $this->getValueId($this->fields['os'], $bugzilla_bug, 'op_sys')),
+            new Artifact\Changeset\UsersSelectBoxFieldChange('assigned_to', $this->user_mapper->getUser($bugzilla_bug->assigned_to)),
         );
 
         if (isset($bugzilla_bug->cc)) {
@@ -396,13 +368,13 @@ class TrackerFactory {
             foreach ($bugzilla_bug->cc as $cc) {
                 $cc_list[] = (string) $cc;
             }
-            $values[] = new CCFieldChange('cc', $cc_list);
+            $values[] = new Artifact\Changeset\CCFieldChange('cc', $cc_list);
         }
 
         return $values;
     }
 
-    private function getValueId(SelectBox $field, SimpleXMLElement $bugzilla_bug, $bugzilla_field_name) {
+    private function getValueId(Field\SelectBox $field, SimpleXMLElement $bugzilla_bug, $bugzilla_field_name) {
         $bugzilla_value = (string)$bugzilla_bug->$bugzilla_field_name;
         if ($this->correspondsToNone($bugzilla_field_name, $bugzilla_value)) {
             return null;
