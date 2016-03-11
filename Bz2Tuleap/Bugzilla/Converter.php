@@ -14,7 +14,7 @@ use SimpleXMLElement;
 /**
  * This is where we know stuff about Bugzilla
  */
-class TrackerFactory {
+class Converter {
 
     private $data_path;
     private $value_mapper;

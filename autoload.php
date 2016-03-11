@@ -7,7 +7,7 @@ spl_autoload_register(
         static $classes = null;
         if ($classes === null) {
             $classes = array(
-                'bz2tuleap\\bugzilla\\trackerfactory' => '/Bz2Tuleap/Bugzilla/TrackerFactory.php',
+                'bz2tuleap\\bugzilla\\converter' => '/Bz2Tuleap/Bugzilla/Converter.php',
                 'bz2tuleap\\bugzilla\\usermapper' => '/Bz2Tuleap/Bugzilla/UserMapper.php',
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',
