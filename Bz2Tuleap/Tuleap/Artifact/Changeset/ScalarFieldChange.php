@@ -1,6 +1,8 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Artifact\Changeset;
+
+use Bz2Tuleap\XML\CData;
 
 use SimpleXMLElement;
 

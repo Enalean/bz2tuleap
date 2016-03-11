@@ -1,6 +1,6 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\XML;
 
 use SimpleXMLElement;
 
@@ -10,7 +10,7 @@ class CData {
         $node     = $parent_node->addChild($node_name);
         $dom_node = dom_import_simplexml($node);
         $document = $dom_node->ownerDocument;
-        $value    = SupportedXmlCharEncoding::getXMLCompatibleString($node_value);
+        $value    = SupportedEncoding::getXMLCompatibleString($node_value);
         $cdata    = $document->createCDATASection($value);
         $dom_node->appendChild($cdata);
         return $node;

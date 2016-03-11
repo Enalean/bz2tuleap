@@ -15,7 +15,15 @@ use Bz2Tuleap\Tuleap\Field\Properties;
 use Bz2Tuleap\Tuleap\Field\DefaultPermissions;
 use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
 use Bz2Tuleap\Tuleap\Field\ReadOnlyPermissions;
-
+use Bz2Tuleap\Tuleap\Artifact\Artifact;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\Changeset;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\FilesData;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\Comment;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\ListFieldChange;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\ScalarFieldChange;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\UsersSelectBoxFieldChange;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\CCFieldChange;
+use Bz2Tuleap\Tuleap\Artifact\Changeset\FileFieldChange;
 use SimpleXMLElement;
 
 /**

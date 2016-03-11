@@ -1,6 +1,6 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Artifact;
 
 use SimpleXMLElement;
 
@@ -17,7 +17,7 @@ class Artifact {
     private $changesets;
     private $id;
 
-    public function __construct($id, array $changesets, FilesData $files) {
+    public function __construct($id, array $changesets, Changeset\FilesData $files) {
         $this->id         = $id;
         $this->changesets = $changesets;
         $this->files      = $files;

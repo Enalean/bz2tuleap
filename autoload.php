@@ -8,12 +8,16 @@ spl_autoload_register(
         if ($classes === null) {
             $classes = array(
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
-                'bz2tuleap\\tuleap\\artifact' => '/Bz2Tuleap/Tuleap/Artifact.php',
+                'bz2tuleap\\tuleap\\artifact\\artifact' => '/Bz2Tuleap/Tuleap/Artifact/Artifact.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\ccfieldchange' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/CCFieldChange.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\changeset' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/Changeset.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\comment' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/Comment.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\filefieldchange' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/FileFieldChange.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\filesdata' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/FilesData.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\listfieldchange' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/ListFieldChange.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\scalarfieldchange' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/ScalarFieldChange.php',
+                'bz2tuleap\\tuleap\\artifact\\changeset\\usersselectboxfieldchange' => '/Bz2Tuleap/Tuleap/Artifact/Changeset/UsersSelectBoxFieldChange.php',
                 'bz2tuleap\\tuleap\\assignedtosemantic' => '/Bz2Tuleap/Tuleap/AssignedToSemantic.php',
-                'bz2tuleap\\tuleap\\ccfieldchange' => '/Bz2Tuleap/Tuleap/CCFieldChange.php',
-                'bz2tuleap\\tuleap\\cdata' => '/Bz2Tuleap/Tuleap/CData.php',
-                'bz2tuleap\\tuleap\\changeset' => '/Bz2Tuleap/Tuleap/Changeset.php',
-                'bz2tuleap\\tuleap\\comment' => '/Bz2Tuleap/Tuleap/Comment.php',
                 'bz2tuleap\\tuleap\\field\\cc' => '/Bz2Tuleap/Tuleap/Field/CC.php',
                 'bz2tuleap\\tuleap\\field\\column' => '/Bz2Tuleap/Tuleap/Field/Column.php',
                 'bz2tuleap\\tuleap\\field\\defaultpermissions' => '/Bz2Tuleap/Tuleap/Field/DefaultPermissions.php',
@@ -32,22 +36,17 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\field\\selectbox' => '/Bz2Tuleap/Tuleap/Field/SelectBox.php',
                 'bz2tuleap\\tuleap\\field\\structure' => '/Bz2Tuleap/Tuleap/Field/Structure.php',
                 'bz2tuleap\\tuleap\\field\\usersselectbox' => '/Bz2Tuleap/Tuleap/Field/UsersSelectBox.php',
-                'bz2tuleap\\tuleap\\filefieldchange' => '/Bz2Tuleap/Tuleap/FileFieldChange.php',
-                'bz2tuleap\\tuleap\\filesdata' => '/Bz2Tuleap/Tuleap/FilesData.php',
-                'bz2tuleap\\tuleap\\listfieldchange' => '/Bz2Tuleap/Tuleap/ListFieldChange.php',
                 'bz2tuleap\\tuleap\\listrule' => '/Bz2Tuleap/Tuleap/ListRule.php',
                 'bz2tuleap\\tuleap\\listrules' => '/Bz2Tuleap/Tuleap/ListRules.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',
                 'bz2tuleap\\tuleap\\rules' => '/Bz2Tuleap/Tuleap/Rules.php',
-                'bz2tuleap\\tuleap\\scalarfieldchange' => '/Bz2Tuleap/Tuleap/ScalarFieldChange.php',
                 'bz2tuleap\\tuleap\\statussemantic' => '/Bz2Tuleap/Tuleap/StatusSemantic.php',
-                'bz2tuleap\\tuleap\\supportedxmlcharencoding' => '/Bz2Tuleap/Tuleap/SupportedXmlCharEncoding.class.php',
                 'bz2tuleap\\tuleap\\titlesemantic' => '/Bz2Tuleap/Tuleap/TitleSemantic.php',
                 'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php',
-                'bz2tuleap\\tuleap\\tracker2xml' => '/Bz2Tuleap/Tuleap/TrackerToXml.php',
                 'bz2tuleap\\tuleap\\trackerfactory' => '/Bz2Tuleap/Tuleap/TrackerFactory.php',
                 'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php',
-                'bz2tuleap\\tuleap\\usersselectboxfieldchange' => '/Bz2Tuleap/Tuleap/UsersSelectBoxFieldChange.php'
+                'bz2tuleap\\xml\\cdata' => '/Bz2Tuleap/XML/CData.php',
+                'bz2tuleap\\xml\\supportedencoding' => '/Bz2Tuleap/XML/SupportedEncoding.php'
             );
         }
         $cn = strtolower($class);

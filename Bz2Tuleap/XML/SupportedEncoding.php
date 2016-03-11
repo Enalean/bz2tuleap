@@ -18,9 +18,9 @@
  * along with Tuleap. If not, see <http://www.gnu.org/licenses/
  */
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\XML;
 
-class SupportedXmlCharEncoding {
+class SupportedEncoding {
 
    private static $php_supported_encoding_types = array(
         'UTF-8',
