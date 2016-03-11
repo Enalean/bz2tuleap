@@ -7,6 +7,8 @@ spl_autoload_register(
         static $classes = null;
         if ($classes === null) {
             $classes = array(
+                'bz2tuleap\\bugzilla\\trackerfactory' => '/Bz2Tuleap/Bugzilla/TrackerFactory.php',
+                'bz2tuleap\\bugzilla\\usermapper' => '/Bz2Tuleap/Bugzilla/UserMapper.php',
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',
                 'bz2tuleap\\tuleap\\tracker' => '/Bz2Tuleap/Tuleap/Tracker.php',
@@ -43,8 +45,6 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\tracker\\semantic\\assignedto' => '/Bz2Tuleap/Tuleap/Tracker/Semantic/AssignedTo.php',
                 'bz2tuleap\\tuleap\\tracker\\semantic\\status' => '/Bz2Tuleap/Tuleap/Tracker/Semantic/Status.php',
                 'bz2tuleap\\tuleap\\tracker\\semantic\\title' => '/Bz2Tuleap/Tuleap/Tracker/Semantic/Title.php',
-                'bz2tuleap\\tuleap\\trackerfactory' => '/Bz2Tuleap/Tuleap/TrackerFactory.php',
-                'bz2tuleap\\tuleap\\usermapper' => '/Bz2Tuleap/Tuleap/UserMapper.php',
                 'bz2tuleap\\xml\\cdata' => '/Bz2Tuleap/XML/CData.php',
                 'bz2tuleap\\xml\\supportedencoding' => '/Bz2Tuleap/XML/SupportedEncoding.php'
             );

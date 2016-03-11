@@ -6,22 +6,32 @@ use SimpleXMLElement;
 
 class Project {
 
-    public function convert(SimpleXMLElement $bugzilla_xml, $data_path) {
-        $user_mapper = new UserMapper();
+    /**
+     * @var Tracker
+     */
+    private $tracker;
 
-        $factory = new TrackerFactory($user_mapper, $data_path);
-        $tracker = $factory->getTrackerFromBugzilla($bugzilla_xml);
+    /**
+     * @var array
+     */
+    private $users;
 
+    public function __construct(array $users, Tracker $tracker) {
+        $this->users   = $users;
+        $this->tracker = $tracker;
+    }
+
+    public function toXml() {
         $project_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                              <project />');
 
         $this->projectAttributes($project_xml);
-        $this->addUserGroups($project_xml, $user_mapper);
+        $this->addUserGroups($project_xml);
         $this->addServices($project_xml);
 
-        $tracker->toXml($project_xml);
+        $this->tracker->toXml($project_xml);
 
-        $users_xml = $this->getUsers($user_mapper);
+        $users_xml = $this->getUsers();
 
         return array($project_xml, $users_xml);
     }
@@ -35,13 +45,13 @@ class Project {
         $tuleap_xml->addChild('long-description', '');
     }
 
-    private function addUserGroups(SimpleXMLElement $tuleap_xml, UserMapper $user_mapper) {
+    private function addUserGroups(SimpleXMLElement $tuleap_xml) {
         $ugroups = $tuleap_xml->addChild('ugroups');
         $ugroup  = $ugroups->addChild('ugroup');
         $ugroup->addAttribute('name', 'project_members');
         $ugroup->addAttribute('description', '');
         $members = $ugroup->addChild('members');
-        foreach ($user_mapper->getUsers() as $user) {
+        foreach ($this->users as $user) {
             $member = $members->addChild('member', $user['username']);
             $member->addAttribute('format', 'username');
         }
@@ -54,10 +64,10 @@ class Project {
         $service->addAttribute('enabled', 'true');
     }
 
-    private function getUsers(UserMapper $user_mapper) {
+    private function getUsers() {
         $users = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                        <users />');
-        foreach ($user_mapper->getUsers() as $user_details) {
+        foreach ($this->users as $user_details) {
             $user = $users->addChild('user');
             $user->addChild('id',       $user_details['id']);
             $user->addChild('username', $user_details['username']);

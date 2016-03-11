@@ -1,12 +1,12 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Bugzilla;
 
 use SimpleXMLElement;
 
 class UserMapper {
 
-    private $user_id = 0;
+    private $user_id = 101;
     private $users;
 
     public function getUser(SimpleXMLElement $bugzilla_user_node) {

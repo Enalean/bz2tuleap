@@ -1,7 +1,9 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Bugzilla;
 
+use Bz2Tuleap\Tuleap\Project;
+use Bz2Tuleap\Tuleap\Tracker;
 use Bz2Tuleap\Tuleap\Tracker\Field;
 use Bz2Tuleap\Tuleap\Tracker\Semantic;
 use Bz2Tuleap\Tuleap\Tracker\Rule;
@@ -24,14 +26,19 @@ class TrackerFactory {
     private $user_mapper;
     private $fields;
 
-    public function __construct(UserMapper $user_mapper, $data_path) {
-        $this->user_mapper  = $user_mapper;
+    public function __construct($data_path) {
+        $this->user_mapper  = new UserMapper();
         $this->value_mapper = new Field\IdMapper('V');
         $this->field_mapper = new Field\IdMapper('F');
         $this->data_path = $data_path;
     }
 
-    public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
+    public function getProject(SimpleXMLElement $bugzilla_xml) {
+        $tracker = $this->getTrackerFromBugzilla($bugzilla_xml);
+        return new Project($this->user_mapper->getUsers(), $tracker);
+    }
+
+    private function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
         $this->initFields($bugzilla_xml);
         return new Tracker(
             $this->getFields(),
