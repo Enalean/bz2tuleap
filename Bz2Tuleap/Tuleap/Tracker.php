@@ -2,7 +2,9 @@
 
 namespace Bz2Tuleap\Tuleap;
 
-use Bz2Tuleap\Tuleap\Field;
+use Bz2Tuleap\Tuleap\Tracker\Field;
+use Bz2Tuleap\Tuleap\Tracker\Rule;
+
 use SimpleXMLElement;
 
 class Tracker {

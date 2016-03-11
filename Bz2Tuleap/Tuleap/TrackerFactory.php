@@ -2,6 +2,11 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Tracker\Field;
+use Bz2Tuleap\Tuleap\Tracker\Semantic;
+use Bz2Tuleap\Tuleap\Tracker\Rule;
+use Bz2Tuleap\Tuleap\Tracker\Artifact;
+
 use SimpleXMLElement;
 
 /**
