@@ -2,6 +2,20 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field\IdMapper;
+use Bz2Tuleap\Tuleap\Field\Field;
+use Bz2Tuleap\Tuleap\Field\CC;
+use Bz2Tuleap\Tuleap\Field\UsersSelectBox;
+use Bz2Tuleap\Tuleap\Field\FormElements;
+use Bz2Tuleap\Tuleap\Field\Column;
+use Bz2Tuleap\Tuleap\Field\FieldSet;
+use Bz2Tuleap\Tuleap\Field\SelectBox;
+use Bz2Tuleap\Tuleap\Field\NoProperties;
+use Bz2Tuleap\Tuleap\Field\Properties;
+use Bz2Tuleap\Tuleap\Field\DefaultPermissions;
+use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\ReadOnlyPermissions;
+
 use SimpleXMLElement;
 
 /**
@@ -9,7 +23,6 @@ use SimpleXMLElement;
  */
 class TrackerFactory {
 
-    private $bugzilla_location;
     private $data_path;
     private $value_mapper;
     private $field_mapper;
@@ -40,15 +53,15 @@ class TrackerFactory {
 
     private function initFields(SimpleXMLElement $bugzilla_xml) {
         $this->fields = array(
-            'submitted_by'   => new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new NoProperties(), new ReadOnlyFieldPermissions()),
-            'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyFieldPermissions()),
-            'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyFieldPermissions()),
-            'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyFieldPermissions()),
-            'summary'        => new Field($this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultFieldPermissions()),
-            'bugzilla_id'    => new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new NoProperties(), new ReadOnlyFieldPermissions()),
-            'description'    => new Field($this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()),
-            'cc'             => new CCField($this->field_mapper, 'cc', 'CC', new DefaultFieldPermissions()),
-            'status'         => new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", array(
+            'submitted_by'   => new Field($this->field_mapper, 'subby', 'submitted_by', 'Submitted by', new NoProperties(), new ReadOnlyPermissions()),
+            'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyPermissions()),
+            'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyPermissions()),
+            'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyPermissions()),
+            'summary'        => new Field($this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultPermissions()),
+            'bugzilla_id'    => new Field($this->field_mapper, 'int', 'bugzilla_id', 'Bugzilla id', new NoProperties(), new ReadOnlyPermissions()),
+            'description'    => new Field($this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultPermissions()),
+            'cc'             => new CC($this->field_mapper, 'cc', 'CC', new DefaultPermissions()),
+            'status'         => new SelectBox($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                 'NEW',
                 'UNCONFIRMED',
                 'CONFIRMED',
@@ -58,8 +71,8 @@ class TrackerFactory {
                 'RESOLVED',
                 'VERIFIED',
                 'CLOSED',
-            ), new DefaultFieldPermissions()),
-            'resolution'     => new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
+            ), new DefaultPermissions()),
+            'resolution'     => new SelectBox($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
                 'FIXED',
                 'INVALID',
                 'WONTFIX',
@@ -67,9 +80,9 @@ class TrackerFactory {
                 'WORKSFORME',
                 'MOVED',
                 'NOT_ECLIPSE',
-            ), new DefaultFieldPermissions()),
-            'assigned_to'    => new UsersSelectBoxField($this->field_mapper, 'assigned_to', 'Assigned to', new DefaultFieldPermissions()),
-            'severity'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
+            ), new DefaultPermissions()),
+            'assigned_to'    => new UsersSelectBox($this->field_mapper, 'assigned_to', 'Assigned to', new DefaultPermissions()),
+            'severity'       => new SelectBox($this->field_mapper, $this->value_mapper, 'severity', "Severity", array(
                 'blocker',
                 'critical',
                 'major',
@@ -77,22 +90,22 @@ class TrackerFactory {
                 'minor',
                 'trivial',
                 'enhancement',
-            ), new DefaultFieldPermissions()),
-            'priority'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
+            ), new DefaultPermissions()),
+            'priority'       => new SelectBox($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
                 'P1',
                 'P2',
                 'P3',
                 'P4',
                 'P5',
-            ), new DefaultFieldPermissions()),
-            'links'            => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultFieldPermissions()),
-            'attachments'      => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultFieldPermissions()),
-            'product'          => new SelectBoxField($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultFieldPermissions()),
-            'component'        => new SelectBoxField($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultFieldPermissions()),
-            'version'          => new SelectBoxField($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new DefaultFieldPermissions()),
-            'target_milestone' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'target_milestone', 'Target milestone', $this->getUsedValuesFor($bugzilla_xml, 'target_milestone'), new DefaultFieldPermissions()),
-            'hardware'         => new SelectBoxField($this->field_mapper, $this->value_mapper, 'hardware', 'Hardware', $this->getUsedValuesFor($bugzilla_xml, 'rep_platform'), new DefaultFieldPermissions()),
-            'os'               => new SelectBoxField($this->field_mapper, $this->value_mapper, 'os', 'OS', $this->getUsedValuesFor($bugzilla_xml, 'op_sys'), new DefaultFieldPermissions()),
+            ), new DefaultPermissions()),
+            'links'            => new Field($this->field_mapper, 'art_link', 'links', 'Links', new NoProperties(), new DefaultPermissions()),
+            'attachments'      => new Field($this->field_mapper, 'file', 'attachments', 'Attachments', new NoProperties(), new DefaultPermissions()),
+            'product'          => new SelectBox($this->field_mapper, $this->value_mapper, 'product', 'Product', $this->getUsedValuesFor($bugzilla_xml, 'product'), new DefaultPermissions()),
+            'component'        => new SelectBox($this->field_mapper, $this->value_mapper, 'component', 'Component', $this->getUsedValuesFor($bugzilla_xml, 'component'), new DefaultPermissions()),
+            'version'          => new SelectBox($this->field_mapper, $this->value_mapper, 'version', 'Version', $this->getUsedValuesFor($bugzilla_xml, 'version'), new DefaultPermissions()),
+            'target_milestone' => new SelectBox($this->field_mapper, $this->value_mapper, 'target_milestone', 'Target milestone', $this->getUsedValuesFor($bugzilla_xml, 'target_milestone'), new DefaultPermissions()),
+            'hardware'         => new SelectBox($this->field_mapper, $this->value_mapper, 'hardware', 'Hardware', $this->getUsedValuesFor($bugzilla_xml, 'rep_platform'), new DefaultPermissions()),
+            'os'               => new SelectBox($this->field_mapper, $this->value_mapper, 'os', 'OS', $this->getUsedValuesFor($bugzilla_xml, 'op_sys'), new DefaultPermissions()),
         );
     }
 
@@ -375,7 +388,7 @@ class TrackerFactory {
         return $values;
     }
 
-    private function getValueId(SelectBoxField $field, SimpleXMLElement $bugzilla_bug, $bugzilla_field_name) {
+    private function getValueId(SelectBox $field, SimpleXMLElement $bugzilla_bug, $bugzilla_field_name) {
         $bugzilla_value = (string)$bugzilla_bug->$bugzilla_field_name;
         if ($this->correspondsToNone($bugzilla_field_name, $bugzilla_value)) {
             return null;

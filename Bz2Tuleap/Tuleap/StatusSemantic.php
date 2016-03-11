@@ -2,6 +2,7 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field;
 use SimpleXMLElement;
 
 class StatusSemantic {
@@ -12,11 +13,11 @@ class StatusSemantic {
     private $open_values;
 
     /**
-     * @var SelectBoxField
+     * @var SelectBox
      */
     private $field;
 
-    public function __construct(SelectBoxField $field, array $open_values) {
+    public function __construct(Field\SelectBox $field, array $open_values) {
         $this->field = $field;
         $this->open_values = $open_values;
     }

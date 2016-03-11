@@ -1,10 +1,10 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
 use SimpleXMLElement;
 
-class UsersSelectBoxField implements IField, IFormElement {
+class UsersSelectBox implements IField, IFormElement {
 
     private $permissions;
     private $label;

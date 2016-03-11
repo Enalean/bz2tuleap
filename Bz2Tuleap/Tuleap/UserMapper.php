@@ -23,7 +23,6 @@ class UserMapper {
             $this->users[$username] = array(
                 'id'       => $this->user_id++,
                 'realname' => $bugzilla_user_node['name'],
-                //'email'    => $username.'@example.com',
                 'email'    => $email,
                 'username' => $username,
             );

@@ -1,15 +1,11 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
 use SimpleXMLElement;
 
-class Field implements IField, IFormElement {
-
-    /**
-     * @var IProperties
-     */
-    private $properties;
+class CC implements IField, IFormElement {
+    
     private $permissions;
     private $label;
     private $name;
@@ -17,13 +13,12 @@ class Field implements IField, IFormElement {
     private $field_id;
     private $reference;
 
-    public function __construct(IdMapper $mapper, $type, $name, $label, IProperties $properties, IPermissions $permissions) {
+    public function __construct(IdMapper $mapper, $name, $label, IPermissions $permissions) {
         $this->field_id    = $mapper->map($name);
         $this->reference   = $mapper->getReference($name);
         $this->name        = $name;
-        $this->type        = $type;
+        $this->type        = 'tbl';
         $this->label       = $label;
-        $this->properties  = $properties;
         $this->permissions = $permissions;
     }
 
@@ -36,10 +31,19 @@ class Field implements IField, IFormElement {
         $field->addAttribute('type', $this->type);
         $field->addAttribute('ID', $this->field_id);
         $field->addAttribute('rank', $rank);
+        $field->addAttribute('notifications', 1);
         $field->addChild('name', $this->name);
         $field->addChild('label', $this->label);
-        $this->properties->toXml($field);
+        $this->addBindOnRegisteredUsers($field);
         return $field;
+    }
+
+    private function addBindOnRegisteredUsers($field) {
+        $bind = $field->addChild('bind');
+        $bind->addAttribute('type', 'users');
+        $items = $bind->addChild('items');
+        $item = $items->addChild('item');
+        $item->addAttribute('label', 'ugroup_2');
     }
 
     public function permissionsToXml(SimpleXMLElement $parent) {

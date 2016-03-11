@@ -1,10 +1,11 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field
+;
 
 use SimpleXMLElement;
 
-class StructureField  {
+class Structure  {
 
     private $children;
     private $field;

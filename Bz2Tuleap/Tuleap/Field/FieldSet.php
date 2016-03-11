@@ -1,6 +1,6 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
 use SimpleXMLElement;
 
@@ -24,7 +24,7 @@ class FieldSet implements IFormElement {
     }
 
     public function toXml(SimpleXMLElement $parent, $rank) {
-        $field = new StructureField(
+        $field = new Structure(
             new Field($this->mapper, $this->type, 'struct'.$rank, $this->label, new NoProperties(), new NoFieldPermissions()),
             $this->children
         );

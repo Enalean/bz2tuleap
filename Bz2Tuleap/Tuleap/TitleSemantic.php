@@ -2,6 +2,8 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field;
+
 use SimpleXMLElement;
 
 class TitleSemantic {
@@ -11,7 +13,7 @@ class TitleSemantic {
      */
     private $field;
 
-    public function __construct(Field $field) {
+    public function __construct(Field\Field $field) {
         $this->field = $field;
     }
 

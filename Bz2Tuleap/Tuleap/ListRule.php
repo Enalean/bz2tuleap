@@ -2,6 +2,7 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field;
 use SimpleXMLElement;
 
 class ListRule {
@@ -10,16 +11,16 @@ class ListRule {
     private $source_value;
 
     /**
-     * @var SelectBoxField
+     * @var Field\SelectBox
      */
     private $target_field;
 
     /**
-     * @var SelectBoxField
+     * @var Field\SelectBox
      */
     private $source_field;
 
-    public function __construct(SelectBoxField $source_field, SelectBoxField $target_field, $source_value, $target_value) {
+    public function __construct(Field\SelectBox $source_field, Field\SelectBox $target_field, $source_value, $target_value) {
         $this->source_field = $source_field;
         $this->target_field = $target_field;
         $this->source_value = $source_value;

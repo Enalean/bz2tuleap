@@ -1,10 +1,10 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
 use SimpleXMLElement;
 
-class SelectBoxField implements IField, IFormElement {
+class SelectBox implements IField, IFormElement {
 
     /** @var Field */
     private $field;

@@ -2,16 +2,17 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field;
 use SimpleXMLElement;
 
 class AssignedToSemantic {
 
     /**
-     * @var UsersSelectBoxField
+     * @var UsersSelectBox
      */
     private $field;
 
-    public function __construct(UsersSelectBoxField $field) {
+    public function __construct(Field\UsersSelectBox $field) {
         $this->field = $field;
     }
 
