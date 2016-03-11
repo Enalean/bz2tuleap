@@ -15,6 +15,9 @@ use Bz2Tuleap\Tuleap\Field\Properties;
 use Bz2Tuleap\Tuleap\Field\DefaultPermissions;
 use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
 use Bz2Tuleap\Tuleap\Field\ReadOnlyPermissions;
+use Bz2Tuleap\Tuleap\Semantic\Title;
+use Bz2Tuleap\Tuleap\Semantic\Status;
+use Bz2Tuleap\Tuleap\Semantic\AssignedTo;
 use Bz2Tuleap\Tuleap\Artifact\Artifact;
 use Bz2Tuleap\Tuleap\Artifact\Changeset\Changeset;
 use Bz2Tuleap\Tuleap\Artifact\Changeset\FilesData;
@@ -256,8 +259,8 @@ class TrackerFactory {
 
     private function getSemantics() {
         return array(
-            new TitleSemantic($this->fields['summary']),
-            new StatusSemantic($this->fields['status'], array(
+            new Title($this->fields['summary']),
+            new Status($this->fields['status'], array(
                 $this->fields['status']->getValueReference('NEW'),
                 $this->fields['status']->getValueReference('UNCONFIRMED'),
                 $this->fields['status']->getValueReference('CONFIRMED'),
@@ -265,7 +268,7 @@ class TrackerFactory {
                 $this->fields['status']->getValueReference('REOPENED'),
                 $this->fields['status']->getValueReference('IN_PROGRESS'),
             )),
-            new AssignedToSemantic($this->fields['assigned_to']),
+            new AssignedTo($this->fields['assigned_to']),
         );
     }
 

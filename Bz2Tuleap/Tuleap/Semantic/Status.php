@@ -1,11 +1,11 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Semantic;
 
 use Bz2Tuleap\Tuleap\Field;
 use SimpleXMLElement;
 
-class StatusSemantic {
+class Status {
 
     /**
      * @var array
