@@ -11,6 +11,7 @@ spl_autoload_register(
                 'bz2tuleap\\bugzilla\\usermapper' => '/Bz2Tuleap/Bugzilla/UserMapper.php',
                 'bz2tuleap\\converter' => '/Bz2Tuleap/Converter.php',
                 'bz2tuleap\\synchronizer' => '/Bz2Tuleap/Synchronizer.php',
+                'bz2tuleap\\tuleap\\iprojectvisitor' => '/Bz2Tuleap/Tuleap/IProjectVisitor.php',
                 'bz2tuleap\\tuleap\\project' => '/Bz2Tuleap/Tuleap/Project.php',
                 'bz2tuleap\\tuleap\\restartifactvisitor' => '/Bz2Tuleap/RESTArtifactVisitor.php',
                 'bz2tuleap\\tuleap\\restprojectvisitor' => '/Bz2Tuleap/RESTProjectVisitor.php',
@@ -50,6 +51,7 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\tracker\\semantic\\status' => '/Bz2Tuleap/Tuleap/Tracker/Semantic/Status.php',
                 'bz2tuleap\\tuleap\\tracker\\semantic\\title' => '/Bz2Tuleap/Tuleap/Tracker/Semantic/Title.php',
                 'bz2tuleap\\xml\\cdata' => '/Bz2Tuleap/XML/CData.php',
+                'bz2tuleap\\xml\\projectvisitor' => '/Bz2Tuleap/XML/ProjectVisitor.php',
                 'bz2tuleap\\xml\\supportedencoding' => '/Bz2Tuleap/XML/SupportedEncoding.php'
             );
         }

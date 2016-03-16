@@ -23,10 +23,11 @@ class Converter {
     }
 
     private function serialize(Tuleap\Project $project, $output_dir) {
-        list($project_xml, $users_xml) = $project->toXml();
+        $project_visitor = new XML\ProjectVisitor();
+        $project->accept($project_visitor);
 
-        $this->saveTo($project_xml, $output_dir.'/project.xml');
-        $this->saveTo($users_xml, $output_dir.'/users.xml');
+        $this->saveTo($project_visitor->getProjectXML(), $output_dir.'/project.xml');
+        $this->saveTo($project_visitor->getUsersXML(), $output_dir.'/users.xml');
     }
 
     private function saveTo(SimpleXMLElement $xml, $path) {
