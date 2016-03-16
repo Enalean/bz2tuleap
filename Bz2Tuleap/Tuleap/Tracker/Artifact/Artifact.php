@@ -2,8 +2,6 @@
 
 namespace Bz2Tuleap\Tuleap\Tracker\Artifact;
 
-use SimpleXMLElement;
-
 class Artifact {
 
     /**
@@ -31,17 +29,12 @@ class Artifact {
         return $this->changesets;
     }
 
-    public function accept($visitor) {
-        $visitor->visit($this);
+    public function getFiles() {
+        return $this->files;
     }
 
-    public function toXml(SimpleXMLElement $parent) {
-        $xml = $parent->addChild('artifact');
-        $xml->addAttribute('id', $this->id);
-        foreach ($this->changesets as $changeset) {
-            $changeset->toXml($xml);
-        }
-        $this->files->toXml($xml);
+    public function accept($visitor) {
+        $visitor->visit($this);
     }
 
     public function cleanUp(array $artifacts) {

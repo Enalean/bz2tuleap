@@ -27,9 +27,14 @@ class TrackerVisitor implements Tuleap\ITrackerVisitor {
         $tracker_xml->addAttribute('parent_id', '0');
         $tracker_xml->addAttribute('instantiate_for_new_projects', '1');
         $this->addTrackerStructure($tracker_xml, $tracker);
-        $artifacts = $tracker_xml->addChild('artifacts');
+        $this->addArtifacts($trackers_xml, $tracker);
+    }
+
+    private function addArtifacts(SimpleXMLElement $tracker_xml, Tuleap\Tracker $tracker) {
+        $artifacts_xml = $tracker_xml->addChild('artifacts');
         foreach ($tracker->getArtifacts() as $artifact) {
-            $artifact->toXml($artifacts);
+            $artifact_visitor = new Tracker\Artifact\ArtifactVisitor($artifacts_xml);
+            $artifact->accept($artifact_visitor);
         }
     }
 
