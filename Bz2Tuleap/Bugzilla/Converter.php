@@ -304,7 +304,9 @@ class Converter {
                 echo "Downloading attachment $attchid ($size)\n";
                 file_put_contents(
                     $path,
-                    file_get_contents($baseurl.'/attachment.cgi?id='.$attchid));
+                    //file_get_contents($baseurl.'/attachment.cgi?id='.$attchid)
+                    $path
+                );
             }
             $files[$attchid] = array(
                 'id'          => $id,

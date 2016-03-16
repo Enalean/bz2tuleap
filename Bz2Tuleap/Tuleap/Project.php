@@ -21,6 +21,18 @@ class Project {
         $this->tracker = $tracker;
     }
 
+    public function getTracker() {
+        return $this->tracker;
+    }
+
+    public function getUsers() {
+        return $this->users;
+    }
+
+    public function accept($visitor) {
+        $visitor->visit($this);
+    }
+
     public function toXml() {
         $project_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                              <project />');
@@ -31,7 +43,7 @@ class Project {
 
         $this->tracker->toXml($project_xml);
 
-        $users_xml = $this->getUsers();
+        $users_xml = $this->getUsersXml();
 
         return array($project_xml, $users_xml);
     }
@@ -64,7 +76,7 @@ class Project {
         $service->addAttribute('enabled', 'true');
     }
 
-    private function getUsers() {
+    private function getUsersXml() {
         $users = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                        <users />');
         foreach ($this->users as $user_details) {

@@ -27,6 +27,14 @@ class Artifact {
         return $this->id;
     }
 
+    public function getChangesets() {
+        return $this->changesets;
+    }
+
+    public function accept($visitor) {
+        $visitor->visit($this);
+    }
+
     public function toXml(SimpleXMLElement $parent) {
         $xml = $parent->addChild('artifact');
         $xml->addAttribute('id', $this->id);

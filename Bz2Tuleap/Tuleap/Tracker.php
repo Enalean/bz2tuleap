@@ -34,6 +34,17 @@ class Tracker {
         $this->rules = $rules;
     }
 
+    /**
+     * @return Bz2Tuleap\Tuleap\Tracker\Artifact\Artifact[]
+     */
+    public function getArtifacts() {
+        return $this->artifacts;
+    }
+
+    public function accept($visitor) {
+        $visitor->visit($this);
+    }
+
     public function toXml(SimpleXMLElement $tuleap_xml) {
         $trackers = $tuleap_xml->addChild('trackers');
         $this->addOneTracker($trackers);
