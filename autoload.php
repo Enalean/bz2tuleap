@@ -24,6 +24,7 @@ spl_autoload_register(
                 'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\comment' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/Comment.php',
                 'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\filefieldchange' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/FileFieldChange.php',
                 'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\filesdata' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/FilesData.php',
+                'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\ichangesetvisitor' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/IChangesetVisitor.php',
                 'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\listfieldchange' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/ListFieldChange.php',
                 'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\scalarfieldchange' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/ScalarFieldChange.php',
                 'bz2tuleap\\tuleap\\tracker\\artifact\\changeset\\usersselectboxfieldchange' => '/Bz2Tuleap/Tuleap/Tracker/Artifact/Changeset/UsersSelectBoxFieldChange.php',
@@ -56,6 +57,7 @@ spl_autoload_register(
                 'bz2tuleap\\xml\\projectvisitor' => '/Bz2Tuleap/XML/ProjectVisitor.php',
                 'bz2tuleap\\xml\\supportedencoding' => '/Bz2Tuleap/XML/SupportedEncoding.php',
                 'bz2tuleap\\xml\\tracker\\artifact\\artifactvisitor' => '/Bz2Tuleap/XML/Tracker/Artifact/ArtifactVisitor.php',
+                'bz2tuleap\\xml\\tracker\\artifact\\changeset\\changesetvisitor' => '/Bz2Tuleap/XML/Tracker/Artifact/Changeset/ChangesetVisitor.php',
                 'bz2tuleap\\xml\\trackervisitor' => '/Bz2Tuleap/XML/TrackerVisitor.php'
             );
         }

@@ -20,7 +20,8 @@ class ArtifactVisitor implements Artifact\IArtifactVisitor {
         $xml = $this->tracker_xml->addChild('artifact');
         $xml->addAttribute('id', $artifact->getId());
         foreach ($artifact->getChangesets() as $changeset) {
-            $changeset->toXml($xml);
+            $changeset_visitor = new Changeset\ChangesetVisitor($xml);
+            $changeset->accept($changeset_visitor);
         }
         $artifact->getFiles()->toXml($xml);
     }
