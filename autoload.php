@@ -60,6 +60,7 @@ spl_autoload_register(
                 'bz2tuleap\\xml\\supportedencoding' => '/Bz2Tuleap/XML/SupportedEncoding.php',
                 'bz2tuleap\\xml\\tracker\\artifact\\artifactvisitor' => '/Bz2Tuleap/XML/Tracker/Artifact/ArtifactVisitor.php',
                 'bz2tuleap\\xml\\tracker\\artifact\\changeset\\changesetvisitor' => '/Bz2Tuleap/XML/Tracker/Artifact/Changeset/ChangesetVisitor.php',
+                'bz2tuleap\\xml\\tracker\\artifact\\changeset\\fieldchangevisitor' => '/Bz2Tuleap/XML/Tracker/Artifact/Changeset/FieldChangeVisitor.php',
                 'bz2tuleap\\xml\\trackervisitor' => '/Bz2Tuleap/XML/TrackerVisitor.php'
             );
         }

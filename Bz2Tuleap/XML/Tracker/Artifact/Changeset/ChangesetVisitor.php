@@ -21,7 +21,8 @@ class ChangesetVisitor implements Changeset\IChangesetVisitor {
         $this->addSubmittedInfo($changeset_xml, $changeset->getSubmittedBy(), $changeset->getSubmittedOn());
         $changeset->getComment()->toXml($changeset_xml);
         foreach($changeset->getFieldChanges() as $change) {
-            $change->toXml($changeset_xml);
+            $field_change_visitor = new FieldChangeVisitor($changeset_xml);
+            $change->accept($field_change_visitor);
         }
     }
 
