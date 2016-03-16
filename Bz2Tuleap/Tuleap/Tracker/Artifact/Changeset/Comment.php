@@ -2,9 +2,6 @@
 
 namespace Bz2Tuleap\Tuleap\Tracker\Artifact\Changeset;
 
-use Bz2Tuleap\XML\CData;
-use SimpleXMLElement;
-
 class Comment {
 
     private $body;
@@ -17,20 +14,19 @@ class Comment {
         $this->body         = $body;
     }
 
-    public function toXml(SimpleXMLElement $parent) {
-        $comments = $parent->addChild('comments');
-        if ($this->body != '') {
-            $comment = $comments->addChild('comment');
-            $this->addSubmittedInfo($comment, $this->submitted_by, $this->submitted_on);
-            $body = CData::addChild($comment, 'body', $this->body);
-            $body->addAttribute('format', 'text');
-        }
+    public function getSubmittedOn() {
+        return $this->submitted_on;
     }
 
-    private function addSubmittedInfo(SimpleXMLElement $node, $who, $when) {
-        $submitted_by = $node->addChild('submitted_by', $who);
-        $submitted_by->addAttribute('format', 'username');
-        $submitted_on = $node->addChild('submitted_on', $when);
-        $submitted_on->addAttribute('format', 'ISO8601');
+    public function getSubmittedBy() {
+        return $this->submitted_by;
+    }
+
+    public function getBody() {
+        return $this->body;
+    }
+
+    public function accept(ICommentVisitor $visitor) {
+        $visitor->visit($this);
     }
 }

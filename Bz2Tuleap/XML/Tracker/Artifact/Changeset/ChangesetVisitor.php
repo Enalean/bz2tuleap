@@ -19,7 +19,8 @@ class ChangesetVisitor implements Changeset\IChangesetVisitor {
     public function visit(Changeset\Changeset $changeset) {
         $changeset_xml = $this->artifact_xml->addChild('changeset');
         $this->addSubmittedInfo($changeset_xml, $changeset->getSubmittedBy(), $changeset->getSubmittedOn());
-        $changeset->getComment()->toXml($changeset_xml);
+        $comment_visitor = new CommentVisitor($changeset_xml);
+        $changeset->getComment()->accept($comment_visitor);
         foreach($changeset->getFieldChanges() as $change) {
             $field_change_visitor = new FieldChangeVisitor($changeset_xml);
             $change->accept($field_change_visitor);
