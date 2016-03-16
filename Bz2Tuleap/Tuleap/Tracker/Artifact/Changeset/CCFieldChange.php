@@ -4,36 +4,24 @@ namespace Bz2Tuleap\Tuleap\Tracker\Artifact\Changeset;
 
 use SimpleXMLElement;
 
-class CCFieldChange {
-
-    private $values;
-    private $name;
+class CCFieldChange extends FieldChange {
 
     public function __construct($name, $values) {
-        $this->name  = $name;
-        $this->values = $values;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
-
-    public function getType() {
-        return 'open_list';
+        parent::__construct($name, 'open_list', $values);
     }
 
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
-        $field_change->addAttribute('field_name', $this->name);
+        $field_change->addAttribute('field_name', $this->getName());
         $field_change->addAttribute('type', 'open_list');
         $field_change->addAttribute('bind', 'users');
-        foreach ($this->values as $value) {
+        foreach ($this->getValue() as $value) {
             $value = $field_change->addChild('value', $value);
             $value->addAttribute('format', 'label');
         }
     }
 
     public function isValid(array $artifacts) {
-        return count($this->values) > 0;
+        return count($this->getValue()) > 0;
     }
 }

@@ -6,43 +6,25 @@ use Bz2Tuleap\XML\CData;
 
 use SimpleXMLElement;
 
-class ScalarFieldChange {
-
-    private $value;
-    private $type;
-    private $name;
-
-    public function __construct($name, $type, $value) {
-        $this->name  = $name;
-        $this->type  = $type;
-        $this->value = $value;
-    }
-
-    public function getName() {
-        return $this->name;
-    }
-
-    public function getType() {
-        return $this->type;
-    }
+class ScalarFieldChange extends FieldChange {
 
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
-        $field_change->addAttribute('field_name', $this->name);
-        $field_change->addAttribute('type', $this->type);
-        CData::addChild($field_change, 'value', $this->value);
+        $field_change->addAttribute('field_name', $this->getName());
+        $field_change->addAttribute('type', $this->getType());
+        CData::addChild($field_change, 'value', $this->getValue());
     }
 
     public function isValid(array $artifacts) {
-        if ($this->type == 'art_link') {
+        if ($this->getType() == 'art_link') {
             foreach ($artifacts as $artifact) {
-                if ($artifact->getId() == $this->value) {
+                if ($artifact->getId() == $this->getValue()) {
                     return true;
                 }
             }
             return false;
         } else {
-            return $this->value != '';
+            return $this->getValue() != '';
         }
     }
 }
