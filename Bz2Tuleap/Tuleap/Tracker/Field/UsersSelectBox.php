@@ -20,6 +20,14 @@ class UsersSelectBox implements IField, IFormElement {
         $this->permissions = $permissions;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getChildren() {
+        return array();
+    }
+
     public function getReference() {
         return $this->reference;
     }

@@ -34,6 +34,10 @@ class Tracker {
         $this->rules = $rules;
     }
 
+    public function getField() {
+        return $this->fields;
+    }
+
     /**
      * @return Bz2Tuleap\Tuleap\Tracker\Artifact\Artifact[]
      */

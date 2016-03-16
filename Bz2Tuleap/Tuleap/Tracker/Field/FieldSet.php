@@ -23,6 +23,14 @@ class FieldSet implements IFormElement {
         $this->label    = $label;
     }
 
+    public function getName() {
+        return '';
+    }
+
+    public function getChildren() {
+        return $this->children;
+    }
+
     public function toXml(SimpleXMLElement $parent, $rank) {
         $field = new Structure(
             new Field($this->mapper, $this->type, 'struct'.$rank, $this->label, new NoProperties(), new NoFieldPermissions()),

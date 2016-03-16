@@ -14,6 +14,14 @@ class FileFieldChange {
         $this->file = $file;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getType() {
+        return 'file';
+    }
+
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);

@@ -6,7 +6,7 @@ class RESTTrackerVisitor {
 
     public function visit(Tracker $tracker) {
         foreach ($tracker->getArtifacts() as $artifact) {
-            $artifact->accept(new RESTArtifactVisitor());
+            $artifact->accept(new RESTArtifactVisitor($tracker));
         }
     }
 }

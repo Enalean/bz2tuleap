@@ -20,6 +20,14 @@ class Column implements IFormElement {
         $this->mapper   = $mapper;
     }
 
+    public function getName() {
+        return '';
+    }
+
+    public function getChildren() {
+        return $this->children;
+    }
+
     public function toXml(SimpleXMLElement $parent, $rank) {
         $field = new Structure(
             new Field($this->mapper, $this->type, 'struct'.$rank, 'struct'.$rank, new NoProperties(), new NoFieldPermissions()),

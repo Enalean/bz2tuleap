@@ -19,6 +19,10 @@ class Changeset {
         $this->field_changes = $field_changes;
     }
 
+    public function getFieldChanges() {
+        return $this->field_changes;
+    }
+
     public function toXml(SimpleXMLElement $parent) {
         $changeset = $parent->addChild('changeset');
         $this->addSubmittedInfo($changeset, $this->submitted_by, $this->submitted_on);

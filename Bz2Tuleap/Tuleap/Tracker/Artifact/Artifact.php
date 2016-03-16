@@ -12,7 +12,7 @@ class Artifact {
     private $files;
 
     /**
-     * @var Changeset[]
+     * @var Artifact\Changeset[]
      */
     private $changesets;
     private $id;

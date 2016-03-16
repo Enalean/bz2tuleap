@@ -12,6 +12,14 @@ class FormElements implements IFormElement {
         $this->children = $children;
     }
 
+    public function getName() {
+        return '';
+    }
+
+    public function getChildren() {
+        return $this->children;
+    }
+
     public function toXml(SimpleXMLElement $parent, $rank = 0) {
         $form_elements = $parent->addChild('formElements');
         $sub_rank = 0;

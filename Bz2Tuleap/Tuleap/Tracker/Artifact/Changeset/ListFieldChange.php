@@ -15,6 +15,18 @@ class ListFieldChange {
         $this->value = $value;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getType() {
+        return 'list';
+    }
+
+    public function getValue() {
+        return $this->value;
+    }
+
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);

@@ -20,6 +20,14 @@ class SelectBox implements IField, IFormElement {
         }
     }
 
+    public function getName() {
+        return $this->field->getName();
+    }
+
+    public function getChildren() {
+        return array();
+    }
+
     public function getReference() {
         return $this->field->getReference();
     }
@@ -36,6 +44,10 @@ class SelectBox implements IField, IFormElement {
             return null;
         }
         return $this->values[$label];
+    }
+
+    public function getLabelByValueId($id) {
+        return array_search($id, $this->value_ids);
     }
 
     public function toXml(SimpleXMLElement $parent, $rank) {

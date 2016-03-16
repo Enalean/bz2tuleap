@@ -18,6 +18,14 @@ class ScalarFieldChange {
         $this->value = $value;
     }
 
+    public function getName() {
+        return $this->name;
+    }
+
+    public function getType() {
+        return $this->type;
+    }
+
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);
