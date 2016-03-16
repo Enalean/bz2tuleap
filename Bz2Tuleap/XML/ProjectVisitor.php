@@ -18,7 +18,8 @@ class ProjectVisitor implements Tuleap\IProjectVisitor {
         $this->addUserGroups($this->project_xml, $project->getUsers()   );
         $this->addServices($this->project_xml);
 
-        $project->getTracker()->toXml($this->project_xml);
+        $tracker_visitor = new TrackerVisitor($this->project_xml);
+        $project->getTracker()->accept($tracker_visitor);
 
         $this->users_xml = $this->getUsers($project->getUsers());
     }
