@@ -46,6 +46,10 @@ class JiraParser implements ForeignParserInterface
             'assignee' => new UsersSelectBoxField(
                 $this->field_mapper, 'assignee', 'Assignee', new DefaultFieldPermissions()
             ),
+            'reporter'       => new Field($this->field_mapper, 'subby', 'reporter', 'Reporter', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyFieldPermissions()),
         ];
 
         return new Tracker(
@@ -79,9 +83,14 @@ class JiraParser implements ForeignParserInterface
                     $this->field_mapper,
                     [
                         new FieldSet($this->field_mapper, 'People', [
-                            $this->fields['assignee']
+                            $this->fields['assignee'],
+                            $this->fields['reporter'],
+                            $this->fields['last_update_by'],
                         ]),
-                        new FieldSet($this->field_mapper, 'Dates', []),
+                        new FieldSet($this->field_mapper, 'Dates', [
+                            $this->fields['submitted_on'],
+                            $this->fields['last_update_on'],
+                        ]),
                     ]
                 )
             ]
