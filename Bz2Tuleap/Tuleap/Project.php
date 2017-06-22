@@ -9,7 +9,7 @@ class Project {
     public function convert(SimpleXMLElement $bugzilla_xml, $data_path) {
         $user_mapper = new UserMapper();
 
-        $factory = new TrackerFactory($user_mapper, $data_path);
+        $factory = new JiraParser($user_mapper, $data_path);
         $tracker = $factory->getTrackerFromBugzilla($bugzilla_xml);
 
         $project_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
@@ -29,8 +29,8 @@ class Project {
     private function projectAttributes(SimpleXMLElement $tuleap_xml) {
         $tuleap_xml->addAttribute('access', 'public');
         $tuleap_xml->addAttribute('description', '');
-        $tuleap_xml->addAttribute('full-name', 'Bugzilla import');
-        $tuleap_xml->addAttribute('unix-name', 'bz-import');
+        $tuleap_xml->addAttribute('full-name', 'Jira import');
+        $tuleap_xml->addAttribute('unix-name', 'jira-import');
 
         $tuleap_xml->addChild('long-description', '');
     }

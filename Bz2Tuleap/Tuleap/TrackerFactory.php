@@ -7,9 +7,9 @@ use SimpleXMLElement;
 /**
  * This is where we know stuff about Bugzilla
  */
-class TrackerFactory {
+class TrackerFactory implements ForeignParserInterface
+{
 
-    private $bugzilla_location;
     private $data_path;
     private $value_mapper;
     private $field_mapper;
@@ -317,6 +317,7 @@ class TrackerFactory {
             (string)$bugzilla_bug->creation_ts,
             (string)$this->user_mapper->getUser($bugzilla_bug->reporter),
             '',
+            Comment::TEXT,
             $this->getFieldsData($bugzilla_bug)
         );
     }
@@ -331,6 +332,7 @@ class TrackerFactory {
                 (string)$long_desc->bug_when,
                 $this->user_mapper->getUser($long_desc->who),
                 (string) $long_desc->thetext,
+                Comment::TEXT,
                 $this->getCommentChanges($long_desc, $files)
             );
         }

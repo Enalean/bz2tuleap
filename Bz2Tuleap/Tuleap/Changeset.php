@@ -12,10 +12,10 @@ class Changeset {
     /** @var Comment */
     private $comment;
 
-    public function __construct($submitted_on, $submitted_by, $comment, array $field_changes) {
+    public function __construct($submitted_on, $submitted_by, $comment, $comment_format, array $field_changes) {
         $this->submitted_on  = $submitted_on;
         $this->submitted_by  = $submitted_by;
-        $this->comment       = new Comment($submitted_on, $submitted_by, $comment);
+        $this->comment       = new Comment($submitted_on, $submitted_by, $comment, $comment_format);
         $this->field_changes = $field_changes;
     }
 
