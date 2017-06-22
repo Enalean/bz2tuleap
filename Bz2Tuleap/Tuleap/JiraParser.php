@@ -13,6 +13,7 @@ class JiraParser implements ForeignParserInterface
      * @var JiraUserMapper
      */
     private $user_mapper;
+    private $fields;
 
     public function __construct(JiraUserMapper $user_mapper)
     {
@@ -25,7 +26,10 @@ class JiraParser implements ForeignParserInterface
         $this->fields = array(
             'summary' => new Field(
                 $this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultFieldPermissions()
-            )
+            ),
+            'description'=> new Field(
+                $this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()
+            ),
         );
 
         return new Tracker(
@@ -38,12 +42,36 @@ class JiraParser implements ForeignParserInterface
     }
 
     private function getFields() {
-        return new FormElements(array($this->fields['summary']));
+        return new FormElements(
+            [
+                $this->fields['summary'],
+                new Column(
+                    $this->field_mapper,
+                    [
+                        new FieldSet($this->field_mapper, 'Details', [
+                            new Column($this->field_mapper, []),
+                            new Column($this->field_mapper, []),
+                        ]),
+                        new FieldSet($this->field_mapper, 'Description', [
+                            $this->fields['description']
+                        ])
+                    ]
+                ),
+                new Column(
+                    $this->field_mapper,
+                    [
+                        new FieldSet($this->field_mapper, 'People', []),
+                        new FieldSet($this->field_mapper, 'Dates', []),
+                    ]
+                )
+            ]
+        );
     }
 
     private function getSemantics() {
         return array(
-            new TitleSemantic($this->fields['summary'])
+            new TitleSemantic($this->fields['summary']),
+            new DescriptionSemantic($this->fields['description'])
         );
     }
 
@@ -101,6 +129,7 @@ class JiraParser implements ForeignParserInterface
     private function getFieldsData(SimpleXMLElement $jira_issue) {
         $values = array(
             new ScalarFieldChange('summary', 'string', (string) $jira_issue->summary),
+            new TextFieldChange('description', 'text', (string) $jira_issue->description, TextFieldChange::HTML),
         );
 
         return $values;

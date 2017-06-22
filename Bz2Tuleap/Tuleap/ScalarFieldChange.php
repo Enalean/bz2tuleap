@@ -20,7 +20,12 @@ class ScalarFieldChange {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);
         $field_change->addAttribute('type', $this->type);
-        CData::addChild($field_change, 'value', $this->value);
+        $this->toXmlValue($field_change);
+    }
+
+    protected function toXmlValue(SimpleXMLElement $field_change) : SimpleXMLElement
+    {
+        return CData::addChild($field_change, 'value', $this->value);
     }
 
     public function isValid(array $artifacts) {
