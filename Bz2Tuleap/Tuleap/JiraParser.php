@@ -8,19 +8,16 @@ class JiraParser implements ForeignParserInterface
 {
 
     private $field_mapper;
+
     /**
-     * @var UserMapper
+     * @var JiraUserMapper
      */
     private $user_mapper;
 
-    public function __construct(UserMapper $user_mapper)
+    public function __construct(JiraUserMapper $user_mapper)
     {
         $this->field_mapper = new IdMapper('F');
-        $this->user_mapper = $user_mapper;
-
-
-        $this->user_mapper->getUser(new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
-                                             <user name="testman">testman@example.com</user>'));
+        $this->user_mapper  = $user_mapper;
     }
 
     public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml)
@@ -77,7 +74,7 @@ class JiraParser implements ForeignParserInterface
     private function getInitialChangeset(SimpleXMLElement $jira_issue) {
         return new Changeset(
             (string)$jira_issue->created,
-            'testman',
+            (string)$this->user_mapper->getUserFromReporter($jira_issue->reporter),
             '',
             Comment::HTML,
             $this->getFieldsData($jira_issue)
@@ -92,7 +89,7 @@ class JiraParser implements ForeignParserInterface
         foreach($jira_issue->comments->comment as $comment) {
             $changesets[] = new Changeset(
                 (string)$comment['created'],
-                'testman',
+                (string)$this->user_mapper->getUserFromComment($comment),
                 (string) $comment,
                 Comment::HTML,
                 []

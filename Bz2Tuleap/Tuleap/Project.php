@@ -7,7 +7,7 @@ use SimpleXMLElement;
 class Project {
 
     public function convert(SimpleXMLElement $bugzilla_xml, $data_path) {
-        $user_mapper = new UserMapper();
+        $user_mapper = new JiraUserMapper();
 
         $factory = new JiraParser($user_mapper, $data_path);
         $tracker = $factory->getTrackerFromBugzilla($bugzilla_xml);
