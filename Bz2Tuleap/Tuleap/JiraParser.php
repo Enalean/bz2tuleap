@@ -13,11 +13,15 @@ class JiraParser implements ForeignParserInterface
      * @var JiraUserMapper
      */
     private $user_mapper;
+
     private $fields;
+
+    private $value_mapper;
 
     public function __construct(JiraUserMapper $user_mapper)
     {
         $this->field_mapper = new IdMapper('F');
+        $this->value_mapper = new IdMapper('V');
         $this->user_mapper  = $user_mapper;
     }
 
@@ -30,6 +34,15 @@ class JiraParser implements ForeignParserInterface
             'description'=> new Field(
                 $this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()
             ),
+            'status' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", [
+                'Open',
+                'In Progress',
+                'Resolved',
+                'Closed',
+                'Reopened',
+                //Verified
+                'In Review'
+            ], new DefaultFieldPermissions())
         );
 
         return new Tracker(
@@ -50,7 +63,9 @@ class JiraParser implements ForeignParserInterface
                     [
                         new FieldSet($this->field_mapper, 'Details', [
                             new Column($this->field_mapper, []),
-                            new Column($this->field_mapper, []),
+                            new Column($this->field_mapper, [
+                                $this->fields['status']
+                            ]),
                         ]),
                         new FieldSet($this->field_mapper, 'Description', [
                             $this->fields['description']
@@ -71,13 +86,21 @@ class JiraParser implements ForeignParserInterface
     private function getSemantics() {
         return array(
             new TitleSemantic($this->fields['summary']),
-            new DescriptionSemantic($this->fields['description'])
+            new DescriptionSemantic($this->fields['description']),
+            new StatusSemantic($this->fields['status'], array(
+                $this->fields['status']->getValueReference('Open'),
+                $this->fields['status']->getValueReference('In Progress'),
+                $this->fields['status']->getValueReference('Reopened'),
+//                $this->fields['status']->getValueReference('Verified'),
+                $this->fields['status']->getValueReference('In Review'),
+            )),
         );
     }
 
     private function getReportColumns() {
         return array(
             $this->fields['summary'],
+            $this->fields['status'],
         );
     }
 
@@ -126,12 +149,32 @@ class JiraParser implements ForeignParserInterface
         return $changesets;
     }
 
-    private function getFieldsData(SimpleXMLElement $jira_issue) {
+    private function getFieldsData(SimpleXMLElement $jira_issue)
+    {
         $values = array(
             new ScalarFieldChange('summary', 'string', (string) $jira_issue->summary),
             new TextFieldChange('description', 'text', (string) $jira_issue->description, TextFieldChange::HTML),
+            new ListFieldChange('status', $this->getValueId($this->fields['status'], $jira_issue, 'status')),
         );
 
         return $values;
+    }
+
+    private function getValueId(SelectBoxField $field, SimpleXMLElement $jira_issue, $jira_field_name)
+    {
+        $jira_value = (string)$jira_issue->$jira_field_name;
+        if ($this->correspondsToNone($jira_field_name, $jira_value)) {
+            return null;
+        }
+        return $field->getValueId($jira_value);
+    }
+
+    private function correspondsToNone($name, $value)
+    {
+        if ($name === 'status' && $value == '') {
+            return true;
+        }
+
+        return false;
     }
 }
