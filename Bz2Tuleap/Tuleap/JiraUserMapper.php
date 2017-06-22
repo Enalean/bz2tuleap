@@ -9,6 +9,11 @@ class JiraUserMapper implements UserMapper
     private $user_id = 0;
     private $users;
 
+    public function getUserFromAssignee(SimpleXMLElement $assignee)
+    {
+        return $this->getUserFromReporter($assignee);
+    }
+
     public function getUserFromReporter(SimpleXMLElement $reporter)
     {
         $username = (string) $reporter['username'];

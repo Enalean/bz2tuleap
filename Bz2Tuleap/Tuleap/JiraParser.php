@@ -27,7 +27,7 @@ class JiraParser implements ForeignParserInterface
 
     public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml)
     {
-        $this->fields = array(
+        $this->fields = [
             'summary' => new Field(
                 $this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultFieldPermissions()
             ),
@@ -42,8 +42,11 @@ class JiraParser implements ForeignParserInterface
                 'Reopened',
                 //Verified
                 'In Review'
-            ], new DefaultFieldPermissions())
-        );
+            ], new DefaultFieldPermissions()),
+            'assignee' => new UsersSelectBoxField(
+                $this->field_mapper, 'assignee', 'Assignee', new DefaultFieldPermissions()
+            ),
+        ];
 
         return new Tracker(
             $this->getFields(),
@@ -75,7 +78,9 @@ class JiraParser implements ForeignParserInterface
                 new Column(
                     $this->field_mapper,
                     [
-                        new FieldSet($this->field_mapper, 'People', []),
+                        new FieldSet($this->field_mapper, 'People', [
+                            $this->fields['assignee']
+                        ]),
                         new FieldSet($this->field_mapper, 'Dates', []),
                     ]
                 )
@@ -84,7 +89,7 @@ class JiraParser implements ForeignParserInterface
     }
 
     private function getSemantics() {
-        return array(
+        return [
             new TitleSemantic($this->fields['summary']),
             new DescriptionSemantic($this->fields['description']),
             new StatusSemantic($this->fields['status'], array(
@@ -94,13 +99,15 @@ class JiraParser implements ForeignParserInterface
 //                $this->fields['status']->getValueReference('Verified'),
                 $this->fields['status']->getValueReference('In Review'),
             )),
-        );
+            new AssignedToSemantic($this->fields['assignee']),
+        ];
     }
 
     private function getReportColumns() {
         return array(
             $this->fields['summary'],
             $this->fields['status'],
+            $this->fields['assignee'],
         );
     }
 
@@ -149,13 +156,14 @@ class JiraParser implements ForeignParserInterface
         return $changesets;
     }
 
-    private function getFieldsData(SimpleXMLElement $jira_issue)
+    private function getFieldsData(SimpleXMLElement $jira_issue) : array
     {
-        $values = array(
+        $values = [
             new ScalarFieldChange('summary', 'string', (string) $jira_issue->summary),
             new TextFieldChange('description', 'text', (string) $jira_issue->description, TextFieldChange::HTML),
             new ListFieldChange('status', $this->getValueId($this->fields['status'], $jira_issue, 'status')),
-        );
+            new UsersSelectBoxFieldChange('assignee', $this->user_mapper->getUserFromAssignee($jira_issue->assignee)),
+        ];
 
         return $values;
     }
