@@ -23,6 +23,10 @@ use Bz2Tuleap\Tuleap\Field\TextFieldChange;
 use Bz2Tuleap\Tuleap\Field\UsersSelectBoxField;
 use Bz2Tuleap\Tuleap\Field\UsersSelectBoxFieldChange;
 use Bz2Tuleap\Tuleap\Field\Properties;
+use Bz2Tuleap\Tuleap\Semantic\AssignedToSemantic;
+use Bz2Tuleap\Tuleap\Semantic\DescriptionSemantic;
+use Bz2Tuleap\Tuleap\Semantic\StatusSemantic;
+use Bz2Tuleap\Tuleap\Semantic\TitleSemantic;
 
 class JiraParser implements ForeignParserInterface
 {
