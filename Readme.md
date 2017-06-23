@@ -1,5 +1,8 @@
-Converter from Bugzilla to tuleap
-=================================
+Converter from External tools to Tuleap
+========================================
+
+Bugzilla to Tuleap
+------------------
 
 Convert any XML export obtained from bugzilla into a Tuleap compatible archive
 
@@ -55,20 +58,63 @@ Not importable:
 * Private comment or attachment
 
   feature doesn't exist in Tuleap
+  
+  
+Jira to Tuleap
+--------------
+
+Convert any XML export obtained from Jira into a Tuleap compatible archive
+
+* Manage users (requires you to be authenticated when doing XML export)
+* Manage one or several bugs (query)
+* Fields imported
+  * Summary  (with semantic)
+  * Description
+  * Environment
+  * Type
+  * Priority
+  * Resolution
+  * Reporter
+  * Status  (with semantic and dependencies with resolution)
+  * Submitted by
+  * Submitted on
+  * Last update by
+  * Last update on
+  * Assignee (with semantic)
+  * Labels (open field)
+  * Resolved (date)
+* Import comments with authors and dates
+
+Need to be improved:
+
+* Users with a username in integer
+* Deal with custom status (the one taken into account came from our example)
+
+Not imported yet:
+
+* Attachments
+* Custom fields
+
+Not importable:
+
+* Issue full history
+
+  The Jira XML does not export the history
 
 How to use it ?
 --------------
 
 With docker:
 
-   $> docker run -ti --rm -u $(id -u):$(id -g) \
-       -v ~/Downloads:/source enalean/bz2tuleap \
-       /app/convert.sh /source/bugzilla_export.xml
+    $> docker run -ti --rm -u $(id -u):$(id -g) \
+        -v ~/Downloads:/source enalean/bz2tuleap \
+        /app/convert.sh /source/bugzilla_export.xml bugzilla
 
 Where:
 
 * -v ~/Downloads:/source is where you downloaded the bugzilla XML export
 * /source/bugzilla_export.xml is the path to you XML export
+* bugzilla is the keyword of the tool the XML comes from
 
 => this will create a ~/Downloads/bugzilla_export_tuleap directory that you can
    then import into your Tuleap instance
@@ -80,3 +126,9 @@ You can also run it directly if you have php installed:
     $> php converter.php /path/to/bugzilla.xml target_directory
 
 Was tested and developed against Eclipse Bugzilla as of version 4.4.7.
+
+For Jira, you can do:
+
+    $> docker run -ti --rm -u $(id -u):$(id -g) \
+        -v ~/Downloads:/source enalean/bz2tuleap \
+        /app/convert.sh /source/jira_export.xml jira
