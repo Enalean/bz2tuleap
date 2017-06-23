@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!DOCTYPE bugzilla SYSTEM "https://bugs.eclipse.org/bugs/page.cgi?id=bugzilla.dtd">
+<bugzilla version="4.4.7" urlbase="https://bugs.eclipse.org/bugs/" maintainer="webmaster@eclipse.org">
+
+    <bug>
+        <bug_id>285764</bug_id>
+
+        <creation_ts>2009-08-05 15:40:00 -0400</creation_ts>
+        <short_desc>Errors found in Java Properties Files</short_desc>
+        <delta_ts>2010-09-22 14:36:19 -0400</delta_ts>
+        <reporter_accessible>1</reporter_accessible>
+        <cclist_accessible>1</cclist_accessible>
+        <classification_id>9</classification_id>
+        <classification>DataTools</classification>
+        <product>Data Tools</product>
+        <component>Docs</component>
+        <version>1.7</version>
+        <rep_platform>PC</rep_platform>
+        <op_sys>Windows XP</op_sys>
+        <bug_status>NEW</bug_status>
+        <resolution/>
+
+
+        <bug_file_loc/>
+        <status_whiteboard/>
+        <keywords/>
+        <priority>P3</priority>
+        <bug_severity>normal</bug_severity>
+        <target_milestone>Next Major Release</target_milestone>
+
+
+        <everconfirmed>1</everconfirmed>
+        <reporter name="User One">user01</reporter>
+        <assigned_to name="dtp.connectivity-inbox">dtp.connectivity-inbox</assigned_to>
+        <cc>user02</cc>
+
+        <cc>user03</cc>
+
+        <votes>0</votes>
+
+
+
+
+
+
+
+        <comment_sort_order>oldest_to_newest</comment_sort_order>
+        <long_desc isprivate="0">
+            <commentid>1564962</commentid>
+            <comment_count>0</comment_count>
+            <who name="User One">user01</who>
+            <bug_when>2009-08-05 15:40:01 -0400</bug_when>
+            <thetext>Build ID: -
+
+                Steps To Reproduce:
+                The following errors were found in Java properties files.
+                Note: The line numbers may be off by 1 or 2 lines.
+
+                ECLIPSE\PLUGINS\ORG.ECLIPSE.DATATOOLS.SQLTOOLS.DOC.USER\DOC\HTML\
+                ASC1229700466482.HTML                                           XHTML-10    968   XML decimal/hex symbol should not be used: &amp;#34;.  Use named symbols instead.  Line: 122
+                968   XML decimal/hex symbol should not be used: &amp;#34;.  Use named symbols instead.  Line: 122
+
+                More information:</thetext>
+        </long_desc><long_desc isprivate="0">
+        <commentid>1603657</commentid>
+        <comment_count>1</comment_count>
+        <who name="User Four">user04</who>
+        <bug_when>2009-09-30 11:56:34 -0400</bug_when>
+        <thetext>We will hopefully be able to address this when the docs are added to CVS in October.</thetext>
+    </long_desc>
+
+
+
+    </bug>
+
+</bugzilla>

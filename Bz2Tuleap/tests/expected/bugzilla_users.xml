@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+  <user>
+    <id>0</id>
+    <username>user01</username>
+    <realname>User One</realname>
+    <email>user01</email>
+    <ldapid/>
+  </user>
+  <user>
+    <id>1</id>
+    <username>dtp.connectivity-inbox</username>
+    <realname>dtp.connectivity-inbox</realname>
+    <email>dtp.connectivity-inbox</email>
+    <ldapid/>
+  </user>
+  <user>
+    <id>2</id>
+    <username>user04</username>
+    <realname>User Four</realname>
+    <email>user04</email>
+    <ldapid/>
+  </user>
+</users>
