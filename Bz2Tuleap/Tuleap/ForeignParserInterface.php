@@ -6,5 +6,5 @@ use SimpleXMLElement;
 
 interface ForeignParserInterface
 {
-    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xml);
+    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xmlContent);
 }

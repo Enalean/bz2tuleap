@@ -60,16 +60,16 @@ class JiraParser implements ForeignParserInterface
         $this->user_mapper  = $user_mapper;
     }
 
-    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xml)
+    public function getTrackerFromXMLContent(SimpleXMLElement $xml_content)
     {
-        $this->fields = [
+        $this->fields = array(
             'summary' => new Field(
                 $this->field_mapper, 'string', 'summary', 'Summary', new Properties(array('size' => 61)), new DefaultFieldPermissions()
             ),
             'description'=> new Field(
                 $this->field_mapper, 'text', 'description', 'Description', new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()
             ),
-            'status' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", [
+            'status' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'status', "Status", array(
                 'Open',
                 'In Progress',
                 'Resolved',
@@ -77,7 +77,7 @@ class JiraParser implements ForeignParserInterface
                 'Reopened',
                 //Verified
                 'In Review'
-            ], new DefaultFieldPermissions()),
+            ), new DefaultFieldPermissions()),
             'assignee' => new UsersSelectBoxField(
                 $this->field_mapper, 'assignee', 'Assignee', new DefaultFieldPermissions()
             ),
@@ -85,24 +85,24 @@ class JiraParser implements ForeignParserInterface
             'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyFieldPermissions()),
             'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyFieldPermissions()),
             'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyFieldPermissions()),
-            'priority'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'priority', "Priority", [
+            'priority'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'priority', "Priority", array(
                 'Blocker',
                 'Critical',
                 'Major',
                 'Minor',
                 'Trivial',
-            ], new DefaultFieldPermissions()),
-            'type' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'type', "Type", [
+            ), new DefaultFieldPermissions()),
+            'type' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'type', "Type", array(
                 'Bug',
                 'New Feature',
                 'Task',
                 'Improvement',
                 'Patch',
-            ], new DefaultFieldPermissions()),
+            ), new DefaultFieldPermissions()),
             'environment' => new Field(
                 $this->field_mapper, 'text', 'environment', 'Environment',new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()
             ),
-            'resolution' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", [
+            'resolution' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", array(
                 'Unresolved',
                 'Fixed',
                 "Won't Fix",
@@ -112,69 +112,69 @@ class JiraParser implements ForeignParserInterface
                 'Postponed',
                 'Not A Defect',
                 'Done',
-            ], new DefaultFieldPermissions()),
+            ), new DefaultFieldPermissions()),
             'resolved'=> new Field(
                 $this->field_mapper, 'date', 'resolved', 'Resolved', new Properties(array('display_time' => true)), new DefaultFieldPermissions()
             ),
             'labels'=> new OpenListField(
                 $this->field_mapper, 'labels', 'Labels', new DefaultFieldPermissions()
             ),
-        ];
+        );
 
         return new Tracker(
             $this->getFields(),
             $this->getReportColumns(),
             $this->getSemantics(),
-            new Rules(new ListRules([])),
-            $this->getArtifacts($bugzilla_xml)
+            new Rules(new ListRules(array())),
+            $this->getArtifacts($xml_content)
         );
     }
 
     private function getFields() {
         return new FormElements(
-            [
+            array(
                 new Column(
                     $this->field_mapper,
-                    [
-                        new FieldSet($this->field_mapper, 'Details', [
-                            new Column($this->field_mapper, [
+                    array(
+                        new FieldSet($this->field_mapper, 'Details', array(
+                            new Column($this->field_mapper, array(
                                 $this->fields['summary'],
                                 $this->fields['type'],
                                 $this->fields['priority'],
                                 $this->fields['labels'],
                                 $this->fields['environment'],
-                            ]),
-                            new Column($this->field_mapper, [
+                            )),
+                            new Column($this->field_mapper, array(
                                 $this->fields['status'],
                                 $this->fields['resolution'],
-                            ]),
-                        ]),
-                        new FieldSet($this->field_mapper, 'Description', [
+                            )),
+                        )),
+                        new FieldSet($this->field_mapper, 'Description', array(
                             $this->fields['description']
-                        ])
-                    ]
+                        ))
+                    )
                 ),
                 new Column(
                     $this->field_mapper,
-                    [
-                        new FieldSet($this->field_mapper, 'People', [
+                    array(
+                        new FieldSet($this->field_mapper, 'People', array(
                             $this->fields['assignee'],
                             $this->fields['reporter'],
                             $this->fields['last_update_by'],
-                        ]),
-                        new FieldSet($this->field_mapper, 'Dates', [
+                        )),
+                        new FieldSet($this->field_mapper, 'Dates', array(
                             $this->fields['submitted_on'],
                             $this->fields['last_update_on'],
                             $this->fields['resolved'],
-                        ]),
-                    ]
+                        )),
+                    )
                 )
-            ]
+            )
         );
     }
 
     private function getSemantics() {
-        return [
+        return array(
             new TitleSemantic($this->fields['summary']),
             new DescriptionSemantic($this->fields['description']),
             new StatusSemantic($this->fields['status'], array(
@@ -185,7 +185,7 @@ class JiraParser implements ForeignParserInterface
                 $this->fields['status']->getValueReference('In Review'),
             )),
             new AssignedToSemantic($this->fields['assignee']),
-        ];
+        );
     }
 
     private function getReportColumns() {
@@ -199,7 +199,7 @@ class JiraParser implements ForeignParserInterface
     private function getArtifacts(SimpleXMLElement $jira_xml) {
         $artifacts = array();
         foreach($jira_xml->channel->item as $jira_issue) {
-            $files = new FilesData([]);
+            $files = new FilesData(array());
             $artifacts[] = new Artifact(
                 (int) $jira_issue->key['id'],
                 $this->getChangesets($jira_issue, $files),
@@ -227,7 +227,7 @@ class JiraParser implements ForeignParserInterface
     private function getChangesetComments(SimpleXMLElement $jira_issue, FilesData $files) {
         $changesets = array();
         if (! isset($jira_issue->comments)) {
-            return [];
+            return array();
         }
         foreach($jira_issue->comments->comment as $comment) {
             $changesets[] = new Changeset(
@@ -235,15 +235,15 @@ class JiraParser implements ForeignParserInterface
                 (string)$this->user_mapper->getUserFromComment($comment),
                 (string) $comment,
                 Comment::HTML,
-                []
+                array()
             );
         }
         return $changesets;
     }
 
-    private function getFieldsData(SimpleXMLElement $jira_issue) : array
+    private function getFieldsData(SimpleXMLElement $jira_issue)
     {
-        $values = [
+        $values = array(
             new ScalarFieldChange('summary', 'string', (string) $jira_issue->summary),
             new TextFieldChange('description', 'text', (string) $jira_issue->description, TextFieldChange::HTML),
             new ListFieldChange('status', $this->getValueId($this->fields['status'], $jira_issue, 'status')),
@@ -251,7 +251,7 @@ class JiraParser implements ForeignParserInterface
             new ListFieldChange('type', $this->getValueId($this->fields['type'], $jira_issue, 'type')),
             new TextFieldChange('environment', 'text', (string) $jira_issue->environment, TextFieldChange::HTML),
             new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $jira_issue, 'resolution')),
-        ];
+        );
 
         $assignee = $this->user_mapper->getUserFromAssignee($jira_issue->assignee);
         if ($assignee) {

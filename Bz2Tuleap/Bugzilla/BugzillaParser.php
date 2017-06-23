@@ -64,14 +64,14 @@ class BugzillaParser implements ForeignParserInterface
         $this->data_path    = $data_path;
     }
 
-    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xml) {
-        $this->initFields($bugzilla_xml);
+    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xmlContent) {
+        $this->initFields($bugzilla_xmlContent);
         return new Tracker(
             $this->getFields(),
             $this->getReportColumns(),
             $this->getSemantics(),
             $this->getRules(),
-            $this->getArtifacts($bugzilla_xml)
+            $this->getArtifacts($bugzilla_xmlContent)
         );
     }
 
