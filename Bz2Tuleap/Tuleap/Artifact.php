@@ -2,6 +2,7 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field\FilesData;
 use SimpleXMLElement;
 
 class Artifact {

@@ -1,10 +1,11 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
+use Bz2Tuleap\Tuleap\CData;
 use SimpleXMLElement;
 
-class UsersSelectBoxFieldChange {
+class DateFieldChange {
 
     private $value;
     private $name;
@@ -17,10 +18,9 @@ class UsersSelectBoxFieldChange {
     public function toXml(SimpleXMLElement $parent) {
         $field_change = $parent->addChild('field_change');
         $field_change->addAttribute('field_name', $this->name);
-        $field_change->addAttribute('type', 'list');
-        $field_change->addAttribute('bind', 'users');
-        $value = $field_change->addChild('value', $this->value);
-        $value->addAttribute('format', 'username');
+        $field_change->addAttribute('type', 'date');
+        $value_node = CData::addChild($field_change, 'value', $this->value);
+        $value_node->addAttribute('format', 'ISO8601');
     }
 
     public function isValid(array $artifacts) {

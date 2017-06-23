@@ -1,7 +1,8 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
+use Bz2Tuleap\Tuleap\CData;
 use SimpleXMLElement;
 
 class ScalarFieldChange {

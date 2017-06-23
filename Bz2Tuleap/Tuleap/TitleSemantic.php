@@ -2,6 +2,7 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field\Field;
 use SimpleXMLElement;
 
 class TitleSemantic {

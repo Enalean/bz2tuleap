@@ -1,9 +1,10 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
 use SimpleXMLElement;
 
-interface IPermissions {
+interface IPermissions
+{
     public function toXml(SimpleXMLElement $permissions, IField $field);
 }

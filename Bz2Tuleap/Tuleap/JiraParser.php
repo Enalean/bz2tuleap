@@ -3,6 +3,26 @@
 namespace Bz2Tuleap\Tuleap;
 
 use SimpleXMLElement;
+use Bz2Tuleap\Tuleap\Field\CCField;
+use Bz2Tuleap\Tuleap\Field\CCFieldChange;
+use Bz2Tuleap\Tuleap\Field\DateFieldChange;
+use Bz2Tuleap\Tuleap\Field\DefaultFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\Field;
+use Bz2Tuleap\Tuleap\Field\FileFieldChange;
+use Bz2Tuleap\Tuleap\Field\FilesData;
+use Bz2Tuleap\Tuleap\Field\ListFieldChange;
+use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\NoProperties;
+use Bz2Tuleap\Tuleap\Field\OpenListField;
+use Bz2Tuleap\Tuleap\Field\OpenListFieldChange;
+use Bz2Tuleap\Tuleap\Field\ReadOnlyFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\ScalarFieldChange;
+use Bz2Tuleap\Tuleap\Field\SelectBoxField;
+use Bz2Tuleap\Tuleap\Field\StructureField;
+use Bz2Tuleap\Tuleap\Field\TextFieldChange;
+use Bz2Tuleap\Tuleap\Field\UsersSelectBoxField;
+use Bz2Tuleap\Tuleap\Field\UsersSelectBoxFieldChange;
+use Bz2Tuleap\Tuleap\Field\Properties;
 
 class JiraParser implements ForeignParserInterface
 {

@@ -2,6 +2,9 @@
 
 namespace Bz2Tuleap\Tuleap;
 
+use Bz2Tuleap\Tuleap\Field\Field;
+use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\NoProperties;
 use SimpleXMLElement;
 
 class FieldSet implements IFormElement {

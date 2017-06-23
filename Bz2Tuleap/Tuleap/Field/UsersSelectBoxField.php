@@ -1,7 +1,9 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\Field;
 
+use Bz2Tuleap\Tuleap\IdMapper;
+use Bz2Tuleap\Tuleap\IFormElement;
 use SimpleXMLElement;
 
 class UsersSelectBoxField implements IField, IFormElement {
