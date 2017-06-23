@@ -57,6 +57,13 @@ class JiraParser implements ForeignParserInterface
                 'Minor',
                 'Trivial',
             ], new DefaultFieldPermissions()),
+            'type'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'type', "Type", [
+                'Bug',
+                'New Feature',
+                'Task',
+                'Improvement',
+                'Patch',
+            ], new DefaultFieldPermissions()),
         ];
 
         return new Tracker(
@@ -77,6 +84,7 @@ class JiraParser implements ForeignParserInterface
                     [
                         new FieldSet($this->field_mapper, 'Details', [
                             new Column($this->field_mapper, [
+                                $this->fields['type'],
                                 $this->fields['priority']
                             ]),
                             new Column($this->field_mapper, [
@@ -182,6 +190,7 @@ class JiraParser implements ForeignParserInterface
             new ListFieldChange('status', $this->getValueId($this->fields['status'], $jira_issue, 'status')),
             new UsersSelectBoxFieldChange('assignee', $this->user_mapper->getUserFromAssignee($jira_issue->assignee)),
             new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $jira_issue, 'priority')),
+            new ListFieldChange('type', $this->getValueId($this->fields['type'], $jira_issue, 'type')),
         ];
 
         return $values;
