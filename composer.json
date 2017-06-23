@@ -3,6 +3,6 @@
         "psr-4": {"Bz2Tuleap\\": "Bz2Tuleap/"}
     },
     "require": {
-        "phpunit/phpunit": "^6.1"
+        "phpunit/phpunit": "^5.6"
     }
 }

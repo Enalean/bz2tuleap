@@ -43,10 +43,10 @@ class JiraParserTest extends TestCase
         $this->assertTrue(file_exists($this->output_dir.'/users.xml'));
         $this->assertTrue(is_dir($this->output_dir.'/data'));
 
-        $expected_project_content = file_get_contents(__DIR__.'/expected/jira_project.xml');
-        $expected_user_content    = file_get_contents(__DIR__.'/expected/jira_users.xml');
+        $expected_project_xml = simplexml_load_file(__DIR__.'/expected/jira_project.xml');
+        $expected_users_xml   = simplexml_load_file(__DIR__.'/expected/jira_users.xml');
 
-        $this->assertEquals($expected_project_content, file_get_contents($this->output_dir.'/project.xml'));
-        $this->assertEquals($expected_user_content, file_get_contents($this->output_dir.'/users.xml'));
+        $this->assertEquals($expected_project_xml, simplexml_load_file($this->output_dir.'/project.xml'));
+        $this->assertEquals($expected_users_xml, simplexml_load_file($this->output_dir.'/users.xml'));
     }
 }
