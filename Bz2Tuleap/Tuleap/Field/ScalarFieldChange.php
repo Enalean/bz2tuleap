@@ -24,7 +24,7 @@ class ScalarFieldChange {
         $this->toXmlValue($field_change);
     }
 
-    protected function toXmlValue(SimpleXMLElement $field_change) : SimpleXMLElement
+    protected function toXmlValue(SimpleXMLElement $field_change)
     {
         return CData::addChild($field_change, 'value', $this->value);
     }
