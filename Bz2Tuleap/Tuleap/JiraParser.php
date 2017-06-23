@@ -57,7 +57,7 @@ class JiraParser implements ForeignParserInterface
                 'Minor',
                 'Trivial',
             ], new DefaultFieldPermissions()),
-            'type'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'type', "Type", [
+            'type' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'type', "Type", [
                 'Bug',
                 'New Feature',
                 'Task',
@@ -67,6 +67,16 @@ class JiraParser implements ForeignParserInterface
             'environment' => new Field(
                 $this->field_mapper, 'string', 'environment', 'Environment', new Properties(array('size' => 61)), new DefaultFieldPermissions()
             ),
+            'resolution' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", [
+                'Unresolved',
+                'Fixed',
+                "Won't Fix",
+                'Duplicate',
+                'Incomplete',
+                'Cannot Reproduce',
+                'Postponed',
+                'Not A Defect',
+            ], new DefaultFieldPermissions()),
         ];
 
         return new Tracker(
@@ -92,7 +102,8 @@ class JiraParser implements ForeignParserInterface
                                 $this->fields['environment'],
                             ]),
                             new Column($this->field_mapper, [
-                                $this->fields['status']
+                                $this->fields['status'],
+                                $this->fields['resolution'],
                             ]),
                         ]),
                         new FieldSet($this->field_mapper, 'Description', [
@@ -196,6 +207,7 @@ class JiraParser implements ForeignParserInterface
             new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $jira_issue, 'priority')),
             new ListFieldChange('type', $this->getValueId($this->fields['type'], $jira_issue, 'type')),
             new ScalarFieldChange('environment', 'string', (string) $jira_issue->environment),
+            new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $jira_issue, 'resolution')),
         ];
 
         return $values;
