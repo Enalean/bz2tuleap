@@ -2,6 +2,14 @@
 
 namespace Bz2Tuleap\Bugzilla;
 
+use Bz2Tuleap\Tuleap\Artifact;
+use Bz2Tuleap\Tuleap\Changeset;
+use Bz2Tuleap\Tuleap\Comment;
+use Bz2Tuleap\Tuleap\ListRule;
+use Bz2Tuleap\Tuleap\ListRules;
+use Bz2Tuleap\Tuleap\Rules;
+use Bz2Tuleap\Tuleap\Tracker;
+use Bz2Tuleap\Tuleap\IdMapper;
 use Bz2Tuleap\Tuleap\ForeignParserInterface;
 use Bz2Tuleap\Tuleap\Field\CCField;
 use Bz2Tuleap\Tuleap\Field\CCFieldChange;
@@ -49,11 +57,11 @@ class TrackerFactory implements ForeignParserInterface
     private $user_mapper;
     private $fields;
 
-    public function __construct(UserMapper $user_mapper, $data_path) {
+    public function __construct(BugzillaUserMapper $user_mapper, $data_path) {
         $this->user_mapper  = $user_mapper;
         $this->value_mapper = new IdMapper('V');
         $this->field_mapper = new IdMapper('F');
-        $this->data_path = $data_path;
+        $this->data_path    = $data_path;
     }
 
     public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xml) {

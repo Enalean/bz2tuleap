@@ -2,6 +2,8 @@
 
 namespace Bz2Tuleap\Tuleap\Field;
 
+use Bz2Tuleap\Tuleap\FormElement\IFormElement;
+use Bz2Tuleap\Tuleap\IdMapper;
 use SimpleXMLElement;
 
 class CCField implements IField, IFormElement {

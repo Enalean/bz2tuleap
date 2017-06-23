@@ -11,10 +11,15 @@ fi
 
 debug=true
 file=$2
+tool="bugzilla"
 if [ "$1" == "-f" ]; then
     debug=false
 elif [ -f "$1" ]; then
     file=$1
+fi
+
+if [ ! -z "$2" ]; then
+    tool=$2
 fi
 
 if [ -f "$file" ]; then
@@ -22,7 +27,7 @@ if [ -f "$file" ]; then
     name=$(basename $file .xml)
     final_dir="${target_directory}/${name}_tuleap"
     mkdir -p $final_dir
-    php $mydir/converter.php $file $final_dir
+    php $mydir/converter.php $file $final_dir $tool
     if [ "$debug" == "true" ]; then 
 	sed -i 's/@[^<]*/@example.com/g' $final_dir/users.xml
     fi

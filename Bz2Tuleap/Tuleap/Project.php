@@ -21,7 +21,7 @@ class Project
         $this->parser      = $parser;
     }
 
-    public function convert(SimpleXMLElement $bugzilla_xml, $data_path)
+    public function convert(SimpleXMLElement $bugzilla_xml)
     {
         $tracker = $this->parser->getTrackerFromXMLContent($bugzilla_xml);
 
