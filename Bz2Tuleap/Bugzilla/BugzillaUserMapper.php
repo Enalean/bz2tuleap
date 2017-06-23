@@ -1,7 +1,8 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Bugzilla;
 
+use Bz2Tuleap\Tuleap\UserMapper;
 use SimpleXMLElement;
 
 class BugzillaUserMapper implements UserMapper

@@ -1,8 +1,37 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Bugzilla;
 
+use Bz2Tuleap\Tuleap\ForeignParserInterface;
+use Bz2Tuleap\Tuleap\Field\CCField;
+use Bz2Tuleap\Tuleap\Field\CCFieldChange;
+use Bz2Tuleap\Tuleap\Field\DateFieldChange;
+use Bz2Tuleap\Tuleap\Field\DefaultFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\Field;
+use Bz2Tuleap\Tuleap\Field\FileFieldChange;
+use Bz2Tuleap\Tuleap\Field\FilesData;
+use Bz2Tuleap\Tuleap\Field\ListFieldChange;
+use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\NoProperties;
+use Bz2Tuleap\Tuleap\Field\OpenListField;
+use Bz2Tuleap\Tuleap\Field\OpenListFieldChange;
+use Bz2Tuleap\Tuleap\Field\ReadOnlyFieldPermissions;
+use Bz2Tuleap\Tuleap\Field\ScalarFieldChange;
+use Bz2Tuleap\Tuleap\Field\SelectBoxField;
+use Bz2Tuleap\Tuleap\Field\StructureField;
+use Bz2Tuleap\Tuleap\Field\TextFieldChange;
+use Bz2Tuleap\Tuleap\Field\UsersSelectBoxField;
+use Bz2Tuleap\Tuleap\Field\UsersSelectBoxFieldChange;
+use Bz2Tuleap\Tuleap\Field\Properties;
+use Bz2Tuleap\Tuleap\Semantic\AssignedToSemantic;
+use Bz2Tuleap\Tuleap\Semantic\DescriptionSemantic;
+use Bz2Tuleap\Tuleap\Semantic\StatusSemantic;
+use Bz2Tuleap\Tuleap\Semantic\TitleSemantic;
+use Bz2Tuleap\Tuleap\FormElement\FormElements;
+use Bz2Tuleap\Tuleap\FormElement\Column;
+use Bz2Tuleap\Tuleap\FormElement\FieldSet;
 use SimpleXMLElement;
+
 
 /**
  * This is where we know stuff about Bugzilla
@@ -27,7 +56,7 @@ class TrackerFactory implements ForeignParserInterface
         $this->data_path = $data_path;
     }
 
-    public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml) {
+    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xml) {
         $this->initFields($bugzilla_xml);
         return new Tracker(
             $this->getFields(),

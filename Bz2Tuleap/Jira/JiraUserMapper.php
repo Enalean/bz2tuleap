@@ -1,11 +1,14 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Jira;
 
+use Bz2Tuleap\Tuleap\UserMapper;
 use SimpleXMLElement;
 
 class JiraUserMapper implements UserMapper
 {
+    const UNASSIGNED_USERNAME = '-1';
+
     private $user_id = 0;
     private $users;
 
@@ -18,7 +21,7 @@ class JiraUserMapper implements UserMapper
     {
         $username = (string) $reporter['username'];
 
-        if ($username === '-1') {
+        if ($username === self::UNASSIGNED_USERNAME) {
             return '';
         }
 

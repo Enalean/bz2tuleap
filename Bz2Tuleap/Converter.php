@@ -2,12 +2,14 @@
 
 namespace Bz2Tuleap;
 
+use Bz2Tuleap\Jira\JiraParser;
+use Bz2Tuleap\Jira\JiraUserMapper;
 use SimpleXMLElement;
 
 class Converter {
 
     public function convert($source_file, $output_dir) {
-        $bugzilla_xml = simplexml_load_file($source_file);
+        $xml_content = simplexml_load_file($source_file);
 
         $data_dir = $output_dir.'/data';
 
@@ -15,8 +17,12 @@ class Converter {
             mkdir($data_dir);
         }
 
-        $project = new Tuleap\Project();
-        list($project_xml, $users_xml) = $project->convert($bugzilla_xml, $data_dir);
+        $user_mapper = new JiraUserMapper();
+        $parser      = new JiraParser($user_mapper);
+
+        $project = new Tuleap\Project($user_mapper, $parser);
+
+        list($project_xml, $users_xml) = $project->convert($xml_content, $data_dir);
 
         $this->saveTo($project_xml, $output_dir.'/project.xml');
         $this->saveTo($users_xml, $output_dir.'/users.xml');

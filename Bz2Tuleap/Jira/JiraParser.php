@@ -1,8 +1,15 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Jira;
 
-use SimpleXMLElement;
+use Bz2Tuleap\Tuleap\Artifact;
+use Bz2Tuleap\Tuleap\Changeset;
+use Bz2Tuleap\Tuleap\Comment;
+use Bz2Tuleap\Tuleap\ListRules;
+use Bz2Tuleap\Tuleap\Rules;
+use Bz2Tuleap\Tuleap\Tracker;
+use Bz2Tuleap\Tuleap\IdMapper;
+use Bz2Tuleap\Tuleap\ForeignParserInterface;
 use Bz2Tuleap\Tuleap\Field\CCField;
 use Bz2Tuleap\Tuleap\Field\CCFieldChange;
 use Bz2Tuleap\Tuleap\Field\DateFieldChange;
@@ -30,6 +37,7 @@ use Bz2Tuleap\Tuleap\Semantic\TitleSemantic;
 use Bz2Tuleap\Tuleap\FormElement\FormElements;
 use Bz2Tuleap\Tuleap\FormElement\Column;
 use Bz2Tuleap\Tuleap\FormElement\FieldSet;
+use SimpleXMLElement;
 
 class JiraParser implements ForeignParserInterface
 {
@@ -52,7 +60,7 @@ class JiraParser implements ForeignParserInterface
         $this->user_mapper  = $user_mapper;
     }
 
-    public function getTrackerFromBugzilla(SimpleXMLElement $bugzilla_xml)
+    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xml)
     {
         $this->fields = [
             'summary' => new Field(
