@@ -3,7 +3,7 @@
 namespace Bz2Tuleap;
 
 use Bz2Tuleap\Bugzilla\BugzillaUserMapper;
-use Bz2Tuleap\Bugzilla\TrackerFactory;
+use Bz2Tuleap\Bugzilla\BugzillaParser;
 use Bz2Tuleap\Jira\JiraParser;
 use Bz2Tuleap\Jira\JiraUserMapper;
 use SimpleXMLElement;
@@ -33,7 +33,7 @@ class Converter {
             $parser      = new JiraParser($user_mapper);
         } else {
             $user_mapper = new BugzillaUserMapper();
-            $parser      = new TrackerFactory($user_mapper, $data_dir);
+            $parser      = new BugzillaParser($user_mapper, $data_dir);
         }
 
         $project = new Tuleap\Project($user_mapper, $parser);

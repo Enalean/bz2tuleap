@@ -44,7 +44,7 @@ use SimpleXMLElement;
 /**
  * This is where we know stuff about Bugzilla
  */
-class TrackerFactory implements ForeignParserInterface
+class BugzillaParser implements ForeignParserInterface
 {
 
     private $data_path;
