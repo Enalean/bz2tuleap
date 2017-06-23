@@ -64,6 +64,9 @@ class JiraParser implements ForeignParserInterface
                 'Improvement',
                 'Patch',
             ], new DefaultFieldPermissions()),
+            'environment' => new Field(
+                $this->field_mapper, 'string', 'environment', 'Environment', new Properties(array('size' => 61)), new DefaultFieldPermissions()
+            ),
         ];
 
         return new Tracker(
@@ -85,7 +88,8 @@ class JiraParser implements ForeignParserInterface
                         new FieldSet($this->field_mapper, 'Details', [
                             new Column($this->field_mapper, [
                                 $this->fields['type'],
-                                $this->fields['priority']
+                                $this->fields['priority'],
+                                $this->fields['environment'],
                             ]),
                             new Column($this->field_mapper, [
                                 $this->fields['status']
@@ -191,6 +195,7 @@ class JiraParser implements ForeignParserInterface
             new UsersSelectBoxFieldChange('assignee', $this->user_mapper->getUserFromAssignee($jira_issue->assignee)),
             new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $jira_issue, 'priority')),
             new ListFieldChange('type', $this->getValueId($this->fields['type'], $jira_issue, 'type')),
+            new ScalarFieldChange('environment', 'string', (string) $jira_issue->environment),
         ];
 
         return $values;
