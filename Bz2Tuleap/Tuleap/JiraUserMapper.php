@@ -18,6 +18,10 @@ class JiraUserMapper implements UserMapper
     {
         $username = (string) $reporter['username'];
 
+        if ($username === '-1') {
+            return '';
+        }
+
         if (! isset($this->users[$username])) {
             $this->users[$username] = array(
                 'id'       => $this->user_id++,

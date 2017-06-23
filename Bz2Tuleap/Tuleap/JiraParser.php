@@ -212,12 +212,17 @@ class JiraParser implements ForeignParserInterface
             new ScalarFieldChange('summary', 'string', (string) $jira_issue->summary),
             new TextFieldChange('description', 'text', (string) $jira_issue->description, TextFieldChange::HTML),
             new ListFieldChange('status', $this->getValueId($this->fields['status'], $jira_issue, 'status')),
-            new UsersSelectBoxFieldChange('assignee', $this->user_mapper->getUserFromAssignee($jira_issue->assignee)),
             new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $jira_issue, 'priority')),
             new ListFieldChange('type', $this->getValueId($this->fields['type'], $jira_issue, 'type')),
             new TextFieldChange('environment', 'text', (string) $jira_issue->environment, TextFieldChange::HTML),
             new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $jira_issue, 'resolution')),
         ];
+
+        $assignee = $this->user_mapper->getUserFromAssignee($jira_issue->assignee);
+        if ($assignee) {
+            $values[] =  new UsersSelectBoxFieldChange('assignee', $assignee);
+
+        }
 
         if (isset($jira_issue->resolved)) {
             $values[] = new DateFieldChange('resolved', $jira_issue->resolved);
