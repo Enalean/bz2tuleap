@@ -76,7 +76,11 @@ class JiraParser implements ForeignParserInterface
                 'Cannot Reproduce',
                 'Postponed',
                 'Not A Defect',
+                'Done',
             ], new DefaultFieldPermissions()),
+            'resolved'=> new Field(
+                $this->field_mapper, 'date', 'resolved', 'Resolved', new Properties(array('display_time' => true)), new DefaultFieldPermissions()
+            ),
         ];
 
         return new Tracker(
@@ -91,12 +95,12 @@ class JiraParser implements ForeignParserInterface
     private function getFields() {
         return new FormElements(
             [
-                $this->fields['summary'],
                 new Column(
                     $this->field_mapper,
                     [
                         new FieldSet($this->field_mapper, 'Details', [
                             new Column($this->field_mapper, [
+                                $this->fields['summary'],
                                 $this->fields['type'],
                                 $this->fields['priority'],
                                 $this->fields['environment'],
@@ -122,6 +126,7 @@ class JiraParser implements ForeignParserInterface
                         new FieldSet($this->field_mapper, 'Dates', [
                             $this->fields['submitted_on'],
                             $this->fields['last_update_on'],
+                            $this->fields['resolved'],
                         ]),
                     ]
                 )
@@ -209,6 +214,10 @@ class JiraParser implements ForeignParserInterface
             new TextFieldChange('environment', 'text', (string) $jira_issue->environment, TextFieldChange::HTML),
             new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $jira_issue, 'resolution')),
         ];
+
+        if (isset($jira_issue->resolved)) {
+            $values[] = new DateFieldChange('resolved', $jira_issue->resolved);
+        }
 
         return $values;
     }
