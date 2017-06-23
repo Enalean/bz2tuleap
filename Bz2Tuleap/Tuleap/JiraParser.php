@@ -27,6 +27,9 @@ use Bz2Tuleap\Tuleap\Semantic\AssignedToSemantic;
 use Bz2Tuleap\Tuleap\Semantic\DescriptionSemantic;
 use Bz2Tuleap\Tuleap\Semantic\StatusSemantic;
 use Bz2Tuleap\Tuleap\Semantic\TitleSemantic;
+use Bz2Tuleap\Tuleap\FormElement\FormElements;
+use Bz2Tuleap\Tuleap\FormElement\Column;
+use Bz2Tuleap\Tuleap\FormElement\FieldSet;
 
 class JiraParser implements ForeignParserInterface
 {

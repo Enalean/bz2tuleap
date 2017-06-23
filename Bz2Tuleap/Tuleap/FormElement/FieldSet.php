@@ -1,10 +1,12 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\FormElement;
 
 use Bz2Tuleap\Tuleap\Field\Field;
 use Bz2Tuleap\Tuleap\Field\NoFieldPermissions;
 use Bz2Tuleap\Tuleap\Field\NoProperties;
+use Bz2Tuleap\Tuleap\IdMapper;
+use Bz2Tuleap\Tuleap\StructureField;
 use SimpleXMLElement;
 
 class FieldSet implements IFormElement {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Bz2Tuleap\Tuleap;
+namespace Bz2Tuleap\Tuleap\FormElement;
 
 use SimpleXMLElement;
 

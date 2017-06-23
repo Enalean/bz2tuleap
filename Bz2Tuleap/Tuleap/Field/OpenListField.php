@@ -3,7 +3,7 @@
 namespace Bz2Tuleap\Tuleap\Field;
 
 use Bz2Tuleap\Tuleap\IdMapper;
-use Bz2Tuleap\Tuleap\IFormElement;
+use Bz2Tuleap\Tuleap\FormElement\IFormElement;
 use SimpleXMLElement;
 
 class OpenListField implements IField, IFormElement {
