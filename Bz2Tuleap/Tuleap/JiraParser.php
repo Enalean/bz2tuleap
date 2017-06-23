@@ -65,7 +65,7 @@ class JiraParser implements ForeignParserInterface
                 'Patch',
             ], new DefaultFieldPermissions()),
             'environment' => new Field(
-                $this->field_mapper, 'string', 'environment', 'Environment', new Properties(array('size' => 61)), new DefaultFieldPermissions()
+                $this->field_mapper, 'text', 'environment', 'Environment',new Properties(array('rows' => 7, 'cols' => 80)), new DefaultFieldPermissions()
             ),
             'resolution' => new SelectBoxField($this->field_mapper, $this->value_mapper, 'resolution', "Resolution", [
                 'Unresolved',
@@ -206,7 +206,7 @@ class JiraParser implements ForeignParserInterface
             new UsersSelectBoxFieldChange('assignee', $this->user_mapper->getUserFromAssignee($jira_issue->assignee)),
             new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $jira_issue, 'priority')),
             new ListFieldChange('type', $this->getValueId($this->fields['type'], $jira_issue, 'type')),
-            new ScalarFieldChange('environment', 'string', (string) $jira_issue->environment),
+            new TextFieldChange('environment', 'text', (string) $jira_issue->environment, TextFieldChange::HTML),
             new ListFieldChange('resolution', $this->getValueId($this->fields['resolution'], $jira_issue, 'resolution')),
         ];
 
