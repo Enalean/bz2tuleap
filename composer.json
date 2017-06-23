@@ -1,5 +1,8 @@
 {
     "autoload": {
         "psr-4": {"Bz2Tuleap\\": "Bz2Tuleap/"}
+    },
+    "require": {
+        "phpunit/phpunit": "^6.1"
     }
 }

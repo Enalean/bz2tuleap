@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<users>
+  <user>
+    <id>0</id>
+    <username>user02</username>
+    <realname>User Two</realname>
+    <email>user02@example.com</email>
+    <ldapid/>
+  </user>
+  <user>
+    <id>1</id>
+    <username>user01</username>
+    <realname>User One</realname>
+    <email>user01@example.com</email>
+    <ldapid/>
+  </user>
+  <user>
+    <id>2</id>
+    <username>user03</username>
+    <realname>user03</realname>
+    <email>user03@example.com</email>
+    <ldapid/>
+  </user>
+  <user>
+    <id>3</id>
+    <username>user04</username>
+    <realname>user04</realname>
+    <email>user04@example.com</email>
+    <ldapid/>
+  </user>
+</users>
