@@ -50,6 +50,13 @@ class JiraParser implements ForeignParserInterface
             'submitted_on'   => new Field($this->field_mapper, 'subon', 'submitted_on', 'Submitted on', new NoProperties(), new ReadOnlyFieldPermissions()),
             'last_update_by' => new Field($this->field_mapper, 'luby', 'last_update_by', 'Last update by', new NoProperties(), new ReadOnlyFieldPermissions()),
             'last_update_on' => new Field($this->field_mapper, 'lud', 'last_update_on', 'Last update on', new NoProperties(), new ReadOnlyFieldPermissions()),
+            'priority'       => new SelectBoxField($this->field_mapper, $this->value_mapper, 'priority', "Priority", [
+                'Blocker',
+                'Critical',
+                'Major',
+                'Minor',
+                'Trivial',
+            ], new DefaultFieldPermissions()),
         ];
 
         return new Tracker(
@@ -69,7 +76,9 @@ class JiraParser implements ForeignParserInterface
                     $this->field_mapper,
                     [
                         new FieldSet($this->field_mapper, 'Details', [
-                            new Column($this->field_mapper, []),
+                            new Column($this->field_mapper, [
+                                $this->fields['priority']
+                            ]),
                             new Column($this->field_mapper, [
                                 $this->fields['status']
                             ]),
@@ -172,6 +181,7 @@ class JiraParser implements ForeignParserInterface
             new TextFieldChange('description', 'text', (string) $jira_issue->description, TextFieldChange::HTML),
             new ListFieldChange('status', $this->getValueId($this->fields['status'], $jira_issue, 'status')),
             new UsersSelectBoxFieldChange('assignee', $this->user_mapper->getUserFromAssignee($jira_issue->assignee)),
+            new ListFieldChange('priority', $this->getValueId($this->fields['priority'], $jira_issue, 'priority')),
         ];
 
         return $values;
