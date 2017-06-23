@@ -81,6 +81,9 @@ class JiraParser implements ForeignParserInterface
             'resolved'=> new Field(
                 $this->field_mapper, 'date', 'resolved', 'Resolved', new Properties(array('display_time' => true)), new DefaultFieldPermissions()
             ),
+            'labels'=> new OpenListField(
+                $this->field_mapper, 'labels', 'Labels', new DefaultFieldPermissions()
+            ),
         ];
 
         return new Tracker(
@@ -103,6 +106,7 @@ class JiraParser implements ForeignParserInterface
                                 $this->fields['summary'],
                                 $this->fields['type'],
                                 $this->fields['priority'],
+                                $this->fields['labels'],
                                 $this->fields['environment'],
                             ]),
                             new Column($this->field_mapper, [
@@ -218,6 +222,13 @@ class JiraParser implements ForeignParserInterface
         if (isset($jira_issue->resolved)) {
             $values[] = new DateFieldChange('resolved', $jira_issue->resolved);
         }
+
+        $label_values = array();
+        foreach ($jira_issue->labels->label as $label) {
+            $label_values[] = (string)$label;
+        }
+
+        $values[] = new OpenListFieldChange('labels', $label_values);
 
         return $values;
     }
