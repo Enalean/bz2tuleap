@@ -19,7 +19,7 @@ class TextFieldChange extends ScalarFieldChange {
         $this->format = $format;
     }
 
-    protected function toXmlValue(SimpleXMLElement $field_change) : SimpleXMLElement
+    protected function toXmlValue(SimpleXMLElement $field_change)
     {
         $value_node = parent::toXmlValue($field_change);
         $value_node->addAttribute('format', $this->format);
