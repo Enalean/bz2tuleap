@@ -147,16 +147,8 @@ class JiraParser implements ExternalParserInterface
                             new Column($this->field_mapper, array(
                                 $this->fields['status'],
                                 $this->fields['resolution'],
-                            )),
+                            ))
                         )),
-                        new FieldSet($this->field_mapper, 'Description', array(
-                            $this->fields['description']
-                        ))
-                    )
-                ),
-                new Column(
-                    $this->field_mapper,
-                    array(
                         new FieldSet($this->field_mapper, 'People', array(
                             $this->fields['assignee'],
                             $this->fields['reporter'],
@@ -167,6 +159,9 @@ class JiraParser implements ExternalParserInterface
                             $this->fields['last_update_on'],
                             $this->fields['resolved'],
                         )),
+                        new FieldSet($this->field_mapper, 'Description', array(
+                            $this->fields['description']
+                        ))
                     )
                 )
             )
