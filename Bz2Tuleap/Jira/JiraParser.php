@@ -9,7 +9,7 @@ use Bz2Tuleap\Tuleap\ListRules;
 use Bz2Tuleap\Tuleap\Rules;
 use Bz2Tuleap\Tuleap\Tracker;
 use Bz2Tuleap\Tuleap\IdMapper;
-use Bz2Tuleap\Tuleap\ForeignParserInterface;
+use Bz2Tuleap\Tuleap\ExternalParserInterface;
 use Bz2Tuleap\Tuleap\Field\CCField;
 use Bz2Tuleap\Tuleap\Field\CCFieldChange;
 use Bz2Tuleap\Tuleap\Field\DateFieldChange;
@@ -39,7 +39,7 @@ use Bz2Tuleap\Tuleap\FormElement\Column;
 use Bz2Tuleap\Tuleap\FormElement\FieldSet;
 use SimpleXMLElement;
 
-class JiraParser implements ForeignParserInterface
+class JiraParser implements ExternalParserInterface
 {
 
     private $field_mapper;

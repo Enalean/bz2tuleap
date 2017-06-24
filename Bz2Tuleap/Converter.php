@@ -2,8 +2,10 @@
 
 namespace Bz2Tuleap;
 
+use Bz2Tuleap\Bugzilla\Bugzilla;
 use Bz2Tuleap\Bugzilla\BugzillaUserMapper;
 use Bz2Tuleap\Bugzilla\BugzillaParser;
+use Bz2Tuleap\Jira\Jira;
 use Bz2Tuleap\Jira\JiraParser;
 use Bz2Tuleap\Jira\JiraUserMapper;
 use SimpleXMLElement;
@@ -29,14 +31,16 @@ class Converter {
         }
 
         if ($tool_name === self::JIRA) {
-            $user_mapper = new JiraUserMapper();
-            $parser      = new JiraParser($user_mapper);
+            $user_mapper   = new JiraUserMapper();
+            $parser        = new JiraParser($user_mapper);
+            $external_tool = new Jira($parser, $user_mapper);
         } else {
-            $user_mapper = new BugzillaUserMapper();
-            $parser      = new BugzillaParser($user_mapper, $data_dir);
+            $user_mapper   = new BugzillaUserMapper();
+            $parser        = new BugzillaParser($user_mapper, $data_dir);
+            $external_tool = new Bugzilla($parser, $user_mapper);
         }
 
-        $project = new Tuleap\Project($user_mapper, $parser);
+        $project = new Tuleap\Project($external_tool);
 
         list($project_xml, $users_xml) = $project->convert($xml_content);
 

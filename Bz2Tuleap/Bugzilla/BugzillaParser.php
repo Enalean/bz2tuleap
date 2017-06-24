@@ -10,7 +10,7 @@ use Bz2Tuleap\Tuleap\ListRules;
 use Bz2Tuleap\Tuleap\Rules;
 use Bz2Tuleap\Tuleap\Tracker;
 use Bz2Tuleap\Tuleap\IdMapper;
-use Bz2Tuleap\Tuleap\ForeignParserInterface;
+use Bz2Tuleap\Tuleap\ExternalParserInterface;
 use Bz2Tuleap\Tuleap\Field\CCField;
 use Bz2Tuleap\Tuleap\Field\CCFieldChange;
 use Bz2Tuleap\Tuleap\Field\DateFieldChange;
@@ -44,7 +44,7 @@ use SimpleXMLElement;
 /**
  * This is where we know stuff about Bugzilla
  */
-class BugzillaParser implements ForeignParserInterface
+class BugzillaParser implements ExternalParserInterface
 {
 
     private $data_path;
@@ -64,14 +64,14 @@ class BugzillaParser implements ForeignParserInterface
         $this->data_path    = $data_path;
     }
 
-    public function getTrackerFromXMLContent(SimpleXMLElement $bugzilla_xmlContent) {
-        $this->initFields($bugzilla_xmlContent);
+    public function getTrackerFromXMLContent(SimpleXMLElement $xml_content) {
+        $this->initFields($xml_content);
         return new Tracker(
             $this->getFields(),
             $this->getReportColumns(),
             $this->getSemantics(),
             $this->getRules(),
-            $this->getArtifacts($bugzilla_xmlContent)
+            $this->getArtifacts($xml_content)
         );
     }
 

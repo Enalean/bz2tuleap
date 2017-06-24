@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project access="public" description="" full-name="Jira import" unix-name="jira-import">
+<project access="public" description="" full-name="Bugzilla import" unix-name="bugzilla-import">
   <long-description/>
   <ugroups>
     <ugroup name="project_members" description="">

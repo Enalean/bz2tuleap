@@ -7,23 +7,18 @@ use SimpleXMLElement;
 class Project
 {
     /**
-     * @var UserMapper
+     * @var ExternalToolInterface
      */
-    private $user_mapper;
-    /**
-     * @var ForeignParserInterface
-     */
-    private $parser;
+    private $external_tool;
 
-    public function __construct(UserMapper $user_mapper, ForeignParserInterface $parser)
+    public function __construct(ExternalToolInterface $external_tool)
     {
-        $this->user_mapper = $user_mapper;
-        $this->parser      = $parser;
+        $this->external_tool = $external_tool;
     }
 
     public function convert(SimpleXMLElement $bugzilla_xml)
     {
-        $tracker = $this->parser->getTrackerFromXMLContent($bugzilla_xml);
+        $tracker = $this->external_tool->getParser()->getTrackerFromXMLContent($bugzilla_xml);
 
         $project_xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                              <project />');
@@ -43,8 +38,8 @@ class Project
     {
         $tuleap_xml->addAttribute('access', 'public');
         $tuleap_xml->addAttribute('description', '');
-        $tuleap_xml->addAttribute('full-name', 'Jira import');
-        $tuleap_xml->addAttribute('unix-name', 'jira-import');
+        $tuleap_xml->addAttribute('full-name', $this->external_tool->getProjectName());
+        $tuleap_xml->addAttribute('unix-name', $this->external_tool->getProjectShortName());
 
         $tuleap_xml->addChild('long-description', '');
     }
@@ -56,7 +51,7 @@ class Project
         $ugroup->addAttribute('name', 'project_members');
         $ugroup->addAttribute('description', '');
         $members = $ugroup->addChild('members');
-        foreach ($this->user_mapper->getUsers() as $user) {
+        foreach ($this->external_tool->getUserMapper()->getUsers() as $user) {
             $member = $members->addChild('member', $user['username']);
             $member->addAttribute('format', 'username');
         }
@@ -75,7 +70,7 @@ class Project
         $users = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                                        <users />');
 
-        foreach ($this->user_mapper->getUsers() as $user_details) {
+        foreach ($this->external_tool->getUserMapper()->getUsers() as $user_details) {
             $user = $users->addChild('user');
             $user->addChild('id',       $user_details['id']);
             $user->addChild('username', $user_details['username']);
