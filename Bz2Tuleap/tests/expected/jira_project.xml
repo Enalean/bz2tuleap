@@ -118,23 +118,6 @@
             </formElement>
             <formElement type="fieldset" ID="F19" rank="1">
               <name>struct1</name>
-              <label>Description</label>
-              <formElements>
-                <formElement type="text" ID="F2" rank="0">
-                  <name>description</name>
-                  <label>Description</label>
-                  <properties rows="7" cols="80"/>
-                </formElement>
-              </formElements>
-            </formElement>
-          </formElements>
-        </formElement>
-        <formElement type="column" ID="F20" rank="1">
-          <name>struct1</name>
-          <label>struct1</label>
-          <formElements>
-            <formElement type="fieldset" ID="F21" rank="0">
-              <name>struct0</name>
               <label>People</label>
               <formElements>
                 <formElement type="sb" ID="F4" rank="0" notifications="1">
@@ -156,8 +139,8 @@
                 </formElement>
               </formElements>
             </formElement>
-            <formElement type="fieldset" ID="F22" rank="1">
-              <name>struct1</name>
+            <formElement type="fieldset" ID="F20" rank="2">
+              <name>struct2</name>
               <label>Dates</label>
               <formElements>
                 <formElement type="subon" ID="F6" rank="0">
@@ -172,6 +155,17 @@
                   <name>resolved</name>
                   <label>Resolved</label>
                   <properties display_time="1"/>
+                </formElement>
+              </formElements>
+            </formElement>
+            <formElement type="fieldset" ID="F21" rank="3">
+              <name>struct3</name>
+              <label>Description</label>
+              <formElements>
+                <formElement type="text" ID="F2" rank="0">
+                  <name>description</name>
+                  <label>Description</label>
+                  <properties rows="7" cols="80"/>
                 </formElement>
               </formElements>
             </formElement>
@@ -253,9 +247,6 @@
         <permission scope="field" REF="F12" ugroup="UGROUP_ANONYMOUS" type="PLUGIN_TRACKER_FIELD_READ"/>
         <permission scope="field" REF="F12" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_SUBMIT"/>
         <permission scope="field" REF="F12" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_UPDATE"/>
-        <permission scope="field" REF="F2" ugroup="UGROUP_ANONYMOUS" type="PLUGIN_TRACKER_FIELD_READ"/>
-        <permission scope="field" REF="F2" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_SUBMIT"/>
-        <permission scope="field" REF="F2" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_UPDATE"/>
         <permission scope="field" REF="F4" ugroup="UGROUP_ANONYMOUS" type="PLUGIN_TRACKER_FIELD_READ"/>
         <permission scope="field" REF="F4" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_SUBMIT"/>
         <permission scope="field" REF="F4" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_UPDATE"/>
@@ -266,6 +257,9 @@
         <permission scope="field" REF="F13" ugroup="UGROUP_ANONYMOUS" type="PLUGIN_TRACKER_FIELD_READ"/>
         <permission scope="field" REF="F13" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_SUBMIT"/>
         <permission scope="field" REF="F13" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_UPDATE"/>
+        <permission scope="field" REF="F2" ugroup="UGROUP_ANONYMOUS" type="PLUGIN_TRACKER_FIELD_READ"/>
+        <permission scope="field" REF="F2" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_SUBMIT"/>
+        <permission scope="field" REF="F2" ugroup="UGROUP_REGISTERED" type="PLUGIN_TRACKER_FIELD_UPDATE"/>
       </permissions>
       <artifacts>
         <artifact id="177611">
