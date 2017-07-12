@@ -6,14 +6,19 @@ use SimpleXMLElement;
 
 class Comment {
 
+    const HTML = 'html';
+    const TEXT = 'text';
+
     private $body;
     private $submitted_by;
     private $submitted_on;
+    private $format;
 
-    public function __construct($submitted_on, $submitted_by, $body) {
+    public function __construct($submitted_on, $submitted_by, $body, $format) {
         $this->submitted_on = $submitted_on;
         $this->submitted_by = $submitted_by;
         $this->body         = $body;
+        $this->format       = $format;
     }
 
     public function toXml(SimpleXMLElement $parent) {
@@ -22,7 +27,7 @@ class Comment {
             $comment = $comments->addChild('comment');
             $this->addSubmittedInfo($comment, $this->submitted_by, $this->submitted_on);
             $body = CData::addChild($comment, 'body', $this->body);
-            $body->addAttribute('format', 'text');
+            $body->addAttribute('format', $this->format);
         }
     }
 
