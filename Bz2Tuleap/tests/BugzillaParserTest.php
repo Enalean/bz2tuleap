@@ -20,7 +20,7 @@ class BugzillaParserTest extends TestCase
      */
     private $source_file;
 
-    protected function setUp()
+    protected function setUp() : void
     {
         $this->source_file = __DIR__.'/examples/bugzilla_example.xml';
         $this->output_dir  = __DIR__.'/output';
@@ -30,7 +30,7 @@ class BugzillaParserTest extends TestCase
         $this->converter = new Converter();
     }
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         exec('rm -rf ' . escapeshellarg($this->output_dir));
     }
