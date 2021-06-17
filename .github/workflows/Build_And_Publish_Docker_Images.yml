@@ -1,0 +1,26 @@
+name: Build and publish Docker images
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+env:
+  IMAGE_NAME: enalean/bz2tuleap
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2.3.4
+      - name: Build image
+        run: docker build -t ${{ env.IMAGE_NAME }} --label revision=${{ github.sha }} --label workflow_run_id=${{ github.run_id }} .
+      - name: Log into Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_TOKEN }}" | docker login -u bz2tuleappushbot --password-stdin
+      - name: Publish image
+        run: docker push ${{ env.IMAGE_NAME }}
