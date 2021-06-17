@@ -5,19 +5,15 @@ namespace Bz2Tuleap;
 use Bz2Tuleap\Bugzilla\Bugzilla;
 use Bz2Tuleap\Bugzilla\BugzillaUserMapper;
 use Bz2Tuleap\Bugzilla\BugzillaParser;
-use Bz2Tuleap\Jira\Jira;
-use Bz2Tuleap\Jira\JiraParser;
-use Bz2Tuleap\Jira\JiraUserMapper;
 use SimpleXMLElement;
 
 class Converter {
 
-    const JIRA     = 'jira';
+    private const JIRA     = 'jira';
     const BUGZILLA = 'bugzilla';
 
     private $tool_names = array(
-        self::BUGZILLA,
-        self::JIRA
+        self::BUGZILLA
     );
 
     public function convert($source_file, $output_dir, $tool_name) {
@@ -30,14 +26,13 @@ class Converter {
             mkdir($data_dir);
         }
 
-        if ($tool_name === self::JIRA) {
-            $user_mapper   = new JiraUserMapper();
-            $parser        = new JiraParser($user_mapper);
-            $external_tool = new Jira($parser, $user_mapper);
-        } else {
+        if ($tool_name === self::BUGZILLA) {
             $user_mapper   = new BugzillaUserMapper();
             $parser        = new BugzillaParser($user_mapper, $data_dir);
             $external_tool = new Bugzilla($parser, $user_mapper);
+        } else {
+            fwrite(STDERR, "$tool_name is not a known tool" . PHP_EOL);
+            exit(1);
         }
 
         $project = new Tuleap\Project($external_tool);
@@ -48,8 +43,12 @@ class Converter {
         $this->saveTo($users_xml, $output_dir.'/users.xml');
     }
 
-    private function checkToolName($tool_name)
+    private function checkToolName(string $tool_name): void
     {
+        if ($tool_name === self::JIRA) {
+            echo 'Tuleap now has built-in importers for Jira, see https://docs.tuleap.org/installation-guide/import.html#jira' . PHP_EOL;
+            exit(1);
+        }
         if (! in_array($tool_name, $this->tool_names)) {
             echo 'The tool you want to import is not yet supported';
             echo PHP_EOL;
