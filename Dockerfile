@@ -1,4 +1,4 @@
-FROM composer:2.2.0 as builder
+FROM composer:2.2.1 as builder
 
 COPY . /app
 
