@@ -6,7 +6,7 @@ WORKDIR /app/
 
 RUN composer install --no-dev -a
 
-FROM alpine:3.16.2
+FROM alpine:3.16.3
 
 RUN apk add --no-cache php8 php8-openssl php8-dom php8-simplexml php8-xmlreader ca-certificates
 
