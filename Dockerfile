@@ -6,9 +6,9 @@ WORKDIR /app/
 
 RUN composer install --no-dev -a
 
-FROM alpine:3.19.1
+FROM alpine:3.20.0
 
-RUN apk add --no-cache php81 php81-openssl php81-dom php81-simplexml php81-xmlreader ca-certificates
+RUN apk add --no-cache php83 php83-openssl php83-dom php83-simplexml php83-xmlreader ca-certificates
 
 WORKDIR /app/
 
