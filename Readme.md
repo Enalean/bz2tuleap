@@ -66,7 +66,7 @@ With docker:
 
     $> docker run -ti --rm -u $(id -u):$(id -g) \
         -v ~/Downloads:/source enalean/bz2tuleap \
-        /app/convert.sh /source/bugzilla_export.xml bugzilla
+        /app/convert.sh /source/bugzilla_export.xml ghcr.io/Enalean/bz2tuleap
 
 Where:
 
