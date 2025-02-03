@@ -14,5 +14,16 @@ jobs:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           persist-credentials: false
-      - name: Build image
-        run: docker build -t test-build .
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # tag=v5.6.1
+        with:
+          images: test-build
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # tag=v6.13.0
+        with:
+          context: .
+          push: false
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
