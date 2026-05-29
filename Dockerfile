@@ -1,4 +1,4 @@
-FROM docker.io/library/composer:2.9.8@sha256:2e558bf87f17c847d9f14e72ecedbeee0f8564efee0a3ba93d24a72cb59593b5 AS builder
+FROM docker.io/library/composer:2.10.0@sha256:1b73755de4f19775ba6087fd5313664493e06fab72b6fc27dc2044e87bb7c4c3 AS builder
 
 COPY . /app
 
